@@ -6,7 +6,7 @@ export function Welcome({ message }: { message: string }) {
         
             <img
               src={logo}
-              alt="Gnar Dawgz Logo"
+              alt="Gnar Dawgs Logo"
               className="block w-[700px] h-[700px]"
             />
             

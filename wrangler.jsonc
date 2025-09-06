@@ -4,9 +4,15 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "gnar-dawgz",
+	"name": "gnar-dawgs",
 	"compatibility_date": "2025-04-04",
 	"main": "./workers/app.ts",
+	"routes": [
+		{
+		"pattern": "www.gnardawgs.surf",
+		"custom_domain": true
+		}
+	],
 	"vars": {
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
 	},
