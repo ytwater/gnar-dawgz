@@ -5,10 +5,20 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [
-    cloudflare({ viteEnvironment: { name: "ssr" } }),
-    tailwindcss(),
-    reactRouter(),
-    tsconfigPaths(),
-  ],
+	plugins: [
+		cloudflare({ viteEnvironment: { name: "ssr" } }),
+		tailwindcss(),
+		reactRouter(),
+		tsconfigPaths(),
+	],
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					vendor: ["react", "react-dom"],
+					router: ["react-router"],
+				},
+			},
+		},
+	},
 });
