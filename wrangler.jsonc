@@ -5,20 +5,37 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "gnar-dawgs",
-	"compatibility_date": "2025-04-04",
+	"compatibility_date": "2025-08-03",
+	"compatibility_flags": ["nodejs_compat"],
 	"main": "./workers/app.ts",
 	"routes": [
 		{
-		"pattern": "www.gnardawgs.surf",
-		"custom_domain": true
+			"pattern": "www.gnardawgs.surf",
+			"custom_domain": true
 		}
 	],
 	"vars": {
-		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
+		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare",
+		"ACCOUNT_ID": "fa192b38975cc1a093d7dc819afa0c64",
+		"AI_GATEWAY_ID": "default"
 	},
 	"observability": {
 		"enabled": true
-	}
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "Chat",
+				"class_name": "Chat"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": ["Chat"]
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

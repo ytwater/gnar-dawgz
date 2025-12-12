@@ -1,5 +1,30 @@
 {
+	"editor.formatOnSave": true,
+	"cSpell.words": [
+	  "deepseek",
+	  "orpc",
+	  "readyevent",
+	],
+	"editor.codeActionsOnSave": {
+	  "source.fixAll.biome": "explicit",
+	  "quickfix.biome": "explicit",
+	  "source.organizeImports.biome": "explicit"
+	},
 	"files.associations": {
-		"wrangler.json": "jsonc"
-	}
+	  "wrangler.json": "jsonc"
+	},
+	"editor.defaultFormatter": "biomejs.biome",
+	"[typescript]": {
+	  "editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescriptreact]": {
+	  "editor.defaultFormatter": "biomejs.biome"
+	},
+	"i18n-ally.localesPaths": [
+	  "apps/expo/src/i18n",
+	  "apps/expo/src/i18n/locale"
+	],
+	"[jsonc]": {
+	  "editor.defaultFormatter": "vscode.json-language-features"
+	},
 }

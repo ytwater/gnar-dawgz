@@ -9,12 +9,13 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { TooltipProvider } from "~/providers/TooltipProvider";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "icon", href: "/favicon.png", type: "image/png" },
 	{
 		rel: "preload",
-		href: "/src/welcome/gnar-dawgs-logo-transparent.webp",
+		href: "/gnar-dawgs-logo-transparent.webp",
 		as: "image",
 		type: "image/webp",
 	},
@@ -72,7 +73,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-	return <Outlet />;
+	return (
+		<TooltipProvider>
+			<Outlet />
+		</TooltipProvider>
+	);
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
