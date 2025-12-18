@@ -15,9 +15,6 @@ export default defineConfig({
 		reactRouter(),
 		tsconfigPaths(),
 	],
-	server: {
-		https: false,
-	},
 	build: {
 		rollupOptions: {
 			output: {
