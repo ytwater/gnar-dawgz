@@ -1,25 +1,25 @@
 import type { Schedule } from "agents";
 import { getSchedulePrompt } from "agents/schedule";
 
+import { createDeepSeek } from "@ai-sdk/deepseek";
 import { AIChatAgent } from "agents/ai-chat-agent";
 import {
-	generateId,
-	streamText,
 	type StreamTextOnFinishCallback,
-	stepCountIs,
-	createUIMessageStream,
-	convertToModelMessages,
-	createUIMessageStreamResponse,
 	type ToolSet,
+	convertToModelMessages,
+	createUIMessageStream,
+	createUIMessageStreamResponse,
+	generateId,
+	stepCountIs,
+	streamText,
 } from "ai";
-import { processToolCalls, cleanupMessages } from "./utils";
-import { tools, executions } from "./tools";
-import { createDeepSeek } from "@ai-sdk/deepseek";
+import { executions, tools } from "./tools";
+import { cleanupMessages, processToolCalls } from "./utils";
 
 /**
  * Chat Agent implementation that handles real-time AI chat interactions
  */
-export class Chat extends AIChatAgent<Env> {
+export class Chat extends AIChatAgent<CloudflareBindings> {
 	/**
 	 * Handles incoming chat messages and manages the response stream
 	 */
@@ -30,7 +30,7 @@ export class Chat extends AIChatAgent<Env> {
 		console.log("Chat.onChatMessage called");
 		console.log("Env:", this.env);
 		console.log("Env keys:", Object.keys(this.env));
-		
+
 		// Collect all tools, including MCP tools
 		const allTools = {
 			...tools,
@@ -41,13 +41,13 @@ export class Chat extends AIChatAgent<Env> {
 			execute: async ({ writer }) => {
 				const baseURL = `https://gateway.ai.cloudflare.com/v1/${this.env.ACCOUNT_ID}/${this.env.AI_GATEWAY_ID}/deepseek`;
 				console.log("DeepSeek baseURL:", baseURL);
-				
+
 				const deepseek = createDeepSeek({
 					apiKey: this.env.DEEPSEEK_API_KEY ?? "",
 					baseURL,
 					headers: {
 						"cf-aig-authorization": this.env.CLOUDFLARE_API_TOKEN ?? "",
-					  },
+					},
 				});
 				const model = deepseek.languageModel("deepseek-chat");
 

@@ -8,7 +8,7 @@ export default defineConfig({
 	plugins: [
 		cloudflare({
 			viteEnvironment: { name: "ssr" },
-			configPath: "./wrangler.jsonc",
+			configPath: "./wrangler.json",
 			persistState: true,
 		}),
 		tailwindcss(),
@@ -16,13 +16,6 @@ export default defineConfig({
 		tsconfigPaths(),
 	],
 	build: {
-		rollupOptions: {
-			output: {
-				manualChunks: {
-					vendor: ["react", "react-dom"],
-					router: ["react-router"],
-				},
-			},
-		},
+		rollupOptions: {},
 	},
 });

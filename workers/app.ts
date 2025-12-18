@@ -1,11 +1,11 @@
-import { createRequestHandler } from "react-router";
 import { routeAgentRequest } from "agents";
+import { createRequestHandler } from "react-router";
 import { Chat } from "./chat-agent";
 
 declare module "react-router" {
 	export interface AppLoadContext {
 		cloudflare: {
-			env: Env;
+			env: CloudflareBindings;
 			ctx: ExecutionContext;
 		};
 	}
@@ -19,16 +19,30 @@ const requestHandler = createRequestHandler(
 export { Chat };
 
 export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+	async fetch(
+		request: Request,
+		env: CloudflareBindings,
+		ctx: ExecutionContext,
+	): Promise<Response> {
 		const url = new URL(request.url);
 		const pathname = url.pathname;
 		const acceptHeader = request.headers.get("Accept") || "";
-		const isHtmlRequest = acceptHeader.includes("text/html") || 
+		const isHtmlRequest =
+			acceptHeader.includes("text/html") ||
 			(acceptHeader === "" && request.method === "GET");
-		
+
 		// Log for debugging
-		console.log("Request:", pathname, "Method:", request.method, "Accept:", acceptHeader, "isHtmlRequest:", isHtmlRequest);
-		
+		console.log(
+			"Request:",
+			pathname,
+			"Method:",
+			request.method,
+			"Accept:",
+			acceptHeader,
+			"isHtmlRequest:",
+			isHtmlRequest,
+		);
+
 		// For non-HTML requests to /chat, try agent routing
 		// The agents library might expect /agents/chat, so try both paths
 		if (pathname === "/chat" && !isHtmlRequest) {
@@ -39,7 +53,7 @@ export default {
 					console.log("Agent response returned for /chat");
 					return agentResponse;
 				}
-				
+
 				// If that doesn't work, try rewriting to /agents/chat
 				const rewrittenUrl = new URL(request.url);
 				rewrittenUrl.pathname = "/agents/chat";
@@ -51,16 +65,23 @@ export default {
 				});
 				agentResponse = await routeAgentRequest(rewrittenRequest, env);
 				if (agentResponse) {
-					console.log("Agent response returned for /agents/chat (rewritten from /chat)");
+					console.log(
+						"Agent response returned for /agents/chat (rewritten from /chat)",
+					);
 					return agentResponse;
 				}
-				
+
 				// If still no match, return 404 for API requests
-				console.log("No agent response for /chat or /agents/chat, but it's an API request - returning 404");
-				return new Response(JSON.stringify({ error: "Agent route not found" }), {
-					status: 404,
-					headers: { "Content-Type": "application/json" },
-				});
+				console.log(
+					"No agent response for /chat or /agents/chat, but it's an API request - returning 404",
+				);
+				return new Response(
+					JSON.stringify({ error: "Agent route not found" }),
+					{
+						status: 404,
+						headers: { "Content-Type": "application/json" },
+					},
+				);
 			} catch (error) {
 				console.error("Agent routing error:", error);
 				return new Response(JSON.stringify({ error: String(error) }), {
@@ -69,7 +90,7 @@ export default {
 				});
 			}
 		}
-		
+
 		// Try agent routing for other paths (like /agents/chat)
 		if (!isHtmlRequest || pathname.startsWith("/agents/")) {
 			try {
