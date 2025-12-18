@@ -4,7 +4,7 @@ import "@dotenvx/dotenvx/config";
 
 export default defineConfig({
 	dialect: "sqlite",
-	schema: "./app/lib/auth-schema.ts",
+	schema: "./app/lib/schema.ts",
 	out: "./drizzle",
 	driver: "d1-http",
 	dbCredentials: {

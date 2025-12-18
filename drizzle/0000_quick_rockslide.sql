@@ -1,3 +1,12 @@
+CREATE TABLE `access_requests` (
+	`id` text PRIMARY KEY NOT NULL,
+	`email` text NOT NULL,
+	`reason` text NOT NULL,
+	`status` text DEFAULT 'pending' NOT NULL,
+	`created_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `access_requests_email_unique` ON `access_requests` (`email`);--> statement-breakpoint
 CREATE TABLE `accounts` (
 	`id` text PRIMARY KEY NOT NULL,
 	`account_id` text NOT NULL,

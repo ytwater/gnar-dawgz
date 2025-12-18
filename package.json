@@ -16,10 +16,14 @@
 		"auth:update": "pnpm run auth:generate && pnpm run auth:format",
 		"drizzle-kit-version": "drizzle-kit --version",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate:dev": "wrangler d1 migrations apply DB --local --persist-to .wrangler/state",
+		"db:migrate:dev": "wrangler d1 migrations apply DB --local",
 		"db:migrate:prod": "wrangler d1 migrations apply DB --remote",
 		"db:studio:dev": "drizzle-kit studio --config drizzle.config.development.ts",
-		"db:studio:prod": "drizzle-kit studio --config drizzle.config.production.ts"
+		"db:studio:prod": "drizzle-kit studio --config drizzle.config.production.ts",
+		"db:nuke:dev": "npx tsx scripts/nuke.ts development",
+		"db:nuke:prod": "npx tsx scripts/nuke.ts production",
+		"db:drop:dev": "npx tsx scripts/drop.ts development",
+		"db:drop:prod": "npx tsx scripts/drop.ts production"
 	},
 	"dependencies": {
 		"@ai-sdk/deepseek": "^1.0.31",
@@ -55,6 +59,7 @@
 		"@types/react-dom": "^19.1.2",
 		"better-sqlite3": "^12.5.0",
 		"drizzle-kit": "^0.31.8",
+		"readline": "^1.3.0",
 		"tailwindcss": "^4.1.4",
 		"typescript": "^5.9.3",
 		"vite": "^6.3.3",

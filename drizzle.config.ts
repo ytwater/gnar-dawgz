@@ -25,10 +25,10 @@ export function getLocalD1DB() {
 
 export default defineConfig({
 	dialect: "sqlite",
-	schema: "./app/lib/auth-schema.ts",
+	schema: "./app/lib/schema.ts",
 	out: "./drizzle",
 	dbCredentials: {
-		url: getLocalD1DB(),
+		url: getLocalD1DB() as string,
 	},
 
 	// ...(process.env.NODE_ENV === "production"

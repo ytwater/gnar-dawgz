@@ -1,4 +1,6 @@
 import { Form, redirect, useActionData, useNavigation } from "react-router";
+import { accessRequests } from "~/lib/app-schema";
+import { getDb } from "~/lib/db";
 import type { Route } from "./+types/request-access";
 
 export const action = async ({ request, context }: Route.ActionArgs) => {
@@ -10,17 +12,16 @@ export const action = async ({ request, context }: Route.ActionArgs) => {
 		return { error: "Email is required" };
 	}
 
-	const db = context.cloudflare.env.DB;
+	const db = getDb(context.cloudflare.env.DB);
 	const id = crypto.randomUUID();
-	const createdAt = Date.now();
 
 	try {
-		await db
-			.prepare(
-				"INSERT INTO access_requests (id, email, reason, status, created_at) VALUES (?, ?, ?, 'pending', ?)",
-			)
-			.bind(id, email, reason, createdAt)
-			.run();
+		await db.insert(accessRequests).values({
+			id,
+			email,
+			reason,
+			status: "pending",
+		});
 		return { success: true };
 	} catch (e) {
 		console.error(e);

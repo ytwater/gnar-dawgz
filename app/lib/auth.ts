@@ -2,14 +2,14 @@ import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
-import { drizzle } from "drizzle-orm/d1";
 import { ADMIN_USER_IDS } from "../config/constants";
-import * as schema from "./auth-schema";
+import { getDb } from "./db";
+import * as schema from "./schema";
 
 // biome-ignore lint/suspicious/noExplicitAny: types for Cloudflare and Drizzle can be inconsistent across environments
 export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 	const db = env
-		? drizzle(env.DB, { schema, logger: false })
+		? getDb(env.DB)
 		: // biome-ignore lint/suspicious/noExplicitAny: CLI usage requires empty object
 			({} as any);
 
@@ -54,6 +54,14 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 					defaultCookieAttributes: {
 						sameSite: "none",
 						secure: true,
+					},
+				},
+				user: {
+					additionalFields: {
+						role: {
+							type: "string",
+							defaultValue: "user",
+						},
 					},
 				},
 			},

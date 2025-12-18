@@ -1,5 +1,8 @@
+import { desc, eq } from "drizzle-orm";
 import { Form, Link, redirect, useLoaderData } from "react-router";
+import { accessRequests } from "~/lib/app-schema";
 import { createAuth } from "~/lib/auth";
+import { getDb } from "~/lib/db";
 import type { Route } from "./+types/admin";
 
 export const loader = async ({ request, context }: Route.LoaderArgs) => {
@@ -13,12 +16,11 @@ export const loader = async ({ request, context }: Route.LoaderArgs) => {
 	// TODO: Add stricter admin role check here
 	// if (session.user.role !== "admin") throw redirect("/");
 
-	const db = context.cloudflare.env.DB;
-	const { results } = await db
-		.prepare(
-			"SELECT * FROM access_requests WHERE status = 'pending' ORDER BY created_at DESC",
-		)
-		.all();
+	const db = getDb(context.cloudflare.env.DB);
+	const results = await db.query.accessRequests.findMany({
+		where: eq(accessRequests.status, "pending"),
+		orderBy: desc(accessRequests.createdAt),
+	});
 
 	return { requests: results, user: session.user };
 };
@@ -33,7 +35,7 @@ export const action = async ({ request, context }: Route.ActionArgs) => {
 	const requestId = formData.get("requestId") as string;
 	const email = formData.get("email") as string;
 
-	const db = context.cloudflare.env.DB;
+	const db = getDb(context.cloudflare.env.DB);
 
 	if (intent === "approve") {
 		try {
@@ -41,6 +43,7 @@ export const action = async ({ request, context }: Route.ActionArgs) => {
 			// We use a random password since they will likely use Google Auth
 			// (or we can send them an invite link if we had email set up, but simpler to just pre-create).
 			// NOTE: better-auth might require password for email credential, but we are just creating the user record.
+			// biome-ignore lint/suspicious/noExplicitAny: better-auth admin API types can be inconsistent
 			await (auth.api as any).admin.createUser({
 				body: {
 					email: email,
@@ -51,18 +54,18 @@ export const action = async ({ request, context }: Route.ActionArgs) => {
 			});
 
 			await db
-				.prepare("UPDATE access_requests SET status = 'approved' WHERE id = ?")
-				.bind(requestId)
-				.run();
+				.update(accessRequests)
+				.set({ status: "approved" })
+				.where(eq(accessRequests.id, requestId));
 		} catch (e) {
 			console.error("Failed to create user", e);
 			return { error: "Failed to create user. They might already exist." };
 		}
 	} else if (intent === "reject") {
 		await db
-			.prepare("UPDATE access_requests SET status = 'rejected' WHERE id = ?")
-			.bind(requestId)
-			.run();
+			.update(accessRequests)
+			.set({ status: "rejected" })
+			.where(eq(accessRequests.id, requestId));
 	}
 
 	return { success: true };
@@ -73,10 +76,10 @@ interface AccessRequest {
 	email: string;
 	reason: string;
 	status: string;
-	created_at: number;
+	createdAt: string | Date;
 }
 
-export default function AdminDashboard() {
+export default function ApproveAccess() {
 	const { requests, user } = useLoaderData<typeof loader>();
 
 	return (
@@ -173,7 +176,7 @@ export default function AdminDashboard() {
 																</td>
 																<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 																	{new Date(
-																		request.created_at,
+																		request.createdAt,
 																	).toLocaleDateString()}
 																</td>
 																<td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
