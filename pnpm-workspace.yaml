@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - better-sqlite3
+  - core-js-pure
+  - esbuild
+  - sharp
+  - workerd
