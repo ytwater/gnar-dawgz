@@ -92,6 +92,7 @@ export default {
 		}
 
 		// Try agent routing for other paths (like /agents/chat)
+		// Only route agent requests for non-HTML requests or /agents/* paths
 		if (!isHtmlRequest || pathname.startsWith("/agents/")) {
 			try {
 				const agentResponse = await routeAgentRequest(request, env);
@@ -101,12 +102,14 @@ export default {
 				}
 			} catch (error) {
 				console.error("Agent routing error:", error);
+				// For HTML requests, continue to react-router even if agent routing fails
 				if (!isHtmlRequest) {
 					return new Response(JSON.stringify({ error: String(error) }), {
 						status: 500,
 						headers: { "Content-Type": "application/json" },
 					});
 				}
+				// For HTML requests, log but continue to react-router handler
 			}
 		}
 

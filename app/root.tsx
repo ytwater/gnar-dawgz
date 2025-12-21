@@ -1,10 +1,10 @@
 import {
-	isRouteErrorResponse,
 	Links,
 	Meta,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	isRouteErrorResponse,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -27,16 +27,8 @@ export const links: Route.LinksFunction = () => [
 		crossOrigin: "anonymous",
 	},
 	{
-		rel: "preload",
-		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;700&display=swap",
-		as: "style",
-		onLoad: "this.onload=null;this.rel='stylesheet'",
-	},
-	{
 		rel: "stylesheet",
 		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;700&display=swap",
-		media: "print",
-		onLoad: "this.media='all'",
 	},
 ];
 
@@ -67,6 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				{children}
 				<ScrollRestoration />
 				<Scripts />
+				<script src="/sw-register.js" />
 			</body>
 		</html>
 	);

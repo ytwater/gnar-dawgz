@@ -8,6 +8,13 @@
       "when": 1766086947413,
       "tag": "0000_quick_rockslide",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1766105839447,
+      "tag": "0001_elite_argent",
+      "breakpoints": true
     }
   ]
 }

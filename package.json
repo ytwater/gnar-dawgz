@@ -7,6 +7,7 @@
 		"cf-typegen": "wrangler types --no-include-runtime --env-interface CloudflareBindings",
 		"cf-typegen:full": "wrangler types --env-interface CloudflareBindings",
 		"deploy": "pnpm run build && wrangler deploy",
+		"logs": "wrangler tail",
 		"dev": "react-router dev",
 		"postinstall": "npm run cf-typegen",
 		"preview": "pnpm run build && vite preview",
@@ -46,6 +47,7 @@
 		"react-router": "^7.11.0",
 		"remark-gfm": "^4.0.1",
 		"tailwind-merge": "^3.4.0",
+		"webpush-webcrypto": "^1.0.5",
 		"zod": "^4.1.13"
 	},
 	"devDependencies": {
@@ -53,6 +55,7 @@
 		"@cloudflare/vite-plugin": "^1.17.1",
 		"@dotenvx/dotenvx": "^1.51.2",
 		"@react-router/dev": "^7.7.1",
+		"@react-router/fs-routes": "^7.11.0",
 		"@tailwindcss/vite": "^4.1.4",
 		"@types/node": "^20",
 		"@types/react": "^19.1.2",

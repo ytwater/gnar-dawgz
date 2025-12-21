@@ -70,7 +70,8 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 		...(env
 			? {}
 			: {
-					database: drizzleAdapter({} as D1Database, {
+					// biome-ignore lint/suspicious/noExplicitAny: performance
+					database: drizzleAdapter({} as any, {
 						provider: "sqlite",
 						usePlural,
 						debugLogs,

@@ -10,3 +10,5 @@ export const accessRequests = sqliteTable("access_requests", {
 		.default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
 		.notNull(),
 });
+
+export * from "./push-subscriptions-schema";

@@ -16,7 +16,9 @@
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare",
 		"ACCOUNT_ID": "fa192b38975cc1a093d7dc819afa0c64",
 		"AI_GATEWAY_ID": "default",
-		"GOOGLE_CLIENT_ID": "843872966928-4q8r4o4p52h90f52jpjotmmncgr5mrra.apps.googleusercontent.com"
+		"GOOGLE_CLIENT_ID": "843872966928-4q8r4o4p52h90f52jpjotmmncgr5mrra.apps.googleusercontent.com",
+		"VAPID_PUBLIC_KEY": "BLesCxd24BjJTGhGCLKN_b9mOCwlyL-paNFAyCMybZb5UbQ854bSVNV9zgCZJPNFBYwusXwFQTEKhq8pWAR_LYM",
+		"VAPID_SUBJECT": "https://gnardawgs.surf"
 	},
 	"observability": {
 		"enabled": true
