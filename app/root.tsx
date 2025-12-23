@@ -11,6 +11,13 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { TooltipProvider } from "~/providers/TooltipProvider";
 
+if (typeof window !== "undefined") {
+	window.global = window;
+	// Only if the 'module is not defined' error persists:
+	// @ts-ignore
+	window.module = window.module || {};
+}
+
 export const links: Route.LinksFunction = () => [
 	{ rel: "icon", href: "/favicon.png", type: "image/png" },
 	{

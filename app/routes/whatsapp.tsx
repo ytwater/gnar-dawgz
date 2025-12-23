@@ -5,12 +5,21 @@ import {
 	UserCircle,
 	WhatsappLogo,
 } from "@phosphor-icons/react";
+import {
+	Client,
+	type Conversation as TwilioConversation,
+	type Message as TwilioMessage,
+} from "@twilio/conversations";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "~/components/button/Button";
 import { MemoizedMarkdown } from "~/components/memoized-markdown";
 import { Textarea } from "~/components/textarea/Textarea";
 import { authClient } from "~/lib/auth-client";
+
+export const handle = {
+	hydrate: false,
+};
 
 type Conversation = {
 	sid: string;
@@ -64,6 +73,8 @@ export default function WhatsAppChat() {
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const activeConversationRef = useRef<Conversation | null>(null);
 	const pollIntervalRef = useRef<number | null>(null);
+	const clientRef = useRef<Client | null>(null);
+	const twilioConversationRef = useRef<TwilioConversation | null>(null);
 	const MAIN_CONVERSATION_UNIQUE_NAME = "main";
 
 	useEffect(() => {
@@ -81,22 +92,40 @@ export default function WhatsAppChat() {
 		}
 	}, [session, sessionLoading, navigate]);
 
-	// Load or create main conversation
+	// Initialize Twilio client and load/create conversation
 	useEffect(() => {
 		if (!session) return;
 
-		const ensureMainConversation = async () => {
+		let isMounted = true;
+
+		const initializeTwilio = async () => {
 			try {
+				setStatus("Initializing...");
+
+				// Get token from backend
+				const tokenRes = await fetch("/api/twilio/token");
+				if (!tokenRes.ok) {
+					throw new Error("Failed to get Twilio token");
+				}
+				const { token } = await tokenRes.json();
+
+				// Initialize Twilio client
+				const client = await Client.create(token);
+				if (!isMounted) {
+					client.shutdown();
+					return;
+				}
+				clientRef.current = client;
+
 				setStatus("Loading conversation...");
-				// Try to fetch by uniqueName first
+
+				// Ensure conversation exists via REST API
+				let mainConv: Conversation | null = null;
 				const res = await fetch(
 					`/api/twilio/conversations?uniqueName=${MAIN_CONVERSATION_UNIQUE_NAME}`,
 				);
 
-				let mainConv: Conversation | null = null;
-
 				if (res.ok) {
-					// Conversation exists, use it
 					const data = await res.json();
 					mainConv = {
 						...data,
@@ -104,7 +133,6 @@ export default function WhatsAppChat() {
 						dateUpdated: new Date(data.dateUpdated),
 					};
 				} else if (res.status === 404) {
-					// Conversation doesn't exist, create it
 					setStatus("Creating conversation...");
 					const createRes = await fetch("/api/twilio/conversations", {
 						method: "POST",
@@ -117,12 +145,10 @@ export default function WhatsAppChat() {
 
 					if (!createRes.ok) {
 						const errorText = await createRes.text();
-						console.error("Failed to create conversation:", errorText);
 						throw new Error(`Failed to create conversation: ${errorText}`);
 					}
 
 					const createData = await createRes.json();
-					console.log("Created conversation data:", createData);
 					mainConv = {
 						...createData.conversation,
 						dateCreated: new Date(createData.conversation.dateCreated),
@@ -132,74 +158,92 @@ export default function WhatsAppChat() {
 					throw new Error(`Failed to fetch conversation: ${res.status}`);
 				}
 
-				console.log("Main conversation object:", mainConv);
 				if (!mainConv?.sid) {
-					console.error("Conversation missing sid:", mainConv);
 					throw new Error("Conversation does not have a valid sid");
 				}
 
-				setActiveConversation(mainConv);
-				setStatus("Connected");
+				// Connect to conversation via SDK
+				const twilioConv = await client.getConversationBySid(mainConv.sid);
+				if (!isMounted) {
+					return;
+				}
+				twilioConversationRef.current = twilioConv;
+
+				// Set up real-time message listeners
+				twilioConv.on("messageAdded", (message: TwilioMessage) => {
+					if (!isMounted) return;
+
+					const newMsg: Message = {
+						sid: message.sid,
+						index: message.index,
+						author: message.author || null,
+						body: message.body || null,
+						dateCreated: message.dateCreated || new Date(),
+						dateUpdated: message.dateUpdated || new Date(),
+						attributes: JSON.stringify(message.attributes || {}),
+					};
+
+					setMessages((prev) => {
+						// Avoid duplicates
+						if (prev.some((m) => m.sid === newMsg.sid)) {
+							return prev;
+						}
+						const updated = [...prev, newMsg];
+						updated.sort(
+							(a, b) => a.dateCreated.getTime() - b.dateCreated.getTime(),
+						);
+						return updated;
+					});
+				});
+
+				// Load initial messages
+				const initialMessages = await twilioConv.getMessages();
+				const msgs: Message[] = initialMessages.items.map(
+					(msg: TwilioMessage) => ({
+						sid: msg.sid,
+						index: msg.index,
+						author: msg.author || null,
+						body: msg.body || null,
+						dateCreated: msg.dateCreated || new Date(),
+						dateUpdated: msg.dateUpdated || new Date(),
+						attributes: JSON.stringify(msg.attributes || {}),
+					}),
+				);
+				msgs.sort((a, b) => a.dateCreated.getTime() - b.dateCreated.getTime());
+
+				if (isMounted) {
+					setActiveConversation(mainConv);
+					setMessages(msgs);
+					setStatus("Connected");
+				}
 			} catch (error) {
-				console.error("Error loading conversation:", error);
-				setStatus("Error loading conversation");
+				console.error("Error initializing Twilio:", error);
+				if (isMounted) {
+					setStatus(
+						"Error: " +
+							(error instanceof Error ? error.message : "Unknown error"),
+					);
+				}
 			}
 		};
 
-		ensureMainConversation();
-	}, [session]);
-
-	// Load messages when active conversation changes
-	useEffect(() => {
-		if (!activeConversation) {
-			setMessages([]);
-			if (pollIntervalRef.current) {
-				clearInterval(pollIntervalRef.current);
-				pollIntervalRef.current = null;
-			}
-			return;
-		}
-
-		const loadMessages = async () => {
-			try {
-				const res = await fetch(
-					`/api/twilio/messages?conversationSid=${activeConversation.sid}`,
-				);
-				if (!res.ok) throw new Error("Failed to fetch messages");
-				const data = await res.json();
-
-				const msgs = (data.messages || []).map((msg: MessageResponse) => ({
-					...msg,
-					dateCreated: new Date(msg.dateCreated),
-					dateUpdated: new Date(msg.dateUpdated),
-				}));
-				// Sort by dateCreated (oldest first)
-				msgs.sort(
-					(a: Message, b: Message) =>
-						a.dateCreated.getTime() - b.dateCreated.getTime(),
-				);
-				setMessages(msgs);
-				scrollToBottom();
-			} catch (error) {
-				console.error("Error loading messages:", error);
-			}
-		};
-
-		loadMessages();
-
-		// Poll for new messages every 2 seconds
-		pollIntervalRef.current = setInterval(
-			loadMessages,
-			2000,
-		) as unknown as number;
+		initializeTwilio();
 
 		return () => {
-			if (pollIntervalRef.current) {
-				clearInterval(pollIntervalRef.current);
-				pollIntervalRef.current = null;
+			isMounted = false;
+			if (twilioConversationRef.current) {
+				twilioConversationRef.current.removeAllListeners();
+				twilioConversationRef.current = null;
+			}
+			if (clientRef.current) {
+				clientRef.current.shutdown();
+				clientRef.current = null;
 			}
 		};
-	}, [activeConversation, scrollToBottom]);
+	}, [session]);
+
+	// Messages are now loaded via SDK in the initialization effect
+	// This effect is kept for scroll behavior only
 
 	useEffect(() => {
 		if (messages.length > 0) {
@@ -211,9 +255,10 @@ export default function WhatsAppChat() {
 		e.preventDefault();
 		if (!input.trim() || !activeConversation || isSending) return;
 
-		if (!activeConversation.sid) {
-			console.error("Active conversation missing sid:", activeConversation);
-			setStatus("Error: No conversation selected");
+		const twilioConv = twilioConversationRef.current;
+		if (!twilioConv) {
+			console.error("Twilio conversation not initialized");
+			setStatus("Error: Not connected");
 			return;
 		}
 
@@ -224,50 +269,10 @@ export default function WhatsAppChat() {
 
 		setIsSending(true);
 		try {
-			const requestBody = {
-				conversationSid: activeConversation.sid,
-				message: messageBody,
-			};
-
-			// Double-check we have valid data
-			if (!requestBody.conversationSid || !requestBody.message) {
-				throw new Error(
-					`Missing required fields: conversationSid=${!!requestBody.conversationSid}, message=${!!requestBody.message}`,
-				);
-			}
-
-			const res = await fetch("/api/twilio/messages", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(requestBody),
-			});
-			if (!res.ok) {
-				const errorData = await res
-					.json()
-					.catch(() => ({ error: "Failed to send message" }));
-				throw new Error(
-					errorData.error || `Failed to send message (${res.status})`,
-				);
-			}
+			// Send message via SDK (real-time)
+			await twilioConv.sendMessage(messageBody);
 			setInput("");
-			// Reload messages to show the new one
-			const msgRes = await fetch(
-				`/api/twilio/messages?conversationSid=${activeConversation.sid}`,
-			);
-			if (msgRes.ok) {
-				const data = await msgRes.json();
-				const msgs = (data.messages || []).map((msg: MessageResponse) => ({
-					...msg,
-					dateCreated: new Date(msg.dateCreated),
-					dateUpdated: new Date(msg.dateUpdated),
-				}));
-				msgs.sort(
-					(a: Message, b: Message) =>
-						a.dateCreated.getTime() - b.dateCreated.getTime(),
-				);
-				setMessages(msgs);
-				scrollToBottom();
-			}
+			// Message will be added via the messageAdded event listener
 		} catch (error) {
 			console.error("Send Message Error:", error);
 			setStatus(
