@@ -1,6 +1,7 @@
 import { createAuth } from "~/lib/auth";
 import {
 	createServiceConversationMessage,
+	deleteServiceConversationMessage,
 	listServiceConversationMessage,
 } from "~/lib/twilio/conversation-api";
 import type { Route } from "./+types/api.twilio.messages";
@@ -88,6 +89,64 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 	const headers = getTwilioAuthHeaders(env);
 
+	// Handle DELETE requests for message deletion
+	if (request.method === "DELETE") {
+		let body;
+		try {
+			body = await request.json();
+		} catch (error) {
+			return Response.json(
+				{ error: "Invalid JSON in request body" },
+				{ status: 400 },
+			);
+		}
+
+		const { conversationSid, messageSid } = body;
+
+		if (
+			!conversationSid ||
+			!messageSid ||
+			typeof conversationSid !== "string" ||
+			typeof messageSid !== "string"
+		) {
+			return Response.json(
+				{
+					error: "conversationSid and messageSid are required",
+					received: {
+						conversationSid: conversationSid ?? null,
+						messageSid: messageSid ?? null,
+					},
+				},
+				{ status: 400 },
+			);
+		}
+
+		try {
+			const response = await deleteServiceConversationMessage(
+				env.TWILIO_SERVICE_SID,
+				conversationSid,
+				messageSid,
+				{ headers },
+			);
+
+			if (response.status !== 204 && response.status !== 200) {
+				return Response.json(
+					{ error: "Failed to delete message" },
+					{ status: response.status },
+				);
+			}
+
+			return Response.json({ success: true, message: "Message deleted successfully" });
+		} catch (error) {
+			console.error("Error deleting message:", error);
+			return Response.json(
+				{ error: error instanceof Error ? error.message : "Unknown error" },
+				{ status: 500 },
+			);
+		}
+	}
+
+	// Handle POST requests for creating messages
 	let body;
 	try {
 		body = await request.json();

@@ -1,4 +1,9 @@
-import { Circle, PaperPlaneTilt, WhatsappLogo } from "@phosphor-icons/react";
+import {
+	CircleIcon,
+	PaperPlaneTiltIcon,
+	PlusIcon,
+	WhatsappLogoIcon,
+} from "@phosphor-icons/react";
 import {
 	Client,
 	type Conversation as TwilioConversation,
@@ -8,22 +13,55 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "~/components/button/Button";
 import { MemoizedMarkdown } from "~/components/memoized-markdown";
 import { Textarea } from "~/components/textarea/Textarea";
-import { MAIN_CONVERSATION_UNIQUE_NAME } from "~/config/constants";
+import {
+	ADMIN_USER_IDS,
+	MAIN_CONVERSATION_UNIQUE_NAME,
+} from "~/config/constants";
 import { authClient } from "~/lib/auth-client";
 
 export const handle = {
 	hydrate: false,
 };
 
+// Plain message object for React state
+type MessageData = {
+	sid: string;
+	body: string | null;
+	author: string | null;
+	dateCreated: Date | null;
+	index: number | null;
+};
+
+// Extract plain data from Twilio message
+function messageToData(message: TwilioMessage): MessageData {
+	return {
+		sid: message.sid,
+		body: message.body,
+		author: message.author,
+		dateCreated: message.dateCreated,
+		index: message.index,
+	};
+}
+
 export default function WhatsAppChat() {
 	const { data: session, isPending: sessionLoading } = authClient.useSession();
-	const [messages, setMessages] = useState<TwilioMessage[]>([]);
+	const [messages, setMessages] = useState<MessageData[]>([]);
+	const messagesSidSetRef = useRef<Set<string>>(new Set());
 	const [status, setStatus] = useState<string>("Initializing...");
 	const [input, setInput] = useState("");
 	const [isSending, setIsSending] = useState(false);
+	const [showAddNumber, setShowAddNumber] = useState(false);
+	const [phoneNumber, setPhoneNumber] = useState("");
+	const [isAddingNumber, setIsAddingNumber] = useState(false);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const clientRef = useRef<Client | null>(null);
 	const conversationRef = useRef<TwilioConversation | null>(null);
+
+	// Check if user is admin
+	const isAdmin =
+		session?.user &&
+		((session.user as { role?: string }).role === "admin" ||
+			ADMIN_USER_IDS.includes((session.user as { id: string }).id));
 
 	// Auto-scroll to bottom when messages change
 	useEffect(() => {
@@ -245,12 +283,17 @@ export default function WhatsAppChat() {
 							const messagesPaginator = await conversation.getMessages();
 							const initialMessages = messagesPaginator.items || [];
 							if (isMounted) {
-								setMessages(initialMessages);
+								const messageData = initialMessages.map(messageToData);
+								messagesSidSetRef.current = new Set(
+									messageData.map((m) => m.sid),
+								);
+								setMessages(messageData);
 							}
 						} catch (error) {
 							console.error("Error loading messages:", error);
 							// Continue anyway - messages will come through events
 							if (isMounted) {
+								messagesSidSetRef.current = new Set();
 								setMessages([]);
 							}
 						}
@@ -259,44 +302,56 @@ export default function WhatsAppChat() {
 							setStatus("Connected");
 						}
 
-						// Set up message listeners
-						conversation.on("messageAdded", (message: TwilioMessage) => {
-							if (isMounted) {
-								setMessages((prev) => [...prev, message]);
+						// Helper to add message if not duplicate
+						const addMessageIfNew = (message: TwilioMessage) => {
+							if (!isMounted) return;
+							const sid = message.sid;
+							if (messagesSidSetRef.current.has(sid)) {
+								return; // Already have this message
 							}
+							messagesSidSetRef.current.add(sid);
+							setMessages((prev) => {
+								// Sort by index or dateCreated to maintain order
+								const newMessage = messageToData(message);
+								const updated = [...prev, newMessage].sort((a, b) => {
+									if (a.index !== null && b.index !== null) {
+										return a.index - b.index;
+									}
+									const aDate = a.dateCreated?.getTime() || 0;
+									const bDate = b.dateCreated?.getTime() || 0;
+									return aDate - bDate;
+								});
+								return updated;
+							});
+						};
+
+						// Set up message listeners - only use conversation-level to avoid duplicates
+						conversation.on("messageAdded", (message: TwilioMessage) => {
+							addMessageIfNew(message);
 						});
 
 						conversation.on("messageRemoved", (message: TwilioMessage) => {
-							if (isMounted) {
-								setMessages((prev) =>
-									prev.filter((m) => m.sid !== message.sid),
-								);
-							}
+							if (!isMounted) return;
+							const sid = message.sid;
+							messagesSidSetRef.current.delete(sid);
+							setMessages((prev) => prev.filter((m) => m.sid !== sid));
 						});
 
 						conversation.on(
 							"messageUpdated",
 							({ message }: { message: TwilioMessage }) => {
-								if (isMounted) {
-									setMessages((prev) =>
-										prev.map((m) => (m.sid === message.sid ? message : m)),
-									);
+								if (!isMounted) return;
+								const sid = message.sid;
+								if (!messagesSidSetRef.current.has(sid)) {
+									// If not in state yet, add it
+									addMessageIfNew(message);
+									return;
 								}
+								setMessages((prev) =>
+									prev.map((m) => (m.sid === sid ? messageToData(message) : m)),
+								);
 							},
 						);
-
-						// Also listen to client-level messageAdded for all conversations
-						client.on("messageAdded", (message: TwilioMessage) => {
-							if (isMounted && message.conversation?.sid === conversation.sid) {
-								setMessages((prev) => {
-									// Avoid duplicates
-									if (prev.some((m) => m.sid === message.sid)) {
-										return prev;
-									}
-									return [...prev, message];
-								});
-							}
-						});
 					} catch (error) {
 						console.error("Error connecting to conversation:", error);
 						if (isMounted) {
@@ -337,6 +392,7 @@ export default function WhatsAppChat() {
 
 		return () => {
 			isMounted = false;
+			messagesSidSetRef.current = new Set();
 			if (conversationRef.current) {
 				conversationRef.current.removeAllListeners();
 			}
@@ -375,19 +431,56 @@ export default function WhatsAppChat() {
 		[handleSend],
 	);
 
+	const handleAddNumber = useCallback(async () => {
+		const number = phoneNumber.trim();
+		if (!number || isAddingNumber) return;
+
+		setIsAddingNumber(true);
+		try {
+			const response = await fetch("/api/whatsapp/add-participant", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ phoneNumber: number }),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				alert(`Failed to add number: ${data.error || "Unknown error"}`);
+				return;
+			}
+
+			alert(
+				data.message ||
+					"WhatsApp number added successfully. Note: The user must message your WhatsApp number first, or you must send them a pre-approved template message to enable messaging.",
+			);
+			setPhoneNumber("");
+			setShowAddNumber(false);
+		} catch (error) {
+			console.error("Error adding WhatsApp number:", error);
+			alert(
+				`Failed to add number: ${error instanceof Error ? error.message : "Unknown error"}`,
+			);
+		} finally {
+			setIsAddingNumber(false);
+		}
+	}, [phoneNumber, isAddingNumber]);
+
 	return (
 		<div className="h-screen w-full flex flex-col bg-zinc-950 text-white overflow-hidden">
 			{/* Header */}
 			<div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/50">
 				<div className="flex items-center gap-3">
-					<WhatsappLogo className="w-6 h-6 text-green-500" weight="fill" />
+					<WhatsappLogoIcon className="w-6 h-6 text-green-500" weight="fill" />
 					<div>
 						<h1 className="text-lg font-semibold">Main Conversation</h1>
 						<p className="text-xs text-zinc-400">{status}</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					<Circle
+					<CircleIcon
 						className={`w-2 h-2 ${
 							status === "Connected" ? "text-green-500" : "text-yellow-500"
 						}`}
@@ -446,7 +539,61 @@ export default function WhatsAppChat() {
 			</div>
 
 			{/* Input Area */}
-			<div className="border-t border-zinc-800 bg-zinc-900/50 p-4">
+			<div className="border-t border-zinc-800 bg-zinc-900/50 p-4 space-y-2">
+				{isAdmin && (
+					<div className="flex gap-2 items-center">
+						{!showAddNumber ? (
+							<Button
+								onClick={() => setShowAddNumber(true)}
+								variant="secondary"
+								className="text-sm"
+							>
+								<PlusIcon className="w-4 h-4 mr-1" />
+								Add WhatsApp Number
+							</Button>
+						) : (
+							<div className="flex gap-2 items-center flex-1">
+								<input
+									type="text"
+									value={phoneNumber}
+									onChange={(e) => setPhoneNumber(e.target.value)}
+									placeholder="+1234567890 or whatsapp:+1234567890"
+									className="flex-1 px-3 py-2 rounded bg-zinc-800 border border-zinc-700 text-white placeholder:text-zinc-500 text-sm"
+									disabled={isAddingNumber}
+									onKeyDown={(e) => {
+										if (e.key === "Enter" && !e.shiftKey) {
+											e.preventDefault();
+											handleAddNumber();
+										}
+										if (e.key === "Escape") {
+											setShowAddNumber(false);
+											setPhoneNumber("");
+										}
+									}}
+								/>
+								<Button
+									onClick={handleAddNumber}
+									disabled={!phoneNumber.trim() || isAddingNumber}
+									variant="primary"
+									className="text-sm"
+								>
+									{isAddingNumber ? "Adding..." : "Add"}
+								</Button>
+								<Button
+									onClick={() => {
+										setShowAddNumber(false);
+										setPhoneNumber("");
+									}}
+									variant="secondary"
+									className="text-sm"
+									disabled={isAddingNumber}
+								>
+									Cancel
+								</Button>
+							</div>
+						)}
+					</div>
+				)}
 				<div className="flex gap-2 items-end">
 					<Textarea
 						value={input}
@@ -462,7 +609,7 @@ export default function WhatsAppChat() {
 						variant="primary"
 						className="h-[60px] px-4"
 					>
-						<PaperPlaneTilt className="w-5 h-5" weight="fill" />
+						<PaperPlaneTiltIcon className="w-5 h-5" weight="fill" />
 					</Button>
 				</div>
 			</div>

@@ -1,4 +1,10 @@
-import { CaretRight, Key, Users } from "@phosphor-icons/react";
+import {
+	Broadcast,
+	CaretRight,
+	ChatCircle,
+	Key,
+	Users,
+} from "@phosphor-icons/react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { authClient } from "~/lib/auth-client";
@@ -54,6 +60,22 @@ export default function AdminDashboard() {
 			href: "/admin/approve-access",
 			color: "text-emerald-500",
 			bgColor: "bg-emerald-500/10",
+		},
+		{
+			title: "WhatsApp Participants",
+			description: "Manage participants in the main WhatsApp chat.",
+			icon: ChatCircle,
+			href: "/admin/whatsapp",
+			color: "text-cyan-500",
+			bgColor: "bg-cyan-500/10",
+		},
+		{
+			title: "Twilio Event Sync",
+			description: "Manage Twilio event subscriptions and sync configuration.",
+			icon: Broadcast,
+			href: "/admin/twilio-event-sync",
+			color: "text-purple-500",
+			bgColor: "bg-purple-500/10",
 		},
 	];
 

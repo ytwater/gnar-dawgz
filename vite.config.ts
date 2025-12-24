@@ -26,6 +26,9 @@ export default defineConfig({
 		// 	},
 		// }),
 	],
+	server: {
+		allowedHosts: ["demo1.psg-labs.net"],
+	},
 	build: {
 		rollupOptions: {},
 		// commonjsOptions: {

@@ -1,7 +1,6 @@
 import { routeAgentRequest } from "agents";
 import { createRequestHandler } from "react-router";
 import { Chat } from "./chat-agent";
-import { Whatsapp } from "./whatsapp-do";
 
 declare module "react-router" {
 	export interface AppLoadContext {
@@ -17,7 +16,7 @@ const requestHandler = createRequestHandler(
 	import.meta.env.MODE,
 );
 
-export { Chat, Whatsapp };
+export { Chat };
 
 export default {
 	async fetch(

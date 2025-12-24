@@ -1,23 +1,22 @@
 import type { Route } from "./+types/api.whatsapp.webhook";
 
 /**
- * Validates Twilio webhook signature using HMAC-SHA1
+ * Validates Twilio EventStreams webhook signature using HMAC-SHA1
+ * For EventStreams with bodySHA256: signature is computed over URL only (empty body)
+ * For regular webhooks: signature is computed over URL + rawRequestBody
  * Based on: https://www.twilio.com/docs/usage/webhooks/webhooks-security
  */
 async function validateTwilioSignature(
 	authToken: string,
 	signature: string,
 	url: string,
-	params: Record<string, string>,
+	rawBody: string,
 ): Promise<boolean> {
-	// Sort parameters alphabetically and concatenate
-	const sortedKeys = Object.keys(params).sort();
-	const data = sortedKeys.map((key) => `${key}${params[key]}`).join("");
-
-	// Compute HMAC-SHA1
+	// Compute HMAC-SHA1 over url + rawBody
+	const message = url + rawBody;
 	const encoder = new TextEncoder();
 	const keyData = encoder.encode(authToken);
-	const messageData = encoder.encode(url + data);
+	const messageData = encoder.encode(message);
 
 	const key = await crypto.subtle.importKey(
 		"raw",
@@ -49,71 +48,116 @@ async function validateTwilioSignature(
 export async function action({ request, context }: Route.ActionArgs) {
 	const env = context.cloudflare.env as CloudflareBindings;
 
-	// Get Twilio auth token
-	const envWithToken = env as { TWILIO_AUTH_TOKEN?: string };
-	const authToken = envWithToken.TWILIO_AUTH_TOKEN;
+	try {
+		// Get Twilio auth token
+		const authToken = env.TWILIO_AUTH_TOKEN;
 
-	if (!authToken) {
-		console.error("TWILIO_AUTH_TOKEN not configured");
-		return new Response("Server configuration error", { status: 500 });
+		if (!authToken) {
+			console.error("TWILIO_AUTH_TOKEN not configured");
+			throw new Error("Server configuration error");
+		}
+
+		// Get signature from header
+		const signature = request.headers.get("X-Twilio-Signature");
+		if (!signature) {
+			throw new Error("Missing X-Twilio-Signature header");
+		}
+
+		// Read raw body for signature validation (must be done before parsing JSON)
+		const rawBody = await request.text();
+
+		// Parse JSON for processing
+		const params = JSON.parse(rawBody);
+
+		// Determine signature format based on bodySHA256 query parameter
+		const url = new URL(request.url);
+		const bodySHA256 = url.searchParams.get("bodySHA256");
+
+		let fullUrl: string;
+		let bodyForSignature: string;
+
+		if (bodySHA256) {
+			// For EventStreams with bodySHA256: verify the hash matches, then sign URL only
+			const bodyHashBuffer = await crypto.subtle.digest(
+				"SHA-256",
+				new TextEncoder().encode(rawBody),
+			);
+			const bodyHashArray = Array.from(new Uint8Array(bodyHashBuffer));
+			const bodyHashHex = bodyHashArray
+				.map((b) => b.toString(16).padStart(2, "0"))
+				.join("");
+
+			if (bodySHA256.toLowerCase() !== bodyHashHex.toLowerCase()) {
+				throw new Error(
+					"bodySHA256 mismatch - body may have been tampered with",
+				);
+			}
+
+			// Use HTTPS URL with bodySHA256 query param, empty body
+			fullUrl = `https://${url.host}${url.pathname}${url.search}`;
+			bodyForSignature = "";
+		} else {
+			// For regular webhooks: use URL + body
+			fullUrl = `https://${url.host}${url.pathname}${url.search}`;
+			bodyForSignature = rawBody;
+		}
+
+		// Validate signature
+		const isValid = await validateTwilioSignature(
+			authToken,
+			signature,
+			fullUrl,
+			bodyForSignature,
+		);
+		if (!isValid) {
+			console.warn("Invalid Twilio signature");
+			throw new Error("Invalid signature");
+		}
+
+		console.log("🚀 ~ api.whatsapp.webhook.ts:71 ~ action ~ params:", params);
+
+		// Extract conversationSid
+		const conversationSid = params.ConversationSid;
+		if (!conversationSid) {
+			console.warn("Webhook received but no ConversationSid in params");
+			// Still forward to DO in case it can handle it
+		}
+
+		// // Get the Durable Object stub
+		// // If we have a conversationSid, use it; otherwise use a default key
+		// const doKey = conversationSid ? `twilioConv:${conversationSid}` : "twilioConv:default";
+		// const id = env.Whatsapp.idFromName(doKey);
+		// const stub = env.Whatsapp.get(id);
+
+		// // Forward the webhook to the DO
+		// // We need to reconstruct the form data since we've already consumed it
+		// const doUrl = new URL(request.url);
+		// doUrl.pathname = "/webhook";
+
+		// // Create a new form data for the DO
+		// const doFormData = new FormData();
+		// for (const [key, value] of formData.entries()) {
+		// 	doFormData.append(key, value);
+		// }
+
+		// const doRequest = new Request(doUrl.toString(), {
+		// 	method: "POST",
+		// 	headers: {
+		// 		"Content-Type": request.headers.get("Content-Type") || "application/x-www-form-urlencoded",
+		// 	},
+		// 	body: doFormData,
+		// });
+
+		// return stub.fetch(doRequest);
+		return Response.json({ success: true, message: "Webhook received" });
+	} catch (error) {
+		console.error(
+			"Error in api.whatsapp.webhook.ts:",
+			error instanceof Error ? error.message : "Unknown error",
+		);
+		return Response.json(
+			{ error: error instanceof Error ? error.message : "Unknown error" },
+			{ status: 500 },
+		);
 	}
-
-	// Get signature from header
-	const signature = request.headers.get("X-Twilio-Signature");
-	if (!signature) {
-		return new Response("Missing X-Twilio-Signature header", { status: 403 });
-	}
-
-	// Get the full URL (Twilio uses the exact URL it called)
-	const url = new URL(request.url);
-	const fullUrl = `${url.protocol}//${url.host}${url.pathname}`;
-
-	// Parse form data
-	const formData = await request.formData();
-	const params: Record<string, string> = {};
-	for (const [key, value] of formData.entries()) {
-		params[key] = value.toString();
-	}
-
-	// Validate signature
-	const isValid = await validateTwilioSignature(authToken, signature, fullUrl, params);
-	if (!isValid) {
-		console.warn("Invalid Twilio signature");
-		return new Response("Invalid signature", { status: 403 });
-	}
-
-	// Extract conversationSid
-	const conversationSid = params.ConversationSid;
-	if (!conversationSid) {
-		console.warn("Webhook received but no ConversationSid in params");
-		// Still forward to DO in case it can handle it
-	}
-
-	// Get the Durable Object stub
-	// If we have a conversationSid, use it; otherwise use a default key
-	const doKey = conversationSid ? `twilioConv:${conversationSid}` : "twilioConv:default";
-	const id = env.Whatsapp.idFromName(doKey);
-	const stub = env.Whatsapp.get(id);
-
-	// Forward the webhook to the DO
-	// We need to reconstruct the form data since we've already consumed it
-	const doUrl = new URL(request.url);
-	doUrl.pathname = "/webhook";
-
-	// Create a new form data for the DO
-	const doFormData = new FormData();
-	for (const [key, value] of formData.entries()) {
-		doFormData.append(key, value);
-	}
-
-	const doRequest = new Request(doUrl.toString(), {
-		method: "POST",
-		headers: {
-			"Content-Type": request.headers.get("Content-Type") || "application/x-www-form-urlencoded",
-		},
-		body: doFormData,
-	});
-
-	return stub.fetch(doRequest);
 }
-

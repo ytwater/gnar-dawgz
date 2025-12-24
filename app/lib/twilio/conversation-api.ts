@@ -10,9 +10,14 @@ import {
   useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
+  QueryClient,
   QueryFunction,
   QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -183,7 +188,7 @@ export const getFetchConfigurationQueryKey = () => {
     }
 
     
-export const getFetchConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof fetchConfiguration>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData>, fetch?: RequestInit}
+export const getFetchConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof fetchConfiguration>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -198,25 +203,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConfigurationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConfiguration>>>
 export type FetchConfigurationQueryError = unknown
 
 
+export function useFetchConfiguration<TData = Awaited<ReturnType<typeof fetchConfiguration>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConfiguration>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConfiguration>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConfiguration<TData = Awaited<ReturnType<typeof fetchConfiguration>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConfiguration>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConfiguration>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConfiguration<TData = Awaited<ReturnType<typeof fetchConfiguration>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the global configuration of conversations on your account
  */
 
 export function useFetchConfiguration<TData = Awaited<ReturnType<typeof fetchConfiguration>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfiguration>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConfigurationQueryOptions(options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -319,7 +348,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateConfiguration = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateConfiguration>>, TError,{data: UpdateConfigurationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateConfiguration>>,
         TError,
         {data: UpdateConfigurationBody},
@@ -328,7 +357,7 @@ export const useUpdateConfiguration = <TError = unknown,
 
       const mutationOptions = getUpdateConfigurationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -390,7 +419,7 @@ export const getListConfigurationAddressQueryKey = (params?: ListConfigurationAd
     }
 
     
-export const getListConfigurationAddressQueryOptions = <TData = Awaited<ReturnType<typeof listConfigurationAddress>>, TError = unknown>(params?: ListConfigurationAddressParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData>, fetch?: RequestInit}
+export const getListConfigurationAddressQueryOptions = <TData = Awaited<ReturnType<typeof listConfigurationAddress>>, TError = unknown>(params?: ListConfigurationAddressParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -405,25 +434,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListConfigurationAddressQueryResult = NonNullable<Awaited<ReturnType<typeof listConfigurationAddress>>>
 export type ListConfigurationAddressQueryError = unknown
 
 
+export function useListConfigurationAddress<TData = Awaited<ReturnType<typeof listConfigurationAddress>>, TError = unknown>(
+ params: undefined |  ListConfigurationAddressParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConfigurationAddress>>,
+          TError,
+          Awaited<ReturnType<typeof listConfigurationAddress>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConfigurationAddress<TData = Awaited<ReturnType<typeof listConfigurationAddress>>, TError = unknown>(
+ params?: ListConfigurationAddressParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConfigurationAddress>>,
+          TError,
+          Awaited<ReturnType<typeof listConfigurationAddress>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConfigurationAddress<TData = Awaited<ReturnType<typeof listConfigurationAddress>>, TError = unknown>(
+ params?: ListConfigurationAddressParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of address configurations for an account
  */
 
 export function useListConfigurationAddress<TData = Awaited<ReturnType<typeof listConfigurationAddress>>, TError = unknown>(
- params?: ListConfigurationAddressParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ params?: ListConfigurationAddressParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConfigurationAddress>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListConfigurationAddressQueryOptions(params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -546,7 +599,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateConfigurationAddress = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createConfigurationAddress>>, TError,{data: CreateConfigurationAddressBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createConfigurationAddress>>,
         TError,
         {data: CreateConfigurationAddressBody},
@@ -555,7 +608,7 @@ export const useCreateConfigurationAddress = <TError = unknown,
 
       const mutationOptions = getCreateConfigurationAddressMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -610,7 +663,7 @@ export const getFetchConfigurationAddressQueryKey = (sid?: string,) => {
     }
 
     
-export const getFetchConfigurationAddressQueryOptions = <TData = Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError = unknown>(sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData>, fetch?: RequestInit}
+export const getFetchConfigurationAddressQueryOptions = <TData = Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -625,25 +678,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConfigurationAddressQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConfigurationAddress>>>
 export type FetchConfigurationAddressQueryError = unknown
 
 
+export function useFetchConfigurationAddress<TData = Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConfigurationAddress>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConfigurationAddress>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConfigurationAddress<TData = Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConfigurationAddress>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConfigurationAddress>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConfigurationAddress<TData = Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch an address configuration 
  */
 
 export function useFetchConfigurationAddress<TData = Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError = unknown>(
- sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationAddress>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConfigurationAddressQueryOptions(sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -762,7 +839,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateConfigurationAddress = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateConfigurationAddress>>, TError,{sid: string;data: UpdateConfigurationAddressBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateConfigurationAddress>>,
         TError,
         {sid: string;data: UpdateConfigurationAddressBody},
@@ -771,7 +848,7 @@ export const useUpdateConfigurationAddress = <TError = unknown,
 
       const mutationOptions = getUpdateConfigurationAddressMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -852,7 +929,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteConfigurationAddress = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteConfigurationAddress>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteConfigurationAddress>>,
         TError,
         {sid: string},
@@ -861,7 +938,7 @@ export const useDeleteConfigurationAddress = <TError = unknown,
 
       const mutationOptions = getDeleteConfigurationAddressMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 export type fetchConfigurationWebhookResponse200 = {
@@ -912,7 +989,7 @@ export const getFetchConfigurationWebhookQueryKey = () => {
     }
 
     
-export const getFetchConfigurationWebhookQueryOptions = <TData = Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData>, fetch?: RequestInit}
+export const getFetchConfigurationWebhookQueryOptions = <TData = Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -927,22 +1004,46 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConfigurationWebhookQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConfigurationWebhook>>>
 export type FetchConfigurationWebhookQueryError = unknown
 
 
+export function useFetchConfigurationWebhook<TData = Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConfigurationWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConfigurationWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConfigurationWebhook<TData = Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConfigurationWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConfigurationWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConfigurationWebhook<TData = Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useFetchConfigurationWebhook<TData = Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConfigurationWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConfigurationWebhookQueryOptions(options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -1041,7 +1142,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export const useUpdateConfigurationWebhook = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateConfigurationWebhook>>, TError,{data: UpdateConfigurationWebhookBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateConfigurationWebhook>>,
         TError,
         {data: UpdateConfigurationWebhookBody},
@@ -1050,7 +1151,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
       const mutationOptions = getUpdateConfigurationWebhookMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -1166,7 +1267,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createConversation>>, TError,{data: CreateConversationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createConversation>>,
         TError,
         {data: CreateConversationBody},
@@ -1175,7 +1276,7 @@ export const useCreateConversation = <TError = unknown,
 
       const mutationOptions = getCreateConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -1237,7 +1338,7 @@ export const getListConversationQueryKey = (params?: ListConversationParams,) =>
     }
 
     
-export const getListConversationQueryOptions = <TData = Awaited<ReturnType<typeof listConversation>>, TError = unknown>(params?: ListConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData>, fetch?: RequestInit}
+export const getListConversationQueryOptions = <TData = Awaited<ReturnType<typeof listConversation>>, TError = unknown>(params?: ListConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -1252,25 +1353,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListConversationQueryResult = NonNullable<Awaited<ReturnType<typeof listConversation>>>
 export type ListConversationQueryError = unknown
 
 
+export function useListConversation<TData = Awaited<ReturnType<typeof listConversation>>, TError = unknown>(
+ params: undefined |  ListConversationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversation<TData = Awaited<ReturnType<typeof listConversation>>, TError = unknown>(
+ params?: ListConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversation<TData = Awaited<ReturnType<typeof listConversation>>, TError = unknown>(
+ params?: ListConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of conversations in your account's default service
  */
 
 export function useListConversation<TData = Awaited<ReturnType<typeof listConversation>>, TError = unknown>(
- params?: ListConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ params?: ListConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListConversationQueryOptions(params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -1395,7 +1520,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateConversation>>, TError,{sid: string;data: UpdateConversationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateConversation>>,
         TError,
         {sid: string;data: UpdateConversationBody},
@@ -1404,7 +1529,7 @@ export const useUpdateConversation = <TError = unknown,
 
       const mutationOptions = getUpdateConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -1485,7 +1610,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteConversation>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteConversation>>,
         TError,
         {sid: string},
@@ -1494,7 +1619,7 @@ export const useDeleteConversation = <TError = unknown,
 
       const mutationOptions = getDeleteConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -1549,7 +1674,7 @@ export const getFetchConversationQueryKey = (sid?: string,) => {
     }
 
     
-export const getFetchConversationQueryOptions = <TData = Awaited<ReturnType<typeof fetchConversation>>, TError = unknown>(sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData>, fetch?: RequestInit}
+export const getFetchConversationQueryOptions = <TData = Awaited<ReturnType<typeof fetchConversation>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -1564,25 +1689,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConversationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConversation>>>
 export type FetchConversationQueryError = unknown
 
 
+export function useFetchConversation<TData = Awaited<ReturnType<typeof fetchConversation>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversation<TData = Awaited<ReturnType<typeof fetchConversation>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversation<TData = Awaited<ReturnType<typeof fetchConversation>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a conversation from your account's default service
  */
 
 export function useFetchConversation<TData = Awaited<ReturnType<typeof fetchConversation>>, TError = unknown>(
- sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConversationQueryOptions(sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -1701,7 +1850,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateConversationMessage = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createConversationMessage>>, TError,{conversationSid: string;data: CreateConversationMessageBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createConversationMessage>>,
         TError,
         {conversationSid: string;data: CreateConversationMessageBody},
@@ -1710,7 +1859,7 @@ export const useCreateConversationMessage = <TError = unknown,
 
       const mutationOptions = getCreateConversationMessageMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -1776,7 +1925,7 @@ export const getListConversationMessageQueryKey = (conversationSid?: string,
 
     
 export const getListConversationMessageQueryOptions = <TData = Awaited<ReturnType<typeof listConversationMessage>>, TError = unknown>(conversationSid: string,
-    params?: ListConversationMessageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData>, fetch?: RequestInit}
+    params?: ListConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -1791,26 +1940,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListConversationMessageQueryResult = NonNullable<Awaited<ReturnType<typeof listConversationMessage>>>
 export type ListConversationMessageQueryError = unknown
 
 
+export function useListConversationMessage<TData = Awaited<ReturnType<typeof listConversationMessage>>, TError = unknown>(
+ conversationSid: string,
+    params: undefined |  ListConversationMessageParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationMessage<TData = Awaited<ReturnType<typeof listConversationMessage>>, TError = unknown>(
+ conversationSid: string,
+    params?: ListConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationMessage<TData = Awaited<ReturnType<typeof listConversationMessage>>, TError = unknown>(
+ conversationSid: string,
+    params?: ListConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all messages in the conversation
  */
 
 export function useListConversationMessage<TData = Awaited<ReturnType<typeof listConversationMessage>>, TError = unknown>(
  conversationSid: string,
-    params?: ListConversationMessageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListConversationMessageQueryOptions(conversationSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -1922,7 +2098,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateConversationMessage = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateConversationMessage>>, TError,{conversationSid: string;sid: string;data: UpdateConversationMessageBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateConversationMessage>>,
         TError,
         {conversationSid: string;sid: string;data: UpdateConversationMessageBody},
@@ -1931,7 +2107,7 @@ export const useUpdateConversationMessage = <TError = unknown,
 
       const mutationOptions = getUpdateConversationMessageMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -2014,7 +2190,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteConversationMessage = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteConversationMessage>>, TError,{conversationSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteConversationMessage>>,
         TError,
         {conversationSid: string;sid: string},
@@ -2023,7 +2199,7 @@ export const useDeleteConversationMessage = <TError = unknown,
 
       const mutationOptions = getDeleteConversationMessageMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -2082,7 +2258,7 @@ export const getFetchConversationMessageQueryKey = (conversationSid?: string,
 
     
 export const getFetchConversationMessageQueryOptions = <TData = Awaited<ReturnType<typeof fetchConversationMessage>>, TError = unknown>(conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -2097,26 +2273,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConversationMessageQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConversationMessage>>>
 export type FetchConversationMessageQueryError = unknown
 
 
+export function useFetchConversationMessage<TData = Awaited<ReturnType<typeof fetchConversationMessage>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationMessage<TData = Awaited<ReturnType<typeof fetchConversationMessage>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationMessage<TData = Awaited<ReturnType<typeof fetchConversationMessage>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a message from the conversation
  */
 
 export function useFetchConversationMessage<TData = Awaited<ReturnType<typeof fetchConversationMessage>>, TError = unknown>(
  conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConversationMessageQueryOptions(conversationSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -2187,7 +2390,7 @@ export const getFetchConversationMessageReceiptQueryKey = (conversationSid?: str
     
 export const getFetchConversationMessageReceiptQueryOptions = <TData = Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError = unknown>(conversationSid: string,
     messageSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -2202,13 +2405,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid && messageSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid && messageSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConversationMessageReceiptQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>>
 export type FetchConversationMessageReceiptQueryError = unknown
 
 
+export function useFetchConversationMessageReceipt<TData = Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError = unknown>(
+ conversationSid: string,
+    messageSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationMessageReceipt<TData = Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError = unknown>(
+ conversationSid: string,
+    messageSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationMessageReceipt<TData = Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError = unknown>(
+ conversationSid: string,
+    messageSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the delivery and read receipts of the conversation message
  */
@@ -2216,13 +2449,13 @@ export type FetchConversationMessageReceiptQueryError = unknown
 export function useFetchConversationMessageReceipt<TData = Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError = unknown>(
  conversationSid: string,
     messageSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConversationMessageReceiptQueryOptions(conversationSid,messageSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -2300,7 +2533,7 @@ export const getListConversationMessageReceiptQueryKey = (conversationSid?: stri
     
 export const getListConversationMessageReceiptQueryOptions = <TData = Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError = unknown>(conversationSid: string,
     messageSid: string,
-    params?: ListConversationMessageReceiptParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
+    params?: ListConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -2315,13 +2548,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid && messageSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid && messageSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListConversationMessageReceiptQueryResult = NonNullable<Awaited<ReturnType<typeof listConversationMessageReceipt>>>
 export type ListConversationMessageReceiptQueryError = unknown
 
 
+export function useListConversationMessageReceipt<TData = Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError = unknown>(
+ conversationSid: string,
+    messageSid: string,
+    params: undefined |  ListConversationMessageReceiptParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationMessageReceipt<TData = Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError = unknown>(
+ conversationSid: string,
+    messageSid: string,
+    params?: ListConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationMessageReceipt<TData = Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError = unknown>(
+ conversationSid: string,
+    messageSid: string,
+    params?: ListConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all delivery and read receipts of the conversation message
  */
@@ -2329,13 +2592,13 @@ export type ListConversationMessageReceiptQueryError = unknown
 export function useListConversationMessageReceipt<TData = Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError = unknown>(
  conversationSid: string,
     messageSid: string,
-    params?: ListConversationMessageReceiptParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListConversationMessageReceiptQueryOptions(conversationSid,messageSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -2451,7 +2714,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateConversationParticipant = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createConversationParticipant>>, TError,{conversationSid: string;data: CreateConversationParticipantBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createConversationParticipant>>,
         TError,
         {conversationSid: string;data: CreateConversationParticipantBody},
@@ -2460,7 +2723,7 @@ export const useCreateConversationParticipant = <TError = unknown,
 
       const mutationOptions = getCreateConversationParticipantMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -2526,7 +2789,7 @@ export const getListConversationParticipantQueryKey = (conversationSid?: string,
 
     
 export const getListConversationParticipantQueryOptions = <TData = Awaited<ReturnType<typeof listConversationParticipant>>, TError = unknown>(conversationSid: string,
-    params?: ListConversationParticipantParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData>, fetch?: RequestInit}
+    params?: ListConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -2541,26 +2804,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListConversationParticipantQueryResult = NonNullable<Awaited<ReturnType<typeof listConversationParticipant>>>
 export type ListConversationParticipantQueryError = unknown
 
 
+export function useListConversationParticipant<TData = Awaited<ReturnType<typeof listConversationParticipant>>, TError = unknown>(
+ conversationSid: string,
+    params: undefined |  ListConversationParticipantParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationParticipant<TData = Awaited<ReturnType<typeof listConversationParticipant>>, TError = unknown>(
+ conversationSid: string,
+    params?: ListConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationParticipant<TData = Awaited<ReturnType<typeof listConversationParticipant>>, TError = unknown>(
+ conversationSid: string,
+    params?: ListConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all participants of the conversation
  */
 
 export function useListConversationParticipant<TData = Awaited<ReturnType<typeof listConversationParticipant>>, TError = unknown>(
  conversationSid: string,
-    params?: ListConversationParticipantParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListConversationParticipantQueryOptions(conversationSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -2681,7 +2971,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateConversationParticipant = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateConversationParticipant>>, TError,{conversationSid: string;sid: string;data: UpdateConversationParticipantBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateConversationParticipant>>,
         TError,
         {conversationSid: string;sid: string;data: UpdateConversationParticipantBody},
@@ -2690,7 +2980,7 @@ export const useUpdateConversationParticipant = <TError = unknown,
 
       const mutationOptions = getUpdateConversationParticipantMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -2773,7 +3063,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteConversationParticipant = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteConversationParticipant>>, TError,{conversationSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteConversationParticipant>>,
         TError,
         {conversationSid: string;sid: string},
@@ -2782,7 +3072,7 @@ export const useDeleteConversationParticipant = <TError = unknown,
 
       const mutationOptions = getDeleteConversationParticipantMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -2841,7 +3131,7 @@ export const getFetchConversationParticipantQueryKey = (conversationSid?: string
 
     
 export const getFetchConversationParticipantQueryOptions = <TData = Awaited<ReturnType<typeof fetchConversationParticipant>>, TError = unknown>(conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -2856,26 +3146,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConversationParticipantQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConversationParticipant>>>
 export type FetchConversationParticipantQueryError = unknown
 
 
+export function useFetchConversationParticipant<TData = Awaited<ReturnType<typeof fetchConversationParticipant>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationParticipant<TData = Awaited<ReturnType<typeof fetchConversationParticipant>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationParticipant<TData = Awaited<ReturnType<typeof fetchConversationParticipant>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a participant of the conversation
  */
 
 export function useFetchConversationParticipant<TData = Awaited<ReturnType<typeof fetchConversationParticipant>>, TError = unknown>(
  conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConversationParticipantQueryOptions(conversationSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -2949,7 +3266,7 @@ export const getListConversationScopedWebhookQueryKey = (conversationSid?: strin
 
     
 export const getListConversationScopedWebhookQueryOptions = <TData = Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError = unknown>(conversationSid: string,
-    params?: ListConversationScopedWebhookParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
+    params?: ListConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -2964,26 +3281,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListConversationScopedWebhookQueryResult = NonNullable<Awaited<ReturnType<typeof listConversationScopedWebhook>>>
 export type ListConversationScopedWebhookQueryError = unknown
 
 
+export function useListConversationScopedWebhook<TData = Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError = unknown>(
+ conversationSid: string,
+    params: undefined |  ListConversationScopedWebhookParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationScopedWebhook<TData = Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError = unknown>(
+ conversationSid: string,
+    params?: ListConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof listConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListConversationScopedWebhook<TData = Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError = unknown>(
+ conversationSid: string,
+    params?: ListConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all webhooks scoped to the conversation
  */
 
 export function useListConversationScopedWebhook<TData = Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError = unknown>(
  conversationSid: string,
-    params?: ListConversationScopedWebhookParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListConversationScopedWebhookQueryOptions(conversationSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -3094,7 +3438,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateConversationScopedWebhook = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createConversationScopedWebhook>>, TError,{conversationSid: string;data: CreateConversationScopedWebhookBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createConversationScopedWebhook>>,
         TError,
         {conversationSid: string;data: CreateConversationScopedWebhookBody},
@@ -3103,7 +3447,7 @@ export const useCreateConversationScopedWebhook = <TError = unknown,
 
       const mutationOptions = getCreateConversationScopedWebhookMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -3162,7 +3506,7 @@ export const getFetchConversationScopedWebhookQueryKey = (conversationSid?: stri
 
     
 export const getFetchConversationScopedWebhookQueryOptions = <TData = Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError = unknown>(conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -3177,26 +3521,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchConversationScopedWebhookQueryResult = NonNullable<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>>
 export type FetchConversationScopedWebhookQueryError = unknown
 
 
+export function useFetchConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof fetchConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError = unknown>(
+ conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the configuration of a conversation-scoped webhook
  */
 
 export function useFetchConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError = unknown>(
  conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchConversationScopedWebhookQueryOptions(conversationSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -3305,7 +3676,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateConversationScopedWebhook = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateConversationScopedWebhook>>, TError,{conversationSid: string;sid: string;data: UpdateConversationScopedWebhookBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateConversationScopedWebhook>>,
         TError,
         {conversationSid: string;sid: string;data: UpdateConversationScopedWebhookBody},
@@ -3314,7 +3685,7 @@ export const useUpdateConversationScopedWebhook = <TError = unknown,
 
       const mutationOptions = getUpdateConversationScopedWebhookMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -3397,7 +3768,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteConversationScopedWebhook = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteConversationScopedWebhook>>, TError,{conversationSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteConversationScopedWebhook>>,
         TError,
         {conversationSid: string;sid: string},
@@ -3406,7 +3777,7 @@ export const useDeleteConversationScopedWebhook = <TError = unknown,
 
       const mutationOptions = getDeleteConversationScopedWebhookMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -3530,7 +3901,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateConversationWithParticipants = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createConversationWithParticipants>>, TError,{data: CreateConversationWithParticipantsBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createConversationWithParticipants>>,
         TError,
         {data: CreateConversationWithParticipantsBody},
@@ -3539,7 +3910,7 @@ export const useCreateConversationWithParticipants = <TError = unknown,
 
       const mutationOptions = getCreateConversationWithParticipantsMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -3641,7 +4012,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateCredential = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCredential>>, TError,{data: CreateCredentialBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createCredential>>,
         TError,
         {data: CreateCredentialBody},
@@ -3650,7 +4021,7 @@ export const useCreateCredential = <TError = unknown,
 
       const mutationOptions = getCreateCredentialMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -3712,7 +4083,7 @@ export const getListCredentialQueryKey = (params?: ListCredentialParams,) => {
     }
 
     
-export const getListCredentialQueryOptions = <TData = Awaited<ReturnType<typeof listCredential>>, TError = unknown>(params?: ListCredentialParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData>, fetch?: RequestInit}
+export const getListCredentialQueryOptions = <TData = Awaited<ReturnType<typeof listCredential>>, TError = unknown>(params?: ListCredentialParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -3727,25 +4098,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListCredentialQueryResult = NonNullable<Awaited<ReturnType<typeof listCredential>>>
 export type ListCredentialQueryError = unknown
 
 
+export function useListCredential<TData = Awaited<ReturnType<typeof listCredential>>, TError = unknown>(
+ params: undefined |  ListCredentialParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCredential>>,
+          TError,
+          Awaited<ReturnType<typeof listCredential>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListCredential<TData = Awaited<ReturnType<typeof listCredential>>, TError = unknown>(
+ params?: ListCredentialParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCredential>>,
+          TError,
+          Awaited<ReturnType<typeof listCredential>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListCredential<TData = Awaited<ReturnType<typeof listCredential>>, TError = unknown>(
+ params?: ListCredentialParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all push notification credentials on your account
  */
 
 export function useListCredential<TData = Awaited<ReturnType<typeof listCredential>>, TError = unknown>(
- params?: ListCredentialParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ params?: ListCredentialParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredential>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListCredentialQueryOptions(params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -3858,7 +4253,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateCredential = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCredential>>, TError,{sid: string;data: UpdateCredentialBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateCredential>>,
         TError,
         {sid: string;data: UpdateCredentialBody},
@@ -3867,7 +4262,7 @@ export const useUpdateCredential = <TError = unknown,
 
       const mutationOptions = getUpdateCredentialMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -3948,7 +4343,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteCredential = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCredential>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteCredential>>,
         TError,
         {sid: string},
@@ -3957,7 +4352,7 @@ export const useDeleteCredential = <TError = unknown,
 
       const mutationOptions = getDeleteCredentialMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -4012,7 +4407,7 @@ export const getFetchCredentialQueryKey = (sid?: string,) => {
     }
 
     
-export const getFetchCredentialQueryOptions = <TData = Awaited<ReturnType<typeof fetchCredential>>, TError = unknown>(sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData>, fetch?: RequestInit}
+export const getFetchCredentialQueryOptions = <TData = Awaited<ReturnType<typeof fetchCredential>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -4027,25 +4422,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchCredentialQueryResult = NonNullable<Awaited<ReturnType<typeof fetchCredential>>>
 export type FetchCredentialQueryError = unknown
 
 
+export function useFetchCredential<TData = Awaited<ReturnType<typeof fetchCredential>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchCredential>>,
+          TError,
+          Awaited<ReturnType<typeof fetchCredential>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchCredential<TData = Awaited<ReturnType<typeof fetchCredential>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchCredential>>,
+          TError,
+          Awaited<ReturnType<typeof fetchCredential>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchCredential<TData = Awaited<ReturnType<typeof fetchCredential>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a push notification credential from your account
  */
 
 export function useFetchCredential<TData = Awaited<ReturnType<typeof fetchCredential>>, TError = unknown>(
- sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredential>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchCredentialQueryOptions(sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -4115,7 +4534,7 @@ export const getListParticipantConversationQueryKey = (params?: ListParticipantC
     }
 
     
-export const getListParticipantConversationQueryOptions = <TData = Awaited<ReturnType<typeof listParticipantConversation>>, TError = unknown>(params?: ListParticipantConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData>, fetch?: RequestInit}
+export const getListParticipantConversationQueryOptions = <TData = Awaited<ReturnType<typeof listParticipantConversation>>, TError = unknown>(params?: ListParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -4130,25 +4549,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListParticipantConversationQueryResult = NonNullable<Awaited<ReturnType<typeof listParticipantConversation>>>
 export type ListParticipantConversationQueryError = unknown
 
 
+export function useListParticipantConversation<TData = Awaited<ReturnType<typeof listParticipantConversation>>, TError = unknown>(
+ params: undefined |  ListParticipantConversationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listParticipantConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listParticipantConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListParticipantConversation<TData = Awaited<ReturnType<typeof listParticipantConversation>>, TError = unknown>(
+ params?: ListParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listParticipantConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listParticipantConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListParticipantConversation<TData = Awaited<ReturnType<typeof listParticipantConversation>>, TError = unknown>(
+ params?: ListParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all Conversations that this Participant belongs to by identity or by address. Only one parameter should be specified.
  */
 
 export function useListParticipantConversation<TData = Awaited<ReturnType<typeof listParticipantConversation>>, TError = unknown>(
- params?: ListParticipantConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ params?: ListParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listParticipantConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListParticipantConversationQueryOptions(params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -4242,7 +4685,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateRole = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createRole>>, TError,{data: CreateRoleBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createRole>>,
         TError,
         {data: CreateRoleBody},
@@ -4251,7 +4694,7 @@ export const useCreateRole = <TError = unknown,
 
       const mutationOptions = getCreateRoleMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -4313,7 +4756,7 @@ export const getListRoleQueryKey = (params?: ListRoleParams,) => {
     }
 
     
-export const getListRoleQueryOptions = <TData = Awaited<ReturnType<typeof listRole>>, TError = unknown>(params?: ListRoleParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData>, fetch?: RequestInit}
+export const getListRoleQueryOptions = <TData = Awaited<ReturnType<typeof listRole>>, TError = unknown>(params?: ListRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -4328,25 +4771,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListRoleQueryResult = NonNullable<Awaited<ReturnType<typeof listRole>>>
 export type ListRoleQueryError = unknown
 
 
+export function useListRole<TData = Awaited<ReturnType<typeof listRole>>, TError = unknown>(
+ params: undefined |  ListRoleParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listRole>>,
+          TError,
+          Awaited<ReturnType<typeof listRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListRole<TData = Awaited<ReturnType<typeof listRole>>, TError = unknown>(
+ params?: ListRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listRole>>,
+          TError,
+          Awaited<ReturnType<typeof listRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListRole<TData = Awaited<ReturnType<typeof listRole>>, TError = unknown>(
+ params?: ListRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all user roles in your account's default service
  */
 
 export function useListRole<TData = Awaited<ReturnType<typeof listRole>>, TError = unknown>(
- params?: ListRoleParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ params?: ListRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListRoleQueryOptions(params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -4439,7 +4906,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateRole = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateRole>>, TError,{sid: string;data: UpdateRoleBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateRole>>,
         TError,
         {sid: string;data: UpdateRoleBody},
@@ -4448,7 +4915,7 @@ export const useUpdateRole = <TError = unknown,
 
       const mutationOptions = getUpdateRoleMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -4529,7 +4996,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteRole = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteRole>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteRole>>,
         TError,
         {sid: string},
@@ -4538,7 +5005,7 @@ export const useDeleteRole = <TError = unknown,
 
       const mutationOptions = getDeleteRoleMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -4593,7 +5060,7 @@ export const getFetchRoleQueryKey = (sid?: string,) => {
     }
 
     
-export const getFetchRoleQueryOptions = <TData = Awaited<ReturnType<typeof fetchRole>>, TError = unknown>(sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData>, fetch?: RequestInit}
+export const getFetchRoleQueryOptions = <TData = Awaited<ReturnType<typeof fetchRole>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -4608,25 +5075,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchRoleQueryResult = NonNullable<Awaited<ReturnType<typeof fetchRole>>>
 export type FetchRoleQueryError = unknown
 
 
+export function useFetchRole<TData = Awaited<ReturnType<typeof fetchRole>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchRole>>,
+          TError,
+          Awaited<ReturnType<typeof fetchRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchRole<TData = Awaited<ReturnType<typeof fetchRole>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchRole>>,
+          TError,
+          Awaited<ReturnType<typeof fetchRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchRole<TData = Awaited<ReturnType<typeof fetchRole>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a user role from your account's default service
  */
 
 export function useFetchRole<TData = Awaited<ReturnType<typeof fetchRole>>, TError = unknown>(
- sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchRoleQueryOptions(sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -4718,7 +5209,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateService = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createService>>, TError,{data: CreateServiceBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createService>>,
         TError,
         {data: CreateServiceBody},
@@ -4727,7 +5218,7 @@ export const useCreateService = <TError = unknown,
 
       const mutationOptions = getCreateServiceMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -4789,7 +5280,7 @@ export const getListServiceQueryKey = (params?: ListServiceParams,) => {
     }
 
     
-export const getListServiceQueryOptions = <TData = Awaited<ReturnType<typeof listService>>, TError = unknown>(params?: ListServiceParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData>, fetch?: RequestInit}
+export const getListServiceQueryOptions = <TData = Awaited<ReturnType<typeof listService>>, TError = unknown>(params?: ListServiceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -4804,25 +5295,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceQueryResult = NonNullable<Awaited<ReturnType<typeof listService>>>
 export type ListServiceQueryError = unknown
 
 
+export function useListService<TData = Awaited<ReturnType<typeof listService>>, TError = unknown>(
+ params: undefined |  ListServiceParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listService>>,
+          TError,
+          Awaited<ReturnType<typeof listService>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListService<TData = Awaited<ReturnType<typeof listService>>, TError = unknown>(
+ params?: ListServiceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listService>>,
+          TError,
+          Awaited<ReturnType<typeof listService>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListService<TData = Awaited<ReturnType<typeof listService>>, TError = unknown>(
+ params?: ListServiceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all conversation services on your account
  */
 
 export function useListService<TData = Awaited<ReturnType<typeof listService>>, TError = unknown>(
- params?: ListServiceParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ params?: ListServiceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listService>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceQueryOptions(params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -4911,7 +5426,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteService = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteService>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteService>>,
         TError,
         {sid: string},
@@ -4920,7 +5435,7 @@ export const useDeleteService = <TError = unknown,
 
       const mutationOptions = getDeleteServiceMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -4975,7 +5490,7 @@ export const getFetchServiceQueryKey = (sid?: string,) => {
     }
 
     
-export const getFetchServiceQueryOptions = <TData = Awaited<ReturnType<typeof fetchService>>, TError = unknown>(sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData>, fetch?: RequestInit}
+export const getFetchServiceQueryOptions = <TData = Awaited<ReturnType<typeof fetchService>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -4990,25 +5505,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceQueryResult = NonNullable<Awaited<ReturnType<typeof fetchService>>>
 export type FetchServiceQueryError = unknown
 
 
+export function useFetchService<TData = Awaited<ReturnType<typeof fetchService>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchService>>,
+          TError,
+          Awaited<ReturnType<typeof fetchService>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchService<TData = Awaited<ReturnType<typeof fetchService>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchService>>,
+          TError,
+          Awaited<ReturnType<typeof fetchService>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchService<TData = Awaited<ReturnType<typeof fetchService>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a conversation service from your account
  */
 
 export function useFetchService<TData = Awaited<ReturnType<typeof fetchService>>, TError = unknown>(
- sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchService>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceQueryOptions(sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -5099,7 +5638,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceBinding = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceBinding>>, TError,{chatServiceSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceBinding>>,
         TError,
         {chatServiceSid: string;sid: string},
@@ -5108,7 +5647,7 @@ export const useDeleteServiceBinding = <TError = unknown,
 
       const mutationOptions = getDeleteServiceBindingMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -5167,7 +5706,7 @@ export const getFetchServiceBindingQueryKey = (chatServiceSid?: string,
 
     
 export const getFetchServiceBindingQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceBinding>>, TError = unknown>(chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -5182,26 +5721,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceBindingQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceBinding>>>
 export type FetchServiceBindingQueryError = unknown
 
 
+export function useFetchServiceBinding<TData = Awaited<ReturnType<typeof fetchServiceBinding>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceBinding>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceBinding>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceBinding<TData = Awaited<ReturnType<typeof fetchServiceBinding>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceBinding>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceBinding>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceBinding<TData = Awaited<ReturnType<typeof fetchServiceBinding>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a push notification binding from the conversation service
  */
 
 export function useFetchServiceBinding<TData = Awaited<ReturnType<typeof fetchServiceBinding>>, TError = unknown>(
  chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceBinding>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceBindingQueryOptions(chatServiceSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -5283,7 +5849,7 @@ export const getListServiceBindingQueryKey = (chatServiceSid?: string,
 
     
 export const getListServiceBindingQueryOptions = <TData = Awaited<ReturnType<typeof listServiceBinding>>, TError = unknown>(chatServiceSid: string,
-    params?: ListServiceBindingParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceBindingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -5298,26 +5864,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceBindingQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceBinding>>>
 export type ListServiceBindingQueryError = unknown
 
 
+export function useListServiceBinding<TData = Awaited<ReturnType<typeof listServiceBinding>>, TError = unknown>(
+ chatServiceSid: string,
+    params: undefined |  ListServiceBindingParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceBinding>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceBinding>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceBinding<TData = Awaited<ReturnType<typeof listServiceBinding>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceBindingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceBinding>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceBinding>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceBinding<TData = Awaited<ReturnType<typeof listServiceBinding>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceBindingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all push notification bindings in the conversation service
  */
 
 export function useListServiceBinding<TData = Awaited<ReturnType<typeof listServiceBinding>>, TError = unknown>(
  chatServiceSid: string,
-    params?: ListServiceBindingParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceBindingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceBinding>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceBindingQueryOptions(chatServiceSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -5380,7 +5973,7 @@ export const getFetchServiceConfigurationQueryKey = (chatServiceSid?: string,) =
     }
 
     
-export const getFetchServiceConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError = unknown>(chatServiceSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData>, fetch?: RequestInit}
+export const getFetchServiceConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError = unknown>(chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -5395,25 +5988,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceConfigurationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceConfiguration>>>
 export type FetchServiceConfigurationQueryError = unknown
 
 
+export function useFetchServiceConfiguration<TData = Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError = unknown>(
+ chatServiceSid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConfiguration>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConfiguration>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConfiguration<TData = Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError = unknown>(
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConfiguration>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConfiguration>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConfiguration<TData = Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError = unknown>(
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the configuration of a conversation service
  */
 
 export function useFetchServiceConfiguration<TData = Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError = unknown>(
- chatServiceSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConfiguration>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceConfigurationQueryOptions(chatServiceSid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -5517,7 +6134,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceConfiguration = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceConfiguration>>, TError,{chatServiceSid: string;data: UpdateServiceConfigurationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceConfiguration>>,
         TError,
         {chatServiceSid: string;data: UpdateServiceConfigurationBody},
@@ -5526,7 +6143,7 @@ export const useUpdateServiceConfiguration = <TError = unknown,
 
       const mutationOptions = getUpdateServiceConfigurationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -5548,8 +6165,8 @@ export type createServiceConversationResponse = (createServiceConversationRespon
 export const getCreateServiceConversationUrl = (chatServiceSid: string,) => {
 
 
-
   
+
   return `https://conversations.twilio.com/v1/Services/${chatServiceSid}/Conversations`
 }
 
@@ -5643,7 +6260,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateServiceConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createServiceConversation>>, TError,{chatServiceSid: string;data: CreateServiceConversationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createServiceConversation>>,
         TError,
         {chatServiceSid: string;data: CreateServiceConversationBody},
@@ -5652,7 +6269,7 @@ export const useCreateServiceConversation = <TError = unknown,
 
       const mutationOptions = getCreateServiceConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -5718,7 +6335,7 @@ export const getListServiceConversationQueryKey = (chatServiceSid?: string,
 
     
 export const getListServiceConversationQueryOptions = <TData = Awaited<ReturnType<typeof listServiceConversation>>, TError = unknown>(chatServiceSid: string,
-    params?: ListServiceConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -5733,26 +6350,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceConversationQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceConversation>>>
 export type ListServiceConversationQueryError = unknown
 
 
+export function useListServiceConversation<TData = Awaited<ReturnType<typeof listServiceConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    params: undefined |  ListServiceConversationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversation<TData = Awaited<ReturnType<typeof listServiceConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversation<TData = Awaited<ReturnType<typeof listServiceConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of conversations in your service
  */
 
 export function useListServiceConversation<TData = Awaited<ReturnType<typeof listServiceConversation>>, TError = unknown>(
  chatServiceSid: string,
-    params?: ListServiceConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceConversationQueryOptions(chatServiceSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -5879,7 +6523,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceConversation>>, TError,{chatServiceSid: string;sid: string;data: UpdateServiceConversationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceConversation>>,
         TError,
         {chatServiceSid: string;sid: string;data: UpdateServiceConversationBody},
@@ -5888,7 +6532,7 @@ export const useUpdateServiceConversation = <TError = unknown,
 
       const mutationOptions = getUpdateServiceConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -5971,7 +6615,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceConversation>>, TError,{chatServiceSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceConversation>>,
         TError,
         {chatServiceSid: string;sid: string},
@@ -5980,7 +6624,7 @@ export const useDeleteServiceConversation = <TError = unknown,
 
       const mutationOptions = getDeleteServiceConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -6039,7 +6683,7 @@ export const getFetchServiceConversationQueryKey = (chatServiceSid?: string,
 
     
 export const getFetchServiceConversationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceConversation>>, TError = unknown>(chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -6054,26 +6698,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceConversationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceConversation>>>
 export type FetchServiceConversationQueryError = unknown
 
 
+export function useFetchServiceConversation<TData = Awaited<ReturnType<typeof fetchServiceConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversation<TData = Awaited<ReturnType<typeof fetchServiceConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversation<TData = Awaited<ReturnType<typeof fetchServiceConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a conversation from your service
  */
 
 export function useFetchServiceConversation<TData = Awaited<ReturnType<typeof fetchServiceConversation>>, TError = unknown>(
  chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceConversationQueryOptions(chatServiceSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -6194,7 +6865,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateServiceConversationMessage = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createServiceConversationMessage>>, TError,{chatServiceSid: string;conversationSid: string;data: CreateServiceConversationMessageBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createServiceConversationMessage>>,
         TError,
         {chatServiceSid: string;conversationSid: string;data: CreateServiceConversationMessageBody},
@@ -6203,7 +6874,7 @@ export const useCreateServiceConversationMessage = <TError = unknown,
 
       const mutationOptions = getCreateServiceConversationMessageMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -6273,7 +6944,7 @@ export const getListServiceConversationMessageQueryKey = (chatServiceSid?: strin
     
 export const getListServiceConversationMessageQueryOptions = <TData = Awaited<ReturnType<typeof listServiceConversationMessage>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
-    params?: ListServiceConversationMessageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -6288,13 +6959,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceConversationMessageQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceConversationMessage>>>
 export type ListServiceConversationMessageQueryError = unknown
 
 
+export function useListServiceConversationMessage<TData = Awaited<ReturnType<typeof listServiceConversationMessage>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params: undefined |  ListServiceConversationMessageParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationMessage<TData = Awaited<ReturnType<typeof listServiceConversationMessage>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params?: ListServiceConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationMessage<TData = Awaited<ReturnType<typeof listServiceConversationMessage>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params?: ListServiceConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all messages in the conversation
  */
@@ -6302,13 +7003,13 @@ export type ListServiceConversationMessageQueryError = unknown
 export function useListServiceConversationMessage<TData = Awaited<ReturnType<typeof listServiceConversationMessage>>, TError = unknown>(
  chatServiceSid: string,
     conversationSid: string,
-    params?: ListServiceConversationMessageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceConversationMessageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceConversationMessageQueryOptions(chatServiceSid,conversationSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -6422,7 +7123,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceConversationMessage = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceConversationMessage>>, TError,{chatServiceSid: string;conversationSid: string;sid: string;data: UpdateServiceConversationMessageBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceConversationMessage>>,
         TError,
         {chatServiceSid: string;conversationSid: string;sid: string;data: UpdateServiceConversationMessageBody},
@@ -6431,7 +7132,7 @@ export const useUpdateServiceConversationMessage = <TError = unknown,
 
       const mutationOptions = getUpdateServiceConversationMessageMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -6516,7 +7217,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceConversationMessage = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceConversationMessage>>, TError,{chatServiceSid: string;conversationSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceConversationMessage>>,
         TError,
         {chatServiceSid: string;conversationSid: string;sid: string},
@@ -6525,7 +7226,7 @@ export const useDeleteServiceConversationMessage = <TError = unknown,
 
       const mutationOptions = getDeleteServiceConversationMessageMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -6588,7 +7289,7 @@ export const getFetchServiceConversationMessageQueryKey = (chatServiceSid?: stri
     
 export const getFetchServiceConversationMessageQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -6603,13 +7304,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceConversationMessageQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceConversationMessage>>>
 export type FetchServiceConversationMessageQueryError = unknown
 
 
+export function useFetchServiceConversationMessage<TData = Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationMessage<TData = Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationMessage>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationMessage>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationMessage<TData = Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a message from the conversation
  */
@@ -6617,13 +7348,13 @@ export type FetchServiceConversationMessageQueryError = unknown
 export function useFetchServiceConversationMessage<TData = Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError = unknown>(
  chatServiceSid: string,
     conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceConversationMessageQueryOptions(chatServiceSid,conversationSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -6698,7 +7429,7 @@ export const getFetchServiceConversationMessageReceiptQueryKey = (chatServiceSid
 export const getFetchServiceConversationMessageReceiptQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
     messageSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -6713,13 +7444,46 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && messageSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && messageSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceConversationMessageReceiptQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>>
 export type FetchServiceConversationMessageReceiptQueryError = unknown
 
 
+export function useFetchServiceConversationMessageReceipt<TData = Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    messageSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationMessageReceipt<TData = Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    messageSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationMessageReceipt<TData = Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    messageSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the delivery and read receipts of the conversation message
  */
@@ -6728,13 +7492,13 @@ export function useFetchServiceConversationMessageReceipt<TData = Awaited<Return
  chatServiceSid: string,
     conversationSid: string,
     messageSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceConversationMessageReceiptQueryOptions(chatServiceSid,conversationSid,messageSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -6816,7 +7580,7 @@ export const getListServiceConversationMessageReceiptQueryKey = (chatServiceSid?
 export const getListServiceConversationMessageReceiptQueryOptions = <TData = Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
     messageSid: string,
-    params?: ListServiceConversationMessageReceiptParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -6831,13 +7595,46 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && messageSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && messageSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceConversationMessageReceiptQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>>
 export type ListServiceConversationMessageReceiptQueryError = unknown
 
 
+export function useListServiceConversationMessageReceipt<TData = Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    messageSid: string,
+    params: undefined |  ListServiceConversationMessageReceiptParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationMessageReceipt<TData = Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    messageSid: string,
+    params?: ListServiceConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationMessageReceipt<TData = Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    messageSid: string,
+    params?: ListServiceConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all delivery and read receipts of the conversation message
  */
@@ -6846,13 +7643,13 @@ export function useListServiceConversationMessageReceipt<TData = Awaited<ReturnT
  chatServiceSid: string,
     conversationSid: string,
     messageSid: string,
-    params?: ListServiceConversationMessageReceiptParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceConversationMessageReceiptParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationMessageReceipt>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceConversationMessageReceiptQueryOptions(chatServiceSid,conversationSid,messageSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -6970,7 +7767,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateServiceConversationParticipant = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createServiceConversationParticipant>>, TError,{chatServiceSid: string;conversationSid: string;data: CreateServiceConversationParticipantBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createServiceConversationParticipant>>,
         TError,
         {chatServiceSid: string;conversationSid: string;data: CreateServiceConversationParticipantBody},
@@ -6979,7 +7776,7 @@ export const useCreateServiceConversationParticipant = <TError = unknown,
 
       const mutationOptions = getCreateServiceConversationParticipantMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -7049,7 +7846,7 @@ export const getListServiceConversationParticipantQueryKey = (chatServiceSid?: s
     
 export const getListServiceConversationParticipantQueryOptions = <TData = Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
-    params?: ListServiceConversationParticipantParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -7064,13 +7861,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceConversationParticipantQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceConversationParticipant>>>
 export type ListServiceConversationParticipantQueryError = unknown
 
 
+export function useListServiceConversationParticipant<TData = Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params: undefined |  ListServiceConversationParticipantParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationParticipant<TData = Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params?: ListServiceConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationParticipant<TData = Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params?: ListServiceConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all participants of the conversation
  */
@@ -7078,13 +7905,13 @@ export type ListServiceConversationParticipantQueryError = unknown
 export function useListServiceConversationParticipant<TData = Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError = unknown>(
  chatServiceSid: string,
     conversationSid: string,
-    params?: ListServiceConversationParticipantParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceConversationParticipantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceConversationParticipantQueryOptions(chatServiceSid,conversationSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -7207,7 +8034,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceConversationParticipant = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceConversationParticipant>>, TError,{chatServiceSid: string;conversationSid: string;sid: string;data: UpdateServiceConversationParticipantBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceConversationParticipant>>,
         TError,
         {chatServiceSid: string;conversationSid: string;sid: string;data: UpdateServiceConversationParticipantBody},
@@ -7216,7 +8043,7 @@ export const useUpdateServiceConversationParticipant = <TError = unknown,
 
       const mutationOptions = getUpdateServiceConversationParticipantMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -7301,7 +8128,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceConversationParticipant = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceConversationParticipant>>, TError,{chatServiceSid: string;conversationSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceConversationParticipant>>,
         TError,
         {chatServiceSid: string;conversationSid: string;sid: string},
@@ -7310,7 +8137,7 @@ export const useDeleteServiceConversationParticipant = <TError = unknown,
 
       const mutationOptions = getDeleteServiceConversationParticipantMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -7373,7 +8200,7 @@ export const getFetchServiceConversationParticipantQueryKey = (chatServiceSid?: 
     
 export const getFetchServiceConversationParticipantQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -7388,13 +8215,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceConversationParticipantQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>>
 export type FetchServiceConversationParticipantQueryError = unknown
 
 
+export function useFetchServiceConversationParticipant<TData = Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationParticipant<TData = Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationParticipant>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationParticipant>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationParticipant<TData = Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a participant of the conversation
  */
@@ -7402,13 +8259,13 @@ export type FetchServiceConversationParticipantQueryError = unknown
 export function useFetchServiceConversationParticipant<TData = Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError = unknown>(
  chatServiceSid: string,
     conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationParticipant>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceConversationParticipantQueryOptions(chatServiceSid,conversationSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -7521,7 +8378,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateServiceConversationScopedWebhook = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createServiceConversationScopedWebhook>>, TError,{chatServiceSid: string;conversationSid: string;data: CreateServiceConversationScopedWebhookBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createServiceConversationScopedWebhook>>,
         TError,
         {chatServiceSid: string;conversationSid: string;data: CreateServiceConversationScopedWebhookBody},
@@ -7530,7 +8387,7 @@ export const useCreateServiceConversationScopedWebhook = <TError = unknown,
 
       const mutationOptions = getCreateServiceConversationScopedWebhookMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -7600,7 +8457,7 @@ export const getListServiceConversationScopedWebhookQueryKey = (chatServiceSid?:
     
 export const getListServiceConversationScopedWebhookQueryOptions = <TData = Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
-    params?: ListServiceConversationScopedWebhookParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -7615,13 +8472,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceConversationScopedWebhookQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>>
 export type ListServiceConversationScopedWebhookQueryError = unknown
 
 
+export function useListServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params: undefined |  ListServiceConversationScopedWebhookParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params?: ListServiceConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    params?: ListServiceConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all webhooks scoped to the conversation
  */
@@ -7629,13 +8516,13 @@ export type ListServiceConversationScopedWebhookQueryError = unknown
 export function useListServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError = unknown>(
  chatServiceSid: string,
     conversationSid: string,
-    params?: ListServiceConversationScopedWebhookParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceConversationScopedWebhookParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceConversationScopedWebhookQueryOptions(chatServiceSid,conversationSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -7746,7 +8633,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceConversationScopedWebhook = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceConversationScopedWebhook>>, TError,{chatServiceSid: string;conversationSid: string;sid: string;data: UpdateServiceConversationScopedWebhookBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceConversationScopedWebhook>>,
         TError,
         {chatServiceSid: string;conversationSid: string;sid: string;data: UpdateServiceConversationScopedWebhookBody},
@@ -7755,7 +8642,7 @@ export const useUpdateServiceConversationScopedWebhook = <TError = unknown,
 
       const mutationOptions = getUpdateServiceConversationScopedWebhookMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -7840,7 +8727,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceConversationScopedWebhook = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceConversationScopedWebhook>>, TError,{chatServiceSid: string;conversationSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceConversationScopedWebhook>>,
         TError,
         {chatServiceSid: string;conversationSid: string;sid: string},
@@ -7849,7 +8736,7 @@ export const useDeleteServiceConversationScopedWebhook = <TError = unknown,
 
       const mutationOptions = getDeleteServiceConversationScopedWebhookMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -7912,7 +8799,7 @@ export const getFetchServiceConversationScopedWebhookQueryKey = (chatServiceSid?
     
 export const getFetchServiceConversationScopedWebhookQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError = unknown>(chatServiceSid: string,
     conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -7927,13 +8814,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && conversationSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceConversationScopedWebhookQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>>
 export type FetchServiceConversationScopedWebhookQueryError = unknown
 
 
+export function useFetchServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError = unknown>(
+ chatServiceSid: string,
+    conversationSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the configuration of a conversation-scoped webhook
  */
@@ -7941,13 +8858,13 @@ export type FetchServiceConversationScopedWebhookQueryError = unknown
 export function useFetchServiceConversationScopedWebhook<TData = Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError = unknown>(
  chatServiceSid: string,
     conversationSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceConversationScopedWebhook>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceConversationScopedWebhookQueryOptions(chatServiceSid,conversationSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -8080,7 +8997,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateServiceConversationWithParticipants = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createServiceConversationWithParticipants>>, TError,{chatServiceSid: string;data: CreateServiceConversationWithParticipantsBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createServiceConversationWithParticipants>>,
         TError,
         {chatServiceSid: string;data: CreateServiceConversationWithParticipantsBody},
@@ -8089,7 +9006,7 @@ export const useCreateServiceConversationWithParticipants = <TError = unknown,
 
       const mutationOptions = getCreateServiceConversationWithParticipantsMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -8212,7 +9129,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceNotification = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceNotification>>, TError,{chatServiceSid: string;data: UpdateServiceNotificationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceNotification>>,
         TError,
         {chatServiceSid: string;data: UpdateServiceNotificationBody},
@@ -8221,7 +9138,7 @@ export const useUpdateServiceNotification = <TError = unknown,
 
       const mutationOptions = getUpdateServiceNotificationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -8276,7 +9193,7 @@ export const getFetchServiceNotificationQueryKey = (chatServiceSid?: string,) =>
     }
 
     
-export const getFetchServiceNotificationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceNotification>>, TError = unknown>(chatServiceSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData>, fetch?: RequestInit}
+export const getFetchServiceNotificationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceNotification>>, TError = unknown>(chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -8291,25 +9208,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceNotificationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceNotification>>>
 export type FetchServiceNotificationQueryError = unknown
 
 
+export function useFetchServiceNotification<TData = Awaited<ReturnType<typeof fetchServiceNotification>>, TError = unknown>(
+ chatServiceSid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceNotification>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceNotification>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceNotification<TData = Awaited<ReturnType<typeof fetchServiceNotification>>, TError = unknown>(
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceNotification>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceNotification>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceNotification<TData = Awaited<ReturnType<typeof fetchServiceNotification>>, TError = unknown>(
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch push notification service settings
  */
 
 export function useFetchServiceNotification<TData = Awaited<ReturnType<typeof fetchServiceNotification>>, TError = unknown>(
- chatServiceSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceNotification>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceNotificationQueryOptions(chatServiceSid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -8383,7 +9324,7 @@ export const getListServiceParticipantConversationQueryKey = (chatServiceSid?: s
 
     
 export const getListServiceParticipantConversationQueryOptions = <TData = Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError = unknown>(chatServiceSid: string,
-    params?: ListServiceParticipantConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -8398,26 +9339,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceParticipantConversationQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceParticipantConversation>>>
 export type ListServiceParticipantConversationQueryError = unknown
 
 
+export function useListServiceParticipantConversation<TData = Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    params: undefined |  ListServiceParticipantConversationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceParticipantConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceParticipantConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceParticipantConversation<TData = Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceParticipantConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceParticipantConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceParticipantConversation<TData = Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all Conversations that this Participant belongs to by identity or by address. Only one parameter should be specified.
  */
 
 export function useListServiceParticipantConversation<TData = Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError = unknown>(
  chatServiceSid: string,
-    params?: ListServiceParticipantConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceParticipantConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceParticipantConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceParticipantConversationQueryOptions(chatServiceSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -8512,7 +9480,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateServiceRole = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createServiceRole>>, TError,{chatServiceSid: string;data: CreateServiceRoleBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createServiceRole>>,
         TError,
         {chatServiceSid: string;data: CreateServiceRoleBody},
@@ -8521,7 +9489,7 @@ export const useCreateServiceRole = <TError = unknown,
 
       const mutationOptions = getCreateServiceRoleMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -8587,7 +9555,7 @@ export const getListServiceRoleQueryKey = (chatServiceSid?: string,
 
     
 export const getListServiceRoleQueryOptions = <TData = Awaited<ReturnType<typeof listServiceRole>>, TError = unknown>(chatServiceSid: string,
-    params?: ListServiceRoleParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -8602,26 +9570,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceRoleQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceRole>>>
 export type ListServiceRoleQueryError = unknown
 
 
+export function useListServiceRole<TData = Awaited<ReturnType<typeof listServiceRole>>, TError = unknown>(
+ chatServiceSid: string,
+    params: undefined |  ListServiceRoleParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceRole>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceRole<TData = Awaited<ReturnType<typeof listServiceRole>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceRole>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceRole<TData = Awaited<ReturnType<typeof listServiceRole>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all user roles in your service
  */
 
 export function useListServiceRole<TData = Awaited<ReturnType<typeof listServiceRole>>, TError = unknown>(
  chatServiceSid: string,
-    params?: ListServiceRoleParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceRoleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceRoleQueryOptions(chatServiceSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -8716,7 +9711,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceRole = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceRole>>, TError,{chatServiceSid: string;sid: string;data: UpdateServiceRoleBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceRole>>,
         TError,
         {chatServiceSid: string;sid: string;data: UpdateServiceRoleBody},
@@ -8725,7 +9720,7 @@ export const useUpdateServiceRole = <TError = unknown,
 
       const mutationOptions = getUpdateServiceRoleMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -8808,7 +9803,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceRole = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceRole>>, TError,{chatServiceSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceRole>>,
         TError,
         {chatServiceSid: string;sid: string},
@@ -8817,7 +9812,7 @@ export const useDeleteServiceRole = <TError = unknown,
 
       const mutationOptions = getDeleteServiceRoleMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -8876,7 +9871,7 @@ export const getFetchServiceRoleQueryKey = (chatServiceSid?: string,
 
     
 export const getFetchServiceRoleQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceRole>>, TError = unknown>(chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -8891,26 +9886,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceRoleQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceRole>>>
 export type FetchServiceRoleQueryError = unknown
 
 
+export function useFetchServiceRole<TData = Awaited<ReturnType<typeof fetchServiceRole>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceRole>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceRole<TData = Awaited<ReturnType<typeof fetchServiceRole>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceRole>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceRole>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceRole<TData = Awaited<ReturnType<typeof fetchServiceRole>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a user role from your service
  */
 
 export function useFetchServiceRole<TData = Awaited<ReturnType<typeof fetchServiceRole>>, TError = unknown>(
  chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceRole>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceRoleQueryOptions(chatServiceSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -9012,7 +10034,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateServiceUser = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createServiceUser>>, TError,{chatServiceSid: string;data: CreateServiceUserBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createServiceUser>>,
         TError,
         {chatServiceSid: string;data: CreateServiceUserBody},
@@ -9021,7 +10043,7 @@ export const useCreateServiceUser = <TError = unknown,
 
       const mutationOptions = getCreateServiceUserMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -9087,7 +10109,7 @@ export const getListServiceUserQueryKey = (chatServiceSid?: string,
 
     
 export const getListServiceUserQueryOptions = <TData = Awaited<ReturnType<typeof listServiceUser>>, TError = unknown>(chatServiceSid: string,
-    params?: ListServiceUserParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -9102,26 +10124,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceUserQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceUser>>>
 export type ListServiceUserQueryError = unknown
 
 
+export function useListServiceUser<TData = Awaited<ReturnType<typeof listServiceUser>>, TError = unknown>(
+ chatServiceSid: string,
+    params: undefined |  ListServiceUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceUser>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceUser<TData = Awaited<ReturnType<typeof listServiceUser>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceUser>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceUser<TData = Awaited<ReturnType<typeof listServiceUser>>, TError = unknown>(
+ chatServiceSid: string,
+    params?: ListServiceUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all conversation users in your service
  */
 
 export function useListServiceUser<TData = Awaited<ReturnType<typeof listServiceUser>>, TError = unknown>(
  chatServiceSid: string,
-    params?: ListServiceUserParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceUserQueryOptions(chatServiceSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -9224,7 +10273,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceUser = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceUser>>, TError,{chatServiceSid: string;sid: string;data: UpdateServiceUserBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceUser>>,
         TError,
         {chatServiceSid: string;sid: string;data: UpdateServiceUserBody},
@@ -9233,7 +10282,7 @@ export const useUpdateServiceUser = <TError = unknown,
 
       const mutationOptions = getUpdateServiceUserMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -9316,7 +10365,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceUser = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceUser>>, TError,{chatServiceSid: string;sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceUser>>,
         TError,
         {chatServiceSid: string;sid: string},
@@ -9325,7 +10374,7 @@ export const useDeleteServiceUser = <TError = unknown,
 
       const mutationOptions = getDeleteServiceUserMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -9384,7 +10433,7 @@ export const getFetchServiceUserQueryKey = (chatServiceSid?: string,
 
     
 export const getFetchServiceUserQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceUser>>, TError = unknown>(chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData>, fetch?: RequestInit}
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -9399,26 +10448,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceUserQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceUser>>>
 export type FetchServiceUserQueryError = unknown
 
 
+export function useFetchServiceUser<TData = Awaited<ReturnType<typeof fetchServiceUser>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceUser>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceUser<TData = Awaited<ReturnType<typeof fetchServiceUser>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceUser>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceUser<TData = Awaited<ReturnType<typeof fetchServiceUser>>, TError = unknown>(
+ chatServiceSid: string,
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a conversation user from your service
  */
 
 export function useFetchServiceUser<TData = Awaited<ReturnType<typeof fetchServiceUser>>, TError = unknown>(
  chatServiceSid: string,
-    sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceUserQueryOptions(chatServiceSid,sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -9523,7 +10599,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceUserConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceUserConversation>>, TError,{chatServiceSid: string;userSid: string;conversationSid: string;data: UpdateServiceUserConversationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceUserConversation>>,
         TError,
         {chatServiceSid: string;userSid: string;conversationSid: string;data: UpdateServiceUserConversationBody},
@@ -9532,7 +10608,7 @@ export const useUpdateServiceUserConversation = <TError = unknown,
 
       const mutationOptions = getUpdateServiceUserConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -9617,7 +10693,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteServiceUserConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteServiceUserConversation>>, TError,{chatServiceSid: string;userSid: string;conversationSid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteServiceUserConversation>>,
         TError,
         {chatServiceSid: string;userSid: string;conversationSid: string},
@@ -9626,7 +10702,7 @@ export const useDeleteServiceUserConversation = <TError = unknown,
 
       const mutationOptions = getDeleteServiceUserConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -9689,7 +10765,7 @@ export const getFetchServiceUserConversationQueryKey = (chatServiceSid?: string,
     
 export const getFetchServiceUserConversationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError = unknown>(chatServiceSid: string,
     userSid: string,
-    conversationSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData>, fetch?: RequestInit}
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -9704,13 +10780,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && userSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && userSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceUserConversationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceUserConversation>>>
 export type FetchServiceUserConversationQueryError = unknown
 
 
+export function useFetchServiceUserConversation<TData = Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    userSid: string,
+    conversationSid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceUserConversation<TData = Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    userSid: string,
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceUserConversation<TData = Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    userSid: string,
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a specific User Conversation.
  */
@@ -9718,13 +10824,13 @@ export type FetchServiceUserConversationQueryError = unknown
 export function useFetchServiceUserConversation<TData = Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError = unknown>(
  chatServiceSid: string,
     userSid: string,
-    conversationSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceUserConversationQueryOptions(chatServiceSid,userSid,conversationSid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -9802,7 +10908,7 @@ export const getListServiceUserConversationQueryKey = (chatServiceSid?: string,
     
 export const getListServiceUserConversationQueryOptions = <TData = Awaited<ReturnType<typeof listServiceUserConversation>>, TError = unknown>(chatServiceSid: string,
     userSid: string,
-    params?: ListServiceUserConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData>, fetch?: RequestInit}
+    params?: ListServiceUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -9817,13 +10923,43 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid && userSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid && userSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListServiceUserConversationQueryResult = NonNullable<Awaited<ReturnType<typeof listServiceUserConversation>>>
 export type ListServiceUserConversationQueryError = unknown
 
 
+export function useListServiceUserConversation<TData = Awaited<ReturnType<typeof listServiceUserConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    userSid: string,
+    params: undefined |  ListServiceUserConversationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceUserConversation<TData = Awaited<ReturnType<typeof listServiceUserConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    userSid: string,
+    params?: ListServiceUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listServiceUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listServiceUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListServiceUserConversation<TData = Awaited<ReturnType<typeof listServiceUserConversation>>, TError = unknown>(
+ chatServiceSid: string,
+    userSid: string,
+    params?: ListServiceUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all User Conversations for the User.
  */
@@ -9831,13 +10967,13 @@ export type ListServiceUserConversationQueryError = unknown
 export function useListServiceUserConversation<TData = Awaited<ReturnType<typeof listServiceUserConversation>>, TError = unknown>(
  chatServiceSid: string,
     userSid: string,
-    params?: ListServiceUserConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListServiceUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listServiceUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListServiceUserConversationQueryOptions(chatServiceSid,userSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -9941,7 +11077,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateServiceWebhookConfiguration = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateServiceWebhookConfiguration>>, TError,{chatServiceSid: string;data: UpdateServiceWebhookConfigurationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateServiceWebhookConfiguration>>,
         TError,
         {chatServiceSid: string;data: UpdateServiceWebhookConfigurationBody},
@@ -9950,7 +11086,7 @@ export const useUpdateServiceWebhookConfiguration = <TError = unknown,
 
       const mutationOptions = getUpdateServiceWebhookConfigurationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -10005,7 +11141,7 @@ export const getFetchServiceWebhookConfigurationQueryKey = (chatServiceSid?: str
     }
 
     
-export const getFetchServiceWebhookConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError = unknown>(chatServiceSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData>, fetch?: RequestInit}
+export const getFetchServiceWebhookConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError = unknown>(chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -10020,25 +11156,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(chatServiceSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchServiceWebhookConfigurationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>>
 export type FetchServiceWebhookConfigurationQueryError = unknown
 
 
+export function useFetchServiceWebhookConfiguration<TData = Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError = unknown>(
+ chatServiceSid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceWebhookConfiguration<TData = Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError = unknown>(
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>,
+          TError,
+          Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchServiceWebhookConfiguration<TData = Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError = unknown>(
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a specific service webhook configuration.
  */
 
 export function useFetchServiceWebhookConfiguration<TData = Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError = unknown>(
- chatServiceSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ chatServiceSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchServiceWebhookConfiguration>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchServiceWebhookConfigurationQueryOptions(chatServiceSid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -10139,7 +11299,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useCreateUser = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createUser>>, TError,{data: CreateUserBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createUser>>,
         TError,
         {data: CreateUserBody},
@@ -10148,7 +11308,7 @@ export const useCreateUser = <TError = unknown,
 
       const mutationOptions = getCreateUserMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -10210,7 +11370,7 @@ export const getListUserQueryKey = (params?: ListUserParams,) => {
     }
 
     
-export const getListUserQueryOptions = <TData = Awaited<ReturnType<typeof listUser>>, TError = unknown>(params?: ListUserParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData>, fetch?: RequestInit}
+export const getListUserQueryOptions = <TData = Awaited<ReturnType<typeof listUser>>, TError = unknown>(params?: ListUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -10225,25 +11385,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListUserQueryResult = NonNullable<Awaited<ReturnType<typeof listUser>>>
 export type ListUserQueryError = unknown
 
 
+export function useListUser<TData = Awaited<ReturnType<typeof listUser>>, TError = unknown>(
+ params: undefined |  ListUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUser>>,
+          TError,
+          Awaited<ReturnType<typeof listUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUser<TData = Awaited<ReturnType<typeof listUser>>, TError = unknown>(
+ params?: ListUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUser>>,
+          TError,
+          Awaited<ReturnType<typeof listUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUser<TData = Awaited<ReturnType<typeof listUser>>, TError = unknown>(
+ params?: ListUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all conversation users in your account's default service
  */
 
 export function useListUser<TData = Awaited<ReturnType<typeof listUser>>, TError = unknown>(
- params?: ListUserParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ params?: ListUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListUserQueryOptions(params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -10344,7 +11528,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateUser = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateUser>>, TError,{sid: string;data: UpdateUserBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateUser>>,
         TError,
         {sid: string;data: UpdateUserBody},
@@ -10353,7 +11537,7 @@ export const useUpdateUser = <TError = unknown,
 
       const mutationOptions = getUpdateUserMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -10434,7 +11618,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteUser = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUser>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteUser>>,
         TError,
         {sid: string},
@@ -10443,7 +11627,7 @@ export const useDeleteUser = <TError = unknown,
 
       const mutationOptions = getDeleteUserMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -10498,7 +11682,7 @@ export const getFetchUserQueryKey = (sid?: string,) => {
     }
 
     
-export const getFetchUserQueryOptions = <TData = Awaited<ReturnType<typeof fetchUser>>, TError = unknown>(sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData>, fetch?: RequestInit}
+export const getFetchUserQueryOptions = <TData = Awaited<ReturnType<typeof fetchUser>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -10513,25 +11697,49 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchUserQueryResult = NonNullable<Awaited<ReturnType<typeof fetchUser>>>
 export type FetchUserQueryError = unknown
 
 
+export function useFetchUser<TData = Awaited<ReturnType<typeof fetchUser>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchUser>>,
+          TError,
+          Awaited<ReturnType<typeof fetchUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchUser<TData = Awaited<ReturnType<typeof fetchUser>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchUser>>,
+          TError,
+          Awaited<ReturnType<typeof fetchUser>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchUser<TData = Awaited<ReturnType<typeof fetchUser>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a conversation user from your account's default service
  */
 
 export function useFetchUser<TData = Awaited<ReturnType<typeof fetchUser>>, TError = unknown>(
- sid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchUserQueryOptions(sid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -10634,7 +11842,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useUpdateUserConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateUserConversation>>, TError,{userSid: string;conversationSid: string;data: UpdateUserConversationBody}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateUserConversation>>,
         TError,
         {userSid: string;conversationSid: string;data: UpdateUserConversationBody},
@@ -10643,7 +11851,7 @@ export const useUpdateUserConversation = <TError = unknown,
 
       const mutationOptions = getUpdateUserConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -10726,7 +11934,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  */
 export const useDeleteUserConversation = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserConversation>>, TError,{userSid: string;conversationSid: string}, TContext>, fetch?: RequestInit}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteUserConversation>>,
         TError,
         {userSid: string;conversationSid: string},
@@ -10735,7 +11943,7 @@ export const useDeleteUserConversation = <TError = unknown,
 
       const mutationOptions = getDeleteUserConversationMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
     
 /**
@@ -10794,7 +12002,7 @@ export const getFetchUserConversationQueryKey = (userSid?: string,
 
     
 export const getFetchUserConversationQueryOptions = <TData = Awaited<ReturnType<typeof fetchUserConversation>>, TError = unknown>(userSid: string,
-    conversationSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData>, fetch?: RequestInit}
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -10809,26 +12017,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(userSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(userSid && conversationSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type FetchUserConversationQueryResult = NonNullable<Awaited<ReturnType<typeof fetchUserConversation>>>
 export type FetchUserConversationQueryError = unknown
 
 
+export function useFetchUserConversation<TData = Awaited<ReturnType<typeof fetchUserConversation>>, TError = unknown>(
+ userSid: string,
+    conversationSid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchUserConversation<TData = Awaited<ReturnType<typeof fetchUserConversation>>, TError = unknown>(
+ userSid: string,
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof fetchUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchUserConversation<TData = Awaited<ReturnType<typeof fetchUserConversation>>, TError = unknown>(
+ userSid: string,
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch a specific User Conversation.
  */
 
 export function useFetchUserConversation<TData = Awaited<ReturnType<typeof fetchUserConversation>>, TError = unknown>(
  userSid: string,
-    conversationSid: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    conversationSid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getFetchUserConversationQueryOptions(userSid,conversationSid,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -10902,7 +12137,7 @@ export const getListUserConversationQueryKey = (userSid?: string,
 
     
 export const getListUserConversationQueryOptions = <TData = Awaited<ReturnType<typeof listUserConversation>>, TError = unknown>(userSid: string,
-    params?: ListUserConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData>, fetch?: RequestInit}
+    params?: ListUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
@@ -10917,26 +12152,53 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(userSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(userSid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListUserConversationQueryResult = NonNullable<Awaited<ReturnType<typeof listUserConversation>>>
 export type ListUserConversationQueryError = unknown
 
 
+export function useListUserConversation<TData = Awaited<ReturnType<typeof listUserConversation>>, TError = unknown>(
+ userSid: string,
+    params: undefined |  ListUserConversationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUserConversation<TData = Awaited<ReturnType<typeof listUserConversation>>, TError = unknown>(
+ userSid: string,
+    params?: ListUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUserConversation>>,
+          TError,
+          Awaited<ReturnType<typeof listUserConversation>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUserConversation<TData = Awaited<ReturnType<typeof listUserConversation>>, TError = unknown>(
+ userSid: string,
+    params?: ListUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieve a list of all User Conversations for the User.
  */
 
 export function useListUserConversation<TData = Awaited<ReturnType<typeof listUserConversation>>, TError = unknown>(
  userSid: string,
-    params?: ListUserConversationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData>, fetch?: RequestInit}
-  
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    params?: ListUserConversationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserConversation>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListUserConversationQueryOptions(userSid,params,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
