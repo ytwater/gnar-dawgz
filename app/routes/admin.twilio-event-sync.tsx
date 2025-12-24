@@ -3,22 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { authClient } from "~/lib/auth-client";
-import type { EventsV1Subscription } from "~/lib/twilio/models";
-
-type Subscription = {
-	sid: string | null;
-	description: string | null;
-	sink_sid: string | null;
-	date_created: string | null;
-	date_updated: string | null;
-};
-
-type SubscribedEvent = {
-	type: string;
-	schema_version: number | null;
-	date_created: string | null;
-	date_updated: string | null;
-};
+import { orpcClient } from "~/lib/orpc/client";
+import type {
+	EventsV1Subscription,
+	EventsV1SubscriptionSubscribedEvent,
+} from "~/lib/twilio/models";
 
 export default function AdminTwilioEventSync() {
 	const { data: session, isPending: sessionLoading } = authClient.useSession();
@@ -50,20 +39,14 @@ export default function AdminTwilioEventSync() {
 	} = useQuery({
 		queryKey: ["twilio-event-sync"],
 		queryFn: async () => {
-			const response = await fetch("/api/twilio/event-sync");
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.error || "Failed to fetch event sync");
-			}
-
-			return data;
+			return await orpcClient.twilio.getEventSync();
 		},
 		enabled: !!session?.user,
 	});
 
 	const subscription = data?.subscription || null;
-	const subscribedEvents: EventsV1Subscription[] = data?.subscribedEvents || [];
+	const subscribedEvents: EventsV1SubscriptionSubscribedEvent[] =
+		data?.subscribedEvents || [];
 	const error = queryError
 		? queryError instanceof Error
 			? queryError.message
@@ -78,24 +61,9 @@ export default function AdminTwilioEventSync() {
 
 	const updateDescriptionMutation = useMutation({
 		mutationFn: async (description: string) => {
-			const response = await fetch("/api/twilio/event-sync", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					action: "updateSubscription",
-					description,
-				}),
+			return await orpcClient.twilio.updateEventSyncSubscription({
+				description,
 			});
-
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.error || "Failed to update subscription");
-			}
-
-			return data;
 		},
 		onSuccess: () => {
 			setSuccess("Subscription updated successfully");
@@ -120,25 +88,10 @@ export default function AdminTwilioEventSync() {
 			eventType: string;
 			schemaVersion?: number;
 		}) => {
-			const response = await fetch("/api/twilio/event-sync", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					action: "addEvent",
-					eventType,
-					schemaVersion,
-				}),
+			return await orpcClient.twilio.addEventSyncType({
+				eventType,
+				schemaVersion,
 			});
-
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.error || "Failed to add event");
-			}
-
-			return data;
 		},
 		onSuccess: () => {
 			setSuccess("Event subscribed successfully");
@@ -160,21 +113,7 @@ export default function AdminTwilioEventSync() {
 
 	const removeEventMutation = useMutation({
 		mutationFn: async (eventType: string) => {
-			const response = await fetch("/api/twilio/event-sync", {
-				method: "DELETE",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ eventType }),
-			});
-
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.error || "Failed to remove event");
-			}
-
-			return data;
+			return await orpcClient.twilio.deleteEventSyncType({ eventType });
 		},
 		onSuccess: () => {
 			setSuccess("Event unsubscribed successfully");
@@ -194,7 +133,7 @@ export default function AdminTwilioEventSync() {
 		removeEventMutation.mutate(eventType);
 	};
 
-	const formatDate = (dateString: string | null) => {
+	const formatDate = (dateString: string | null | undefined) => {
 		if (!dateString) return "N/A";
 		try {
 			const date = new Date(dateString);
@@ -425,24 +364,25 @@ export default function AdminTwilioEventSync() {
 					<div className="divide-y divide-white/10">
 						{subscribedEvents.map((event) => (
 							<div
-								key={event.sid}
+								key={event.type || ""}
 								className="p-6 hover:bg-white/5 transition-colors"
 							>
 								<div className="flex items-center justify-between">
 									<div className="flex-1">
 										<div className="font-medium text-white mb-1">
-											{event.sid} {event.description}
+											{event.type || "Unknown"}
 										</div>
 										<div className="text-sm text-gray-400 space-y-1">
-											<div className="text-xs text-gray-500">
-												Created: {formatDate(event.date_created || null)} |
-												Updated: {formatDate(event.date_updated || null)}
-											</div>
+											{event.schema_version && (
+												<div className="text-xs text-gray-500">
+													Schema Version: {event.schema_version}
+												</div>
+											)}
 										</div>
 									</div>
 									<button
 										type="button"
-										onClick={() => handleRemoveEvent(event.sid || "")}
+										onClick={() => handleRemoveEvent(event.type || "")}
 										className="ml-4 px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors flex items-center gap-2"
 										title="Unsubscribe from event"
 									>
