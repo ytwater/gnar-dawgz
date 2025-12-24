@@ -1,421 +1,470 @@
-import {
-	Circle,
-	DotsThreeVertical,
-	PaperPlaneTilt,
-	UserCircle,
-	WhatsappLogo,
-} from "@phosphor-icons/react";
+import { Circle, PaperPlaneTilt, WhatsappLogo } from "@phosphor-icons/react";
 import {
 	Client,
 	type Conversation as TwilioConversation,
 	type Message as TwilioMessage,
 } from "@twilio/conversations";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
 import { Button } from "~/components/button/Button";
 import { MemoizedMarkdown } from "~/components/memoized-markdown";
 import { Textarea } from "~/components/textarea/Textarea";
+import { MAIN_CONVERSATION_UNIQUE_NAME } from "~/config/constants";
 import { authClient } from "~/lib/auth-client";
 
 export const handle = {
 	hydrate: false,
 };
 
-type Conversation = {
-	sid: string;
-	friendlyName: string | null;
-	uniqueName: string | null;
-	dateCreated: Date;
-	dateUpdated: Date;
-	state: string;
-	attributes: string;
-};
-
-type Message = {
-	sid: string;
-	index: number | null;
-	author: string | null;
-	body: string | null;
-	dateCreated: Date;
-	dateUpdated: Date;
-	attributes: string;
-};
-
-type ConversationResponse = {
-	sid: string;
-	friendlyName: string | null;
-	uniqueName: string | null;
-	dateCreated: string;
-	dateUpdated: string;
-	state: string;
-	attributes: string;
-};
-
-type MessageResponse = {
-	sid: string;
-	index: number | null;
-	author: string | null;
-	body: string | null;
-	dateCreated: string;
-	dateUpdated: string;
-	attributes: string;
-};
-
 export default function WhatsAppChat() {
 	const { data: session, isPending: sessionLoading } = authClient.useSession();
-	const navigate = useNavigate();
-	const [activeConversation, setActiveConversation] =
-		useState<Conversation | null>(null);
-	const [messages, setMessages] = useState<Message[]>([]);
+	const [messages, setMessages] = useState<TwilioMessage[]>([]);
 	const [status, setStatus] = useState<string>("Initializing...");
 	const [input, setInput] = useState("");
 	const [isSending, setIsSending] = useState(false);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const activeConversationRef = useRef<Conversation | null>(null);
-	const pollIntervalRef = useRef<number | null>(null);
 	const clientRef = useRef<Client | null>(null);
-	const twilioConversationRef = useRef<TwilioConversation | null>(null);
-	const MAIN_CONVERSATION_UNIQUE_NAME = "main";
+	const conversationRef = useRef<TwilioConversation | null>(null);
 
+	// Auto-scroll to bottom when messages change
 	useEffect(() => {
-		activeConversationRef.current = activeConversation;
-	}, [activeConversation]);
-
-	const scrollToBottom = useCallback(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, []);
+	});
 
-	// Auth check
+	// Initialize Twilio client and connect to conversation
 	useEffect(() => {
-		if (!sessionLoading && !session) {
-			navigate("/login");
-		}
-	}, [session, sessionLoading, navigate]);
-
-	// Initialize Twilio client and load/create conversation
-	useEffect(() => {
-		if (!session) return;
-
 		let isMounted = true;
 
-		const initializeTwilio = async () => {
-			try {
-				setStatus("Initializing...");
-
-				// Get token from backend
-				const tokenRes = await fetch("/api/twilio/token");
-				if (!tokenRes.ok) {
-					throw new Error("Failed to get Twilio token");
+		fetch("/api/twilio/token")
+			.then(async (res) => {
+				const data = await res.json().catch(() => ({}));
+				if (!res.ok) {
+					const msg = (() => {
+						if (typeof data === "object" && data !== null && "error" in data) {
+							const maybeError = (data as { error?: unknown }).error;
+							if (typeof maybeError === "string") return maybeError;
+						}
+						return `HTTP ${res.status}`;
+					})();
+					throw new Error(msg);
 				}
-				const { token } = await tokenRes.json();
-
-				// Initialize Twilio client
-				const client = await Client.create(token);
-				if (!isMounted) {
-					client.shutdown();
-					return;
+				return data as { token?: unknown };
+			})
+			.then(({ token }) => {
+				if (typeof token !== "string" || token.trim().length === 0) {
+					throw new Error("Twilio token endpoint returned no token");
 				}
+				const normalizedToken = token.trim();
+				if (normalizedToken.split(".").length < 3) {
+					throw new Error("Twilio token looks malformed (expected JWT)");
+				}
+
+				const client = new Client(normalizedToken);
 				clientRef.current = client;
 
-				setStatus("Loading conversation...");
-
-				// Ensure conversation exists via REST API
-				let mainConv: Conversation | null = null;
-				const res = await fetch(
-					`/api/twilio/conversations?uniqueName=${MAIN_CONVERSATION_UNIQUE_NAME}`,
-				);
-
-				if (res.ok) {
-					const data = await res.json();
-					mainConv = {
-						...data,
-						dateCreated: new Date(data.dateCreated),
-						dateUpdated: new Date(data.dateUpdated),
-					};
-				} else if (res.status === 404) {
-					setStatus("Creating conversation...");
-					const createRes = await fetch("/api/twilio/conversations", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							friendlyName: "Main Chat",
-							uniqueName: MAIN_CONVERSATION_UNIQUE_NAME,
-						}),
-					});
-
-					if (!createRes.ok) {
-						const errorText = await createRes.text();
-						throw new Error(`Failed to create conversation: ${errorText}`);
-					}
-
-					const createData = await createRes.json();
-					mainConv = {
-						...createData.conversation,
-						dateCreated: new Date(createData.conversation.dateCreated),
-						dateUpdated: new Date(createData.conversation.dateUpdated),
-					};
-				} else {
-					throw new Error(`Failed to fetch conversation: ${res.status}`);
-				}
-
-				if (!mainConv?.sid) {
-					throw new Error("Conversation does not have a valid sid");
-				}
-
-				// Connect to conversation via SDK
-				const twilioConv = await client.getConversationBySid(mainConv.sid);
-				if (!isMounted) {
-					return;
-				}
-				twilioConversationRef.current = twilioConv;
-
-				// Set up real-time message listeners
-				twilioConv.on("messageAdded", (message: TwilioMessage) => {
+				client.on("initialized", async () => {
 					if (!isMounted) return;
+					setStatus("Connecting to conversation...");
+					console.log("Twilio Conversations client initialized");
 
-					const newMsg: Message = {
-						sid: message.sid,
-						index: message.index,
-						author: message.author || null,
-						body: message.body || null,
-						dateCreated: message.dateCreated || new Date(),
-						dateUpdated: message.dateUpdated || new Date(),
-						attributes: JSON.stringify(message.attributes || {}),
-					};
+					try {
+						// First, check subscribed conversations
+						let conversation: TwilioConversation | null = null;
 
-					setMessages((prev) => {
-						// Avoid duplicates
-						if (prev.some((m) => m.sid === newMsg.sid)) {
-							return prev;
+						try {
+							const subscribedConversations =
+								await client.getSubscribedConversations();
+							const items = subscribedConversations.items || [];
+							conversation =
+								items.find(
+									(conv) => conv.uniqueName === MAIN_CONVERSATION_UNIQUE_NAME,
+								) || null;
+
+							if (conversation) {
+								console.log("Found conversation in subscribed list");
+							}
+						} catch (error) {
+							console.log("Error getting subscribed conversations:", error);
 						}
-						const updated = [...prev, newMsg];
-						updated.sort(
-							(a, b) => a.dateCreated.getTime() - b.dateCreated.getTime(),
+
+						// If not in subscribed list, try to get by unique name
+						if (!conversation) {
+							try {
+								conversation = await client.getConversationByUniqueName(
+									MAIN_CONVERSATION_UNIQUE_NAME,
+								);
+								console.log("Found existing conversation by unique name");
+							} catch (getError) {
+								const errorMessage =
+									getError instanceof Error
+										? getError.message
+										: String(getError);
+								console.log("Get conversation error:", errorMessage);
+
+								// If Forbidden, the conversation might exist but we don't have access
+								// Try to create it (which will fail if it exists, but might work if permissions allow)
+								if (
+									errorMessage.includes("Forbidden") ||
+									errorMessage.includes("403")
+								) {
+									console.log(
+										"Forbidden error, attempting to create conversation",
+									);
+									try {
+										conversation = await client.createConversation({
+											uniqueName: MAIN_CONVERSATION_UNIQUE_NAME,
+											friendlyName: "Main Conversation",
+										});
+										console.log("Created new conversation");
+									} catch (createError) {
+										const createErrorMessage =
+											createError instanceof Error
+												? createError.message
+												: String(createError);
+
+										// If creation also fails with Forbidden, we don't have permission
+										if (
+											createErrorMessage.includes("Forbidden") ||
+											createErrorMessage.includes("403")
+										) {
+											throw new Error(
+												"Permission denied: Cannot access or create conversation. Check token permissions.",
+											);
+										}
+
+										// If conflict, try to get it again
+										if (
+											createErrorMessage.includes("Conflict") ||
+											createErrorMessage.includes("50300")
+										) {
+											console.log("Creation conflict, retrying get");
+											conversation = await client.getConversationByUniqueName(
+												MAIN_CONVERSATION_UNIQUE_NAME,
+											);
+										} else {
+											throw createError;
+										}
+									}
+								} else {
+									// For other errors (like not found), try to create
+									console.log("Conversation not found, creating new one");
+									try {
+										conversation = await client.createConversation({
+											uniqueName: MAIN_CONVERSATION_UNIQUE_NAME,
+											friendlyName: "Main Conversation",
+										});
+										console.log("Created new conversation");
+									} catch (createError) {
+										const createErrorMessage =
+											createError instanceof Error
+												? createError.message
+												: String(createError);
+
+										if (
+											createErrorMessage.includes("Conflict") ||
+											createErrorMessage.includes("50300")
+										) {
+											console.log("Creation conflict, retrying get");
+											conversation = await client.getConversationByUniqueName(
+												MAIN_CONVERSATION_UNIQUE_NAME,
+											);
+										} else {
+											throw createError;
+										}
+									}
+								}
+							}
+						}
+
+						if (!conversation) {
+							throw new Error("Failed to get or create conversation");
+						}
+
+						conversationRef.current = conversation;
+
+						// Check if we're already a participant before joining
+						let isParticipant = false;
+						try {
+							const participants = await conversation.getParticipants();
+							const userIdentity = client.user?.identity;
+							isParticipant = participants.some(
+								(p) => p.identity === userIdentity,
+							);
+						} catch (error) {
+							const errorMessage =
+								error instanceof Error ? error.message : String(error);
+							console.log("Error checking participants:", errorMessage);
+							// If Forbidden, we might not have permission to check participants
+							// but we can still try to join
+							if (
+								errorMessage.includes("Forbidden") ||
+								errorMessage.includes("403")
+							) {
+								console.log(
+									"Cannot check participants (Forbidden), will attempt join",
+								);
+							}
+						}
+
+						// Join the conversation only if not already a participant
+						if (!isParticipant) {
+							try {
+								await conversation.join();
+								console.log("Joined conversation");
+							} catch (error) {
+								const errorMessage =
+									error instanceof Error ? error.message : String(error);
+								console.log("Join attempt result:", errorMessage);
+
+								// If Forbidden, we don't have permission to join
+								if (
+									errorMessage.includes("Forbidden") ||
+									errorMessage.includes("403")
+								) {
+									throw new Error(
+										"Permission denied: Cannot join conversation. Check token permissions and conversation access.",
+									);
+								}
+
+								// If it's an "already joined" or conflict error, continue
+								if (
+									errorMessage.includes("already") ||
+									errorMessage.includes("Conflict")
+								) {
+									console.log("Join skipped (already joined or conflict)");
+								} else {
+									// For other errors, throw to surface the issue
+									throw error;
+								}
+							}
+						} else {
+							console.log("Already a participant, skipping join");
+						}
+
+						// Load initial messages
+						try {
+							const messagesPaginator = await conversation.getMessages();
+							const initialMessages = messagesPaginator.items || [];
+							if (isMounted) {
+								setMessages(initialMessages);
+							}
+						} catch (error) {
+							console.error("Error loading messages:", error);
+							// Continue anyway - messages will come through events
+							if (isMounted) {
+								setMessages([]);
+							}
+						}
+
+						if (isMounted) {
+							setStatus("Connected");
+						}
+
+						// Set up message listeners
+						conversation.on("messageAdded", (message: TwilioMessage) => {
+							if (isMounted) {
+								setMessages((prev) => [...prev, message]);
+							}
+						});
+
+						conversation.on("messageRemoved", (message: TwilioMessage) => {
+							if (isMounted) {
+								setMessages((prev) =>
+									prev.filter((m) => m.sid !== message.sid),
+								);
+							}
+						});
+
+						conversation.on(
+							"messageUpdated",
+							({ message }: { message: TwilioMessage }) => {
+								if (isMounted) {
+									setMessages((prev) =>
+										prev.map((m) => (m.sid === message.sid ? message : m)),
+									);
+								}
+							},
 						);
-						return updated;
-					});
+
+						// Also listen to client-level messageAdded for all conversations
+						client.on("messageAdded", (message: TwilioMessage) => {
+							if (isMounted && message.conversation?.sid === conversation.sid) {
+								setMessages((prev) => {
+									// Avoid duplicates
+									if (prev.some((m) => m.sid === message.sid)) {
+										return prev;
+									}
+									return [...prev, message];
+								});
+							}
+						});
+					} catch (error) {
+						console.error("Error connecting to conversation:", error);
+						if (isMounted) {
+							setStatus(
+								`Error: ${
+									error instanceof Error ? error.message : String(error)
+								}`,
+							);
+						}
+					}
 				});
 
-				// Load initial messages
-				const initialMessages = await twilioConv.getMessages();
-				const msgs: Message[] = initialMessages.items.map(
-					(msg: TwilioMessage) => ({
-						sid: msg.sid,
-						index: msg.index,
-						author: msg.author || null,
-						body: msg.body || null,
-						dateCreated: msg.dateCreated || new Date(),
-						dateUpdated: msg.dateUpdated || new Date(),
-						attributes: JSON.stringify(msg.attributes || {}),
-					}),
-				);
-				msgs.sort((a, b) => a.dateCreated.getTime() - b.dateCreated.getTime());
-
-				if (isMounted) {
-					setActiveConversation(mainConv);
-					setMessages(msgs);
-					setStatus("Connected");
-				}
-			} catch (error) {
-				console.error("Error initializing Twilio:", error);
-				if (isMounted) {
+				client.on("initFailed", ({ error }) => {
+					if (!isMounted) return;
 					setStatus(
-						"Error: " +
-							(error instanceof Error ? error.message : "Unknown error"),
+						`Init failed: ${
+							error instanceof Error ? error.message : String(error)
+						}`,
 					);
-				}
-			}
-		};
+					console.error("Error initializing Twilio Conversations:", error);
+				});
 
-		initializeTwilio();
+				client.on("connectionError", ({ message }) => {
+					if (!isMounted) return;
+					setStatus(`Connection error: ${message}`);
+					console.error("Twilio connection error:", message);
+				});
+			})
+			.catch((error) => {
+				if (!isMounted) return;
+				setStatus(
+					`Init failed: ${
+						error instanceof Error ? error.message : String(error)
+					}`,
+				);
+				console.error("Error initializing Twilio Conversations:", error);
+			});
 
 		return () => {
 			isMounted = false;
-			if (twilioConversationRef.current) {
-				twilioConversationRef.current.removeAllListeners();
-				twilioConversationRef.current = null;
+			if (conversationRef.current) {
+				conversationRef.current.removeAllListeners();
 			}
 			if (clientRef.current) {
-				clientRef.current.shutdown();
-				clientRef.current = null;
+				clientRef.current.removeAllListeners();
+				clientRef.current.shutdown().catch(console.error);
 			}
 		};
-	}, [session]);
+	}, []);
 
-	// Messages are now loaded via SDK in the initialization effect
-	// This effect is kept for scroll behavior only
-
-	useEffect(() => {
-		if (messages.length > 0) {
-			scrollToBottom();
-		}
-	}, [messages, scrollToBottom]);
-
-	const handleSendMessage = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!input.trim() || !activeConversation || isSending) return;
-
-		const twilioConv = twilioConversationRef.current;
-		if (!twilioConv) {
-			console.error("Twilio conversation not initialized");
-			setStatus("Error: Not connected");
-			return;
-		}
-
-		const messageBody = input.trim();
-		if (!messageBody) {
-			return;
-		}
+	const handleSend = useCallback(async () => {
+		const text = input.trim();
+		if (!text || isSending || !conversationRef.current) return;
 
 		setIsSending(true);
 		try {
-			// Send message via SDK (real-time)
-			await twilioConv.sendMessage(messageBody);
+			await conversationRef.current.sendMessage(text);
 			setInput("");
-			// Message will be added via the messageAdded event listener
 		} catch (error) {
-			console.error("Send Message Error:", error);
-			setStatus(
-				error instanceof Error ? error.message : "Error sending message",
+			console.error("Error sending message:", error);
+			alert(
+				`Failed to send message: ${error instanceof Error ? error.message : String(error)}`,
 			);
 		} finally {
 			setIsSending(false);
 		}
-	};
+	}, [input, isSending]);
 
-	if (sessionLoading || !session) {
-		return (
-			<div className="h-screen flex items-center justify-center bg-zinc-950 text-white">
-				Loading...
-			</div>
-		);
-	}
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+			if (e.key === "Enter" && !e.shiftKey) {
+				e.preventDefault();
+				handleSend();
+			}
+		},
+		[handleSend],
+	);
 
 	return (
-		<div className="h-screen w-full flex bg-zinc-950 text-white overflow-hidden">
-			{/* Main Chat Area */}
-			<div className="flex-1 flex flex-col relative">
-				{activeConversation ? (
-					<>
-						{/* Chat Header */}
-						<div className="p-3 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10">
-							<div className="flex items-center gap-3">
-								<div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-									<WhatsappLogo size={24} weight="fill" />
-								</div>
-								<div>
-									<h2 className="font-semibold">
-										{activeConversation.friendlyName || "Main Chat"}
-									</h2>
-									<div className="flex items-center gap-1 text-xs text-zinc-500">
-										<Circle
-											size={6}
-											weight="fill"
-											className={
-												status === "Connected"
-													? "text-green-500"
-													: "text-amber-500"
-											}
-										/>
-										{status}
+		<div className="h-screen w-full flex flex-col bg-zinc-950 text-white overflow-hidden">
+			{/* Header */}
+			<div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/50">
+				<div className="flex items-center gap-3">
+					<WhatsappLogo className="w-6 h-6 text-green-500" weight="fill" />
+					<div>
+						<h1 className="text-lg font-semibold">Main Conversation</h1>
+						<p className="text-xs text-zinc-400">{status}</p>
+					</div>
+				</div>
+				<div className="flex items-center gap-2">
+					<Circle
+						className={`w-2 h-2 ${
+							status === "Connected" ? "text-green-500" : "text-yellow-500"
+						}`}
+						weight="fill"
+					/>
+				</div>
+			</div>
+
+			{/* Messages Area */}
+			<div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+				{messages.length === 0 ? (
+					<div className="flex items-center justify-center h-full text-zinc-500">
+						<p>No messages yet. Start the conversation!</p>
+					</div>
+				) : (
+					messages.map((message) => {
+						const isFromMe =
+							message.author === clientRef.current?.user?.identity;
+						return (
+							<div
+								key={message.sid}
+								className={`flex ${isFromMe ? "justify-end" : "justify-start"}`}
+							>
+								<div
+									className={`max-w-[70%] rounded-lg px-4 py-2 ${
+										isFromMe
+											? "bg-green-600 text-white"
+											: "bg-zinc-800 text-zinc-100"
+									}`}
+								>
+									{!isFromMe && message.author && (
+										<div className="text-xs font-semibold mb-1 opacity-80">
+											{message.author}
+										</div>
+									)}
+									{message.body && (
+										<div className="prose prose-invert prose-sm max-w-none">
+											<MemoizedMarkdown
+												content={message.body}
+												id={message.sid}
+											/>
+										</div>
+									)}
+									<div className="text-xs mt-1 opacity-70">
+										{new Date(message.dateCreated || 0).toLocaleTimeString([], {
+											hour: "2-digit",
+											minute: "2-digit",
+										})}
 									</div>
 								</div>
 							</div>
-							<div className="flex items-center gap-2">
-								<Button
-									variant="ghost"
-									size="md"
-									shape="square"
-									className="rounded-full"
-								>
-									<DotsThreeVertical size={20} />
-								</Button>
-							</div>
-						</div>
-
-						{/* Messages */}
-						<div className="flex-1 overflow-y-auto p-4 space-y-4 pb-24 scroll-smooth bg-[url('https://w0.peakpx.com/wallpaper/580/671/HD-wallpaper-whatsapp-background-dark-original-minimal-simple-whatsapp-patter.jpg')] bg-repeat bg-contain">
-							<div className="flex flex-col gap-2">
-								{messages.map((msg) => {
-									const isMe = msg.author === session.user.email;
-									return (
-										<div
-											key={msg.sid}
-											className={`flex ${isMe ? "justify-end" : "justify-start"}`}
-										>
-											<div
-												className={`max-w-[80%] p-3 rounded-lg shadow-sm ${
-													isMe
-														? "bg-green-700 text-white rounded-br-none"
-														: "bg-zinc-800 text-zinc-100 rounded-bl-none"
-												}`}
-											>
-												<MemoizedMarkdown
-													id={msg.sid}
-													content={msg.body || ""}
-												/>
-												<p className="text-[10px] opacity-50 mt-1 text-right">
-													{msg.dateCreated instanceof Date
-														? msg.dateCreated.toLocaleTimeString([], {
-																hour: "2-digit",
-																minute: "2-digit",
-															})
-														: new Date(msg.dateCreated).toLocaleTimeString([], {
-																hour: "2-digit",
-																minute: "2-digit",
-															})}
-												</p>
-											</div>
-										</div>
-									);
-								})}
-								<div ref={messagesEndRef} />
-							</div>
-						</div>
-
-						{/* Input */}
-						<div className="p-4 bg-zinc-950 border-t border-zinc-800 sticky bottom-0">
-							<form
-								onSubmit={handleSendMessage}
-								className="max-w-4xl mx-auto flex items-end gap-2"
-							>
-								<div className="flex-1 relative">
-									<Textarea
-										placeholder="Type a message..."
-										value={input}
-										onChange={(e) => setInput(e.target.value)}
-										onKeyDown={(e) => {
-											if (e.key === "Enter" && !e.shiftKey) {
-												e.preventDefault();
-												handleSendMessage(e);
-											}
-										}}
-										className="w-full bg-zinc-900 border-zinc-700 rounded-2xl resize-none py-3 px-4 focus:ring-green-600 focus:border-green-600 min-h-[48px] max-h-32"
-									/>
-								</div>
-								<Button
-									type="submit"
-									disabled={!input.trim() || isSending}
-									className="bg-green-600 hover:bg-green-700 text-white rounded-full p-3 h-12 w-12 flex items-center justify-center shrink-0"
-								>
-									<PaperPlaneTilt size={24} weight="fill" />
-								</Button>
-							</form>
-						</div>
-					</>
-				) : (
-					<div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-zinc-950">
-						<div className="w-20 h-20 bg-zinc-900 rounded-full flex items-center justify-center mb-4 text-zinc-700">
-							<WhatsappLogo size={48} weight="fill" />
-						</div>
-						<h2 className="text-2xl font-bold mb-2">WhatsApp for Gnar Dawgs</h2>
-						<p className="text-zinc-500 max-w-md">{status}</p>
-						<div className="mt-8 flex items-center gap-2 text-sm text-zinc-600">
-							<UserCircle size={20} />
-							Logged in as {session.user.email}
-						</div>
-					</div>
+						);
+					})
 				)}
+				<div ref={messagesEndRef} />
+			</div>
+
+			{/* Input Area */}
+			<div className="border-t border-zinc-800 bg-zinc-900/50 p-4">
+				<div className="flex gap-2 items-end">
+					<Textarea
+						value={input}
+						onChange={(e) => setInput(e.target.value)}
+						onKeyDown={handleKeyDown}
+						placeholder="Type a message..."
+						className="flex-1 min-h-[60px] max-h-[120px] resize-none bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+						disabled={isSending || status !== "Connected"}
+					/>
+					<Button
+						onClick={handleSend}
+						disabled={!input.trim() || isSending || status !== "Connected"}
+						variant="primary"
+						className="h-[60px] px-4"
+					>
+						<PaperPlaneTilt className="w-5 h-5" weight="fill" />
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

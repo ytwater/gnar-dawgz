@@ -28,6 +28,10 @@
 			{
 				"name": "Chat",
 				"class_name": "Chat"
+			},
+			{
+				"name": "Whatsapp",
+				"class_name": "Whatsapp"
 			}
 		]
 	},
@@ -36,6 +40,12 @@
 			"tag": "v1",
 			"new_sqlite_classes": [
 				"Chat"
+			]
+		},
+		{
+			"tag": "v2",
+			"new_sqlite_classes": [
+				"Whatsapp"
 			]
 		}
 	],
