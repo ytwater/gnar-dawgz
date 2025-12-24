@@ -6,10 +6,20 @@ import {
 	ScrollRestoration,
 	isRouteErrorResponse,
 } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import { TooltipProvider } from "~/providers/TooltipProvider";
+
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			staleTime: 1000 * 60 * 5, // 5 minutes
+			refetchOnWindowFocus: false,
+		},
+	},
+});
 
 if (typeof window !== "undefined") {
 	window.global = window;
@@ -74,9 +84,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
 	return (
-		<TooltipProvider>
-			<Outlet />
-		</TooltipProvider>
+		<QueryClientProvider client={queryClient}>
+			<TooltipProvider>
+				<Outlet />
+			</TooltipProvider>
+		</QueryClientProvider>
 	);
 }
 

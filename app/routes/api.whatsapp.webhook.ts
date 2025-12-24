@@ -149,6 +149,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 		// });
 
 		// return stub.fetch(doRequest);
+		console.log("webhook complete");
 		return Response.json({ success: true, message: "Webhook received" });
 	} catch (error) {
 		console.error(

@@ -1,7 +1,9 @@
 import { CheckCircle, Plus, Trash, X } from "@phosphor-icons/react";
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { authClient } from "~/lib/auth-client";
+import type { EventsV1Subscription } from "~/lib/twilio/models";
 
 type Subscription = {
 	sid: string | null;
@@ -21,17 +23,14 @@ type SubscribedEvent = {
 export default function AdminTwilioEventSync() {
 	const { data: session, isPending: sessionLoading } = authClient.useSession();
 	const navigate = useNavigate();
-	const [subscription, setSubscription] = useState<Subscription | null>(null);
-	const [subscribedEvents, setSubscribedEvents] = useState<SubscribedEvent[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const queryClient = useQueryClient();
 	const [success, setSuccess] = useState<string | null>(null);
 	const [showAddForm, setShowAddForm] = useState(false);
 	const [eventType, setEventType] = useState("");
-	const [schemaVersion, setSchemaVersion] = useState<number | undefined>(undefined);
-	const [isAdding, setIsAdding] = useState(false);
+	const [schemaVersion, setSchemaVersion] = useState<number | undefined>(
+		undefined,
+	);
 	const [description, setDescription] = useState("");
-	const [isUpdating, setIsUpdating] = useState(false);
 
 	// Check auth
 	useEffect(() => {
@@ -44,10 +43,13 @@ export default function AdminTwilioEventSync() {
 	}, [session, sessionLoading, navigate]);
 
 	// Fetch subscription and events
-	const fetchData = useCallback(async () => {
-		try {
-			setLoading(true);
-			setError(null);
+	const {
+		data,
+		isLoading: loading,
+		error: queryError,
+	} = useQuery({
+		queryKey: ["twilio-event-sync"],
+		queryFn: async () => {
 			const response = await fetch("/api/twilio/event-sync");
 			const data = await response.json();
 
@@ -55,30 +57,27 @@ export default function AdminTwilioEventSync() {
 				throw new Error(data.error || "Failed to fetch event sync");
 			}
 
-			setSubscription(data.subscription || null);
-			setSubscribedEvents(data.subscribedEvents || []);
-			setDescription(data.subscription?.description || "");
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to fetch event sync",
-			);
-		} finally {
-			setLoading(false);
-		}
-	}, []);
+			return data;
+		},
+		enabled: !!session?.user,
+	});
+
+	const subscription = data?.subscription || null;
+	const subscribedEvents: EventsV1Subscription[] = data?.subscribedEvents || [];
+	const error = queryError
+		? queryError instanceof Error
+			? queryError.message
+			: "Failed to fetch event sync"
+		: null;
 
 	useEffect(() => {
-		if (!session?.user) return;
-		fetchData();
-	}, [session, fetchData]);
+		if (subscription?.description) {
+			setDescription(subscription.description);
+		}
+	}, [subscription?.description]);
 
-	const handleUpdateDescription = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setIsUpdating(true);
-		setError(null);
-		setSuccess(null);
-
-		try {
+	const updateDescriptionMutation = useMutation({
+		mutationFn: async (description: string) => {
 			const response = await fetch("/api/twilio/event-sync", {
 				method: "POST",
 				headers: {
@@ -96,24 +95,31 @@ export default function AdminTwilioEventSync() {
 				throw new Error(data.error || "Failed to update subscription");
 			}
 
+			return data;
+		},
+		onSuccess: () => {
 			setSuccess("Subscription updated successfully");
-			setSubscription(data.subscription || subscription);
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to update subscription",
-			);
-		} finally {
-			setIsUpdating(false);
-		}
+			queryClient.invalidateQueries({ queryKey: ["twilio-event-sync"] });
+		},
+		onError: () => {
+			setSuccess(null);
+		},
+	});
+
+	const handleUpdateDescription = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setSuccess(null);
+		updateDescriptionMutation.mutate(description);
 	};
 
-	const handleAddEvent = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setIsAdding(true);
-		setError(null);
-		setSuccess(null);
-
-		try {
+	const addEventMutation = useMutation({
+		mutationFn: async ({
+			eventType,
+			schemaVersion,
+		}: {
+			eventType: string;
+			schemaVersion?: number;
+		}) => {
 			const response = await fetch("/api/twilio/event-sync", {
 				method: "POST",
 				headers: {
@@ -132,29 +138,28 @@ export default function AdminTwilioEventSync() {
 				throw new Error(data.error || "Failed to add event");
 			}
 
+			return data;
+		},
+		onSuccess: () => {
 			setSuccess("Event subscribed successfully");
 			setEventType("");
 			setSchemaVersion(undefined);
 			setShowAddForm(false);
-			await fetchData();
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to add event",
-			);
-		} finally {
-			setIsAdding(false);
-		}
+			queryClient.invalidateQueries({ queryKey: ["twilio-event-sync"] });
+		},
+		onError: () => {
+			setSuccess(null);
+		},
+	});
+
+	const handleAddEvent = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setSuccess(null);
+		addEventMutation.mutate({ eventType, schemaVersion });
 	};
 
-	const handleRemoveEvent = async (eventType: string) => {
-		if (!confirm(`Are you sure you want to unsubscribe from ${eventType}?`)) {
-			return;
-		}
-
-		setError(null);
-		setSuccess(null);
-
-		try {
+	const removeEventMutation = useMutation({
+		mutationFn: async (eventType: string) => {
 			const response = await fetch("/api/twilio/event-sync", {
 				method: "DELETE",
 				headers: {
@@ -169,13 +174,24 @@ export default function AdminTwilioEventSync() {
 				throw new Error(data.error || "Failed to remove event");
 			}
 
+			return data;
+		},
+		onSuccess: () => {
 			setSuccess("Event unsubscribed successfully");
-			await fetchData();
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to remove event",
-			);
+			queryClient.invalidateQueries({ queryKey: ["twilio-event-sync"] });
+		},
+		onError: () => {
+			setSuccess(null);
+		},
+	});
+
+	const handleRemoveEvent = async (eventType: string) => {
+		if (!confirm(`Are you sure you want to unsubscribe from ${eventType}?`)) {
+			return;
 		}
+
+		setSuccess(null);
+		removeEventMutation.mutate(eventType);
 	};
 
 	const formatDate = (dateString: string | null) => {
@@ -219,9 +235,21 @@ export default function AdminTwilioEventSync() {
 			</div>
 
 			{/* Error/Success Messages */}
-			{error && (
+			{(error ||
+				updateDescriptionMutation.error ||
+				addEventMutation.error ||
+				removeEventMutation.error) && (
 				<div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg">
-					{error}
+					{error ||
+						(updateDescriptionMutation.error instanceof Error
+							? updateDescriptionMutation.error.message
+							: String(updateDescriptionMutation.error)) ||
+						(addEventMutation.error instanceof Error
+							? addEventMutation.error.message
+							: String(addEventMutation.error)) ||
+						(removeEventMutation.error instanceof Error
+							? removeEventMutation.error.message
+							: String(removeEventMutation.error))}
 				</div>
 			)}
 			{success && (
@@ -236,11 +264,15 @@ export default function AdminTwilioEventSync() {
 					<h2 className="text-xl font-bold mb-4">Subscription Details</h2>
 					<div className="space-y-4">
 						<div>
-							<label className="block text-sm font-medium text-gray-300 mb-2">
+							<label
+								htmlFor="subscription-description"
+								className="block text-sm font-medium text-gray-300 mb-2"
+							>
 								Description
 							</label>
 							<form onSubmit={handleUpdateDescription} className="flex gap-3">
 								<input
+									id="subscription-description"
 									type="text"
 									value={description}
 									onChange={(e) => setDescription(e.target.value)}
@@ -249,29 +281,39 @@ export default function AdminTwilioEventSync() {
 								/>
 								<button
 									type="submit"
-									disabled={isUpdating}
+									disabled={updateDescriptionMutation.isPending}
 									className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									{isUpdating ? "Updating..." : "Update"}
+									{updateDescriptionMutation.isPending
+										? "Updating..."
+										: "Update"}
 								</button>
 							</form>
 						</div>
 						<div className="grid grid-cols-2 gap-4 text-sm">
 							<div>
 								<div className="text-gray-400">SID</div>
-								<div className="text-white font-mono">{subscription.sid || "N/A"}</div>
+								<div className="text-white font-mono">
+									{subscription.sid || "N/A"}
+								</div>
 							</div>
 							<div>
 								<div className="text-gray-400">Sink SID</div>
-								<div className="text-white font-mono">{subscription.sink_sid || "N/A"}</div>
+								<div className="text-white font-mono">
+									{subscription.sink_sid || "N/A"}
+								</div>
 							</div>
 							<div>
 								<div className="text-gray-400">Created</div>
-								<div className="text-white">{formatDate(subscription.date_created)}</div>
+								<div className="text-white">
+									{formatDate(subscription.date_created)}
+								</div>
 							</div>
 							<div>
 								<div className="text-gray-400">Updated</div>
-								<div className="text-white">{formatDate(subscription.date_updated)}</div>
+								<div className="text-white">
+									{formatDate(subscription.date_updated)}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -289,7 +331,6 @@ export default function AdminTwilioEventSync() {
 								setShowAddForm(false);
 								setEventType("");
 								setSchemaVersion(undefined);
-								setError(null);
 							}}
 							className="text-gray-400 hover:text-white transition-colors"
 						>
@@ -314,7 +355,8 @@ export default function AdminTwilioEventSync() {
 								required
 							/>
 							<p className="mt-1 text-xs text-gray-500">
-								Example: com.twilio.conversations.conversation.added or com.twilio.messaging.inbound-message.received
+								Example: com.twilio.conversations.conversation.added or
+								com.twilio.messaging.inbound-message.received
 							</p>
 						</div>
 						<div>
@@ -330,7 +372,9 @@ export default function AdminTwilioEventSync() {
 								value={schemaVersion || ""}
 								onChange={(e) =>
 									setSchemaVersion(
-										e.target.value ? parseInt(e.target.value, 10) : undefined,
+										e.target.value
+											? Number.parseInt(e.target.value, 10)
+											: undefined,
 									)
 								}
 								placeholder="Leave empty for latest"
@@ -341,10 +385,10 @@ export default function AdminTwilioEventSync() {
 						<div className="flex gap-3">
 							<button
 								type="submit"
-								disabled={isAdding}
+								disabled={addEventMutation.isPending}
 								className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								{isAdding ? "Subscribing..." : "Subscribe"}
+								{addEventMutation.isPending ? "Subscribing..." : "Subscribe"}
 							</button>
 							<button
 								type="button"
@@ -352,7 +396,6 @@ export default function AdminTwilioEventSync() {
 									setShowAddForm(false);
 									setEventType("");
 									setSchemaVersion(undefined);
-									setError(null);
 								}}
 								className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-lg transition-colors"
 							>
@@ -382,27 +425,24 @@ export default function AdminTwilioEventSync() {
 					<div className="divide-y divide-white/10">
 						{subscribedEvents.map((event) => (
 							<div
-								key={event.type}
+								key={event.sid}
 								className="p-6 hover:bg-white/5 transition-colors"
 							>
 								<div className="flex items-center justify-between">
 									<div className="flex-1">
 										<div className="font-medium text-white mb-1">
-											{event.type}
+											{event.sid} {event.description}
 										</div>
 										<div className="text-sm text-gray-400 space-y-1">
-											{event.schema_version && (
-												<div>Schema Version: {event.schema_version}</div>
-											)}
 											<div className="text-xs text-gray-500">
-												Created: {formatDate(event.date_created)} | Updated:{" "}
-												{formatDate(event.date_updated)}
+												Created: {formatDate(event.date_created || null)} |
+												Updated: {formatDate(event.date_updated || null)}
 											</div>
 										</div>
 									</div>
 									<button
 										type="button"
-										onClick={() => handleRemoveEvent(event.type)}
+										onClick={() => handleRemoveEvent(event.sid || "")}
 										className="ml-4 px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors flex items-center gap-2"
 										title="Unsubscribe from event"
 									>
@@ -418,4 +458,3 @@ export default function AdminTwilioEventSync() {
 		</div>
 	);
 }
-

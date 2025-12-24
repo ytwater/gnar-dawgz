@@ -36,7 +36,7 @@ module.exports = {
 			target: "app/lib/twilio/events-api.ts",
 			schemas: "app/lib/twilio/models",
 			client: "react-query",
-			baseUrl: "https://conversations.twilio.com",
+			baseUrl: "https://events.twilio.com",
 			httpClient: "fetch",
 			prettier: true,
 			indexFiles: true,

@@ -1,17 +1,20 @@
 import { createAuth } from "~/lib/auth";
+
 import {
+	fetchSink,
+	fetchSubscribedEvent,
 	fetchSubscription,
-	updateSubscription,
 	listSubscribedEvent,
-	createSubscribedEvent,
-	deleteSubscribedEvent,
+	listSubscription,
 } from "~/lib/twilio/events-api";
 import type { Route } from "./+types/api.twilio.event-sync";
 
 function getTwilioAuthHeaders(env: CloudflareBindings): HeadersInit {
 	const envWithToken = env as { TWILIO_AUTH_TOKEN?: string };
 	if (envWithToken.TWILIO_AUTH_TOKEN) {
-		const auth = btoa(`${env.TWILIO_ACCOUNT_SID}:${envWithToken.TWILIO_AUTH_TOKEN}`);
+		const auth = btoa(
+			`${env.TWILIO_ACCOUNT_SID}:${envWithToken.TWILIO_AUTH_TOKEN}`,
+		);
 		return {
 			Authorization: `Basic ${auth}`,
 		};
@@ -44,14 +47,25 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 	const headers = getTwilioAuthHeaders(env);
 
 	try {
-		const [subscriptionResponse, subscribedEventsResponse] = await Promise.all([
-			fetchSubscription(env.TWILIO_EVENT_SYNC_ID, { headers }),
-			listSubscribedEvent(env.TWILIO_EVENT_SYNC_ID, undefined, { headers }),
-		]);
+		const sinkResponse = await fetchSink(env.TWILIO_EVENT_SYNC_ID, { headers });
+		const subscriptionResponse = await fetchSubscription(
+			env.TWILIO_EVENT_SYNC_ID,
+			{ headers },
+		);
+		const sinkSubscriptionsResponse = await listSubscription(
+			{ SinkSid: env.TWILIO_EVENT_SYNC_ID },
+			{ headers },
+		);
+		const subscribedEventsResponse = await listSubscribedEvent(
+			sinkSubscriptionsResponse.data.subscriptions?.[0]?.sid || "",
+			undefined,
+			{ headers },
+		);
 
 		return Response.json({
+			sink: sinkResponse.data,
 			subscription: subscriptionResponse.data,
-			subscribedEvents: subscribedEventsResponse.data.subscribed_events || [],
+			subscribedEvents: subscribedEventsResponse.data.types || [],
 		});
 	} catch (error) {
 		console.error("Error fetching event sync:", error);
@@ -85,18 +99,13 @@ export async function action({ request, context }: Route.ActionArgs) {
 		// Delete subscribed event
 		const { eventType } = body;
 		if (!eventType || typeof eventType !== "string") {
-			return Response.json(
-				{ error: "eventType is required" },
-				{ status: 400 },
-			);
+			return Response.json({ error: "eventType is required" }, { status: 400 });
 		}
 
 		try {
-			await deleteSubscribedEvent(
-				env.TWILIO_EVENT_SYNC_ID,
-				eventType,
-				{ headers },
-			);
+			await deleteSubscribedEvent(env.TWILIO_EVENT_SYNC_ID, eventType, {
+				headers,
+			});
 			return Response.json({ success: true });
 		} catch (error) {
 			console.error("Error deleting subscribed event:", error);
@@ -131,10 +140,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 	if (actionType === "addEvent") {
 		// Add subscribed event
 		if (!eventType || typeof eventType !== "string") {
-			return Response.json(
-				{ error: "eventType is required" },
-				{ status: 400 },
-			);
+			return Response.json({ error: "eventType is required" }, { status: 400 });
 		}
 
 		try {
@@ -158,4 +164,3 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 	return Response.json({ error: "Invalid action" }, { status: 400 });
 }
-

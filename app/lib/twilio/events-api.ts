@@ -80,7 +80,7 @@ export const getListEventTypeUrl = (params?: ListEventTypeParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://conversations.twilio.com/v1/Types?${stringifiedParams}` : `https://conversations.twilio.com/v1/Types`
+  return stringifiedParams.length > 0 ? `https://events.twilio.com/v1/Types?${stringifiedParams}` : `https://events.twilio.com/v1/Types`
 }
 
 export const listEventType = async (params?: ListEventTypeParams, options?: RequestInit): Promise<listEventTypeResponse> => {
@@ -106,7 +106,7 @@ export const listEventType = async (params?: ListEventTypeParams, options?: Requ
 
 export const getListEventTypeQueryKey = (params?: ListEventTypeParams,) => {
     return [
-    `https://conversations.twilio.com/v1/Types`, ...(params ? [params]: [])
+    `https://events.twilio.com/v1/Types`, ...(params ? [params]: [])
     ] as const;
     }
 
@@ -200,7 +200,7 @@ export const getFetchEventTypeUrl = (type: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Types/${type}`
+  return `https://events.twilio.com/v1/Types/${type}`
 }
 
 export const fetchEventType = async (type: string, options?: RequestInit): Promise<fetchEventTypeResponse> => {
@@ -226,7 +226,7 @@ export const fetchEventType = async (type: string, options?: RequestInit): Promi
 
 export const getFetchEventTypeQueryKey = (type?: string,) => {
     return [
-    `https://conversations.twilio.com/v1/Types/${type}`
+    `https://events.twilio.com/v1/Types/${type}`
     ] as const;
     }
 
@@ -320,7 +320,7 @@ export const getFetchSchemaUrl = (id: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Schemas/${id}`
+  return `https://events.twilio.com/v1/Schemas/${id}`
 }
 
 export const fetchSchema = async (id: string, options?: RequestInit): Promise<fetchSchemaResponse> => {
@@ -346,7 +346,7 @@ export const fetchSchema = async (id: string, options?: RequestInit): Promise<fe
 
 export const getFetchSchemaQueryKey = (id?: string,) => {
     return [
-    `https://conversations.twilio.com/v1/Schemas/${id}`
+    `https://events.twilio.com/v1/Schemas/${id}`
     ] as const;
     }
 
@@ -448,7 +448,7 @@ export const getListSchemaVersionUrl = (id: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://conversations.twilio.com/v1/Schemas/${id}/Versions?${stringifiedParams}` : `https://conversations.twilio.com/v1/Schemas/${id}/Versions`
+  return stringifiedParams.length > 0 ? `https://events.twilio.com/v1/Schemas/${id}/Versions?${stringifiedParams}` : `https://events.twilio.com/v1/Schemas/${id}/Versions`
 }
 
 export const listSchemaVersion = async (id: string,
@@ -476,7 +476,7 @@ export const listSchemaVersion = async (id: string,
 export const getListSchemaVersionQueryKey = (id?: string,
     params?: ListSchemaVersionParams,) => {
     return [
-    `https://conversations.twilio.com/v1/Schemas/${id}/Versions`, ...(params ? [params]: [])
+    `https://events.twilio.com/v1/Schemas/${id}/Versions`, ...(params ? [params]: [])
     ] as const;
     }
 
@@ -576,7 +576,7 @@ export const getFetchSchemaVersionUrl = (id: string,
 
   
 
-  return `https://conversations.twilio.com/v1/Schemas/${id}/Versions/${schemaVersion}`
+  return `https://events.twilio.com/v1/Schemas/${id}/Versions/${schemaVersion}`
 }
 
 export const fetchSchemaVersion = async (id: string,
@@ -604,7 +604,7 @@ export const fetchSchemaVersion = async (id: string,
 export const getFetchSchemaVersionQueryKey = (id?: string,
     schemaVersion?: number,) => {
     return [
-    `https://conversations.twilio.com/v1/Schemas/${id}/Versions/${schemaVersion}`
+    `https://events.twilio.com/v1/Schemas/${id}/Versions/${schemaVersion}`
     ] as const;
     }
 
@@ -703,7 +703,7 @@ export const getFetchSinkUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Sinks/${sid}`
+  return `https://events.twilio.com/v1/Sinks/${sid}`
 }
 
 export const fetchSink = async (sid: string, options?: RequestInit): Promise<fetchSinkResponse> => {
@@ -729,7 +729,7 @@ export const fetchSink = async (sid: string, options?: RequestInit): Promise<fet
 
 export const getFetchSinkQueryKey = (sid?: string,) => {
     return [
-    `https://conversations.twilio.com/v1/Sinks/${sid}`
+    `https://events.twilio.com/v1/Sinks/${sid}`
     ] as const;
     }
 
@@ -823,7 +823,7 @@ export const getDeleteSinkUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Sinks/${sid}`
+  return `https://events.twilio.com/v1/Sinks/${sid}`
 }
 
 export const deleteSink = async (sid: string, options?: RequestInit): Promise<deleteSinkResponse> => {
@@ -913,7 +913,7 @@ export const getUpdateSinkUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Sinks/${sid}`
+  return `https://events.twilio.com/v1/Sinks/${sid}`
 }
 
 export const updateSink = async (sid: string,
@@ -1007,7 +1007,7 @@ export const getCreateSinkUrl = () => {
 
   
 
-  return `https://conversations.twilio.com/v1/Sinks`
+  return `https://events.twilio.com/v1/Sinks`
 }
 
 export const createSink = async (createSinkBody: CreateSinkBody, options?: RequestInit): Promise<createSinkResponse> => {
@@ -1109,7 +1109,7 @@ export const getListSinkUrl = (params?: ListSinkParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://conversations.twilio.com/v1/Sinks?${stringifiedParams}` : `https://conversations.twilio.com/v1/Sinks`
+  return stringifiedParams.length > 0 ? `https://events.twilio.com/v1/Sinks?${stringifiedParams}` : `https://events.twilio.com/v1/Sinks`
 }
 
 export const listSink = async (params?: ListSinkParams, options?: RequestInit): Promise<listSinkResponse> => {
@@ -1135,7 +1135,7 @@ export const listSink = async (params?: ListSinkParams, options?: RequestInit): 
 
 export const getListSinkQueryKey = (params?: ListSinkParams,) => {
     return [
-    `https://conversations.twilio.com/v1/Sinks`, ...(params ? [params]: [])
+    `https://events.twilio.com/v1/Sinks`, ...(params ? [params]: [])
     ] as const;
     }
 
@@ -1234,7 +1234,7 @@ export const getCreateSinkTestUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Sinks/${sid}/Test`
+  return `https://events.twilio.com/v1/Sinks/${sid}/Test`
 }
 
 export const createSinkTest = async (sid: string, options?: RequestInit): Promise<createSinkTestResponse> => {
@@ -1324,7 +1324,7 @@ export const getCreateSinkValidateUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Sinks/${sid}/Validate`
+  return `https://events.twilio.com/v1/Sinks/${sid}/Validate`
 }
 
 export const createSinkValidate = async (sid: string,
@@ -1426,7 +1426,7 @@ export const getListSubscribedEventUrl = (subscriptionSid: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents?${stringifiedParams}` : `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents`
+  return stringifiedParams.length > 0 ? `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents?${stringifiedParams}` : `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents`
 }
 
 export const listSubscribedEvent = async (subscriptionSid: string,
@@ -1454,7 +1454,7 @@ export const listSubscribedEvent = async (subscriptionSid: string,
 export const getListSubscribedEventQueryKey = (subscriptionSid?: string,
     params?: ListSubscribedEventParams,) => {
     return [
-    `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents`, ...(params ? [params]: [])
+    `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents`, ...(params ? [params]: [])
     ] as const;
     }
 
@@ -1558,7 +1558,7 @@ export const getCreateSubscribedEventUrl = (subscriptionSid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents`
+  return `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents`
 }
 
 export const createSubscribedEvent = async (subscriptionSid: string,
@@ -1656,7 +1656,7 @@ export const getFetchSubscribedEventUrl = (subscriptionSid: string,
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
+  return `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
 }
 
 export const fetchSubscribedEvent = async (subscriptionSid: string,
@@ -1684,7 +1684,7 @@ export const fetchSubscribedEvent = async (subscriptionSid: string,
 export const getFetchSubscribedEventQueryKey = (subscriptionSid?: string,
     type?: string,) => {
     return [
-    `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
+    `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
     ] as const;
     }
 
@@ -1784,7 +1784,7 @@ export const getUpdateSubscribedEventUrl = (subscriptionSid: string,
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
+  return `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
 }
 
 export const updateSubscribedEvent = async (subscriptionSid: string,
@@ -1882,7 +1882,7 @@ export const getDeleteSubscribedEventUrl = (subscriptionSid: string,
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
+  return `https://events.twilio.com/v1/Subscriptions/${subscriptionSid}/SubscribedEvents/${type}`
 }
 
 export const deleteSubscribedEvent = async (subscriptionSid: string,
@@ -1980,7 +1980,7 @@ export const getListSubscriptionUrl = (params?: ListSubscriptionParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://conversations.twilio.com/v1/Subscriptions?${stringifiedParams}` : `https://conversations.twilio.com/v1/Subscriptions`
+  return stringifiedParams.length > 0 ? `https://events.twilio.com/v1/Subscriptions?${stringifiedParams}` : `https://events.twilio.com/v1/Subscriptions`
 }
 
 export const listSubscription = async (params?: ListSubscriptionParams, options?: RequestInit): Promise<listSubscriptionResponse> => {
@@ -2006,7 +2006,7 @@ export const listSubscription = async (params?: ListSubscriptionParams, options?
 
 export const getListSubscriptionQueryKey = (params?: ListSubscriptionParams,) => {
     return [
-    `https://conversations.twilio.com/v1/Subscriptions`, ...(params ? [params]: [])
+    `https://events.twilio.com/v1/Subscriptions`, ...(params ? [params]: [])
     ] as const;
     }
 
@@ -2100,7 +2100,7 @@ export const getCreateSubscriptionUrl = () => {
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions`
+  return `https://events.twilio.com/v1/Subscriptions`
 }
 
 export const createSubscription = async (createSubscriptionBody: CreateSubscriptionBody, options?: RequestInit): Promise<createSubscriptionResponse> => {
@@ -2195,7 +2195,7 @@ export const getFetchSubscriptionUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions/${sid}`
+  return `https://events.twilio.com/v1/Subscriptions/${sid}`
 }
 
 export const fetchSubscription = async (sid: string, options?: RequestInit): Promise<fetchSubscriptionResponse> => {
@@ -2221,7 +2221,7 @@ export const fetchSubscription = async (sid: string, options?: RequestInit): Pro
 
 export const getFetchSubscriptionQueryKey = (sid?: string,) => {
     return [
-    `https://conversations.twilio.com/v1/Subscriptions/${sid}`
+    `https://events.twilio.com/v1/Subscriptions/${sid}`
     ] as const;
     }
 
@@ -2315,7 +2315,7 @@ export const getUpdateSubscriptionUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions/${sid}`
+  return `https://events.twilio.com/v1/Subscriptions/${sid}`
 }
 
 export const updateSubscription = async (sid: string,
@@ -2411,7 +2411,7 @@ export const getDeleteSubscriptionUrl = (sid: string,) => {
 
   
 
-  return `https://conversations.twilio.com/v1/Subscriptions/${sid}`
+  return `https://events.twilio.com/v1/Subscriptions/${sid}`
 }
 
 export const deleteSubscription = async (sid: string, options?: RequestInit): Promise<deleteSubscriptionResponse> => {
