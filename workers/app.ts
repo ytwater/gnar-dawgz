@@ -43,6 +43,34 @@ export default {
 			isHtmlRequest,
 		);
 
+		// Validate ENV variables
+		const requiredEnvVars = [
+			"OPENAI_API_KEY",
+			"DEEPSEEK_API_KEY",
+			"CLOUDFLARE_API_TOKEN",
+			"GEMINI_API_KEY",
+			"BETTER_AUTH_SECRET",
+			"GOOGLE_CLIENT_SECRET",
+			"VAPID_PUBLIC_KEY",
+			"VAPID_PRIVATE_KEY",
+			"TWILIO_ACCOUNT_SID",
+			"TWILIO_API_KEY",
+			"TWILIO_API_SECRET",
+			"TWILIO_AUTH_TOKEN",
+			"TWILIO_SERVICE_SID",
+			"TWILIO_EVENT_SYNC_ID",
+		] as const;
+
+		const missingVars = requiredEnvVars.filter(
+			(varName) => !env[varName] || env[varName] === "",
+		);
+
+		if (missingVars.length > 0) {
+			const errorMessage = `Missing required environment variables: ${missingVars.join(", ")}`;
+			console.error(errorMessage);
+			throw new Error(errorMessage);
+		}
+
 		// For non-HTML requests to /chat, try agent routing
 		// The agents library might expect /agents/chat, so try both paths
 		if (pathname === "/chat" && !isHtmlRequest) {
