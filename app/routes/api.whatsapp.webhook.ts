@@ -1,3 +1,4 @@
+import { handleIncomingMessage } from "~/lib/chat/handleIncomingMessage";
 import type { Route } from "./+types/api.whatsapp.webhook";
 
 /**
@@ -116,39 +117,14 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 		console.log("🚀 ~ api.whatsapp.webhook.ts:71 ~ action ~ params:", params);
 
-		// Extract conversationSid
-		const conversationSid = params.ConversationSid;
-		if (!conversationSid) {
-			console.warn("Webhook received but no ConversationSid in params");
-			// Still forward to DO in case it can handle it
+		// Handle array of events (CloudEvents format)
+		const events = Array.isArray(params) ? params : [params];
+		for (const event of events) {
+			if (event?.type === "com.twilio.messaging.inbound-message.received") {
+				await handleIncomingMessage(event, env);
+			}
 		}
 
-		// // Get the Durable Object stub
-		// // If we have a conversationSid, use it; otherwise use a default key
-		// const doKey = conversationSid ? `twilioConv:${conversationSid}` : "twilioConv:default";
-		// const id = env.Whatsapp.idFromName(doKey);
-		// const stub = env.Whatsapp.get(id);
-
-		// // Forward the webhook to the DO
-		// // We need to reconstruct the form data since we've already consumed it
-		// const doUrl = new URL(request.url);
-		// doUrl.pathname = "/webhook";
-
-		// // Create a new form data for the DO
-		// const doFormData = new FormData();
-		// for (const [key, value] of formData.entries()) {
-		// 	doFormData.append(key, value);
-		// }
-
-		// const doRequest = new Request(doUrl.toString(), {
-		// 	method: "POST",
-		// 	headers: {
-		// 		"Content-Type": request.headers.get("Content-Type") || "application/x-www-form-urlencoded",
-		// 	},
-		// 	body: doFormData,
-		// });
-
-		// return stub.fetch(doRequest);
 		console.log("webhook complete");
 		return Response.json({ success: true, message: "Webhook received" });
 	} catch (error) {

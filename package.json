@@ -10,7 +10,7 @@
 		"cf-typegen:full": "wrangler types --env-interface CloudflareBindings",
 		"deploy": "pnpm run build && wrangler deploy",
 		"logs": "wrangler tail",
-		"dev": "react-router dev",
+		"dev": "react-router dev --host",
 		"postinstall": "npm run cf-typegen",
 		"preview": "pnpm run build && vite preview",
 		"typecheck": "npm run cf-typegen && react-router typegen && tsc -b",

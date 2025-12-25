@@ -18,7 +18,9 @@
 		"AI_GATEWAY_ID": "default",
 		"GOOGLE_CLIENT_ID": "843872966928-4q8r4o4p52h90f52jpjotmmncgr5mrra.apps.googleusercontent.com",
 		"VAPID_PUBLIC_KEY": "BLesCxd24BjJTGhGCLKN_b9mOCwlyL-paNFAyCMybZb5UbQ854bSVNV9zgCZJPNFBYwusXwFQTEKhq8pWAR_LYM",
-		"VAPID_SUBJECT": "https://gnardawgs.surf"
+		"VAPID_SUBJECT": "https://gnardawgs.surf",
+		"TWILIO_SERVICE_SID": "ISc485decce355478e8ddb9b82dec4ccaa",
+		"TWILIO_EVENT_SYNC_ID": "DGbd9f47b1c0b9e4f7ce4222a2fdb9bfc2",
 	},
 	"observability": {
 		"enabled": true
