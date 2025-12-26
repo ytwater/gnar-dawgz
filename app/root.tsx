@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
 	Links,
 	Meta,
@@ -6,7 +7,6 @@ import {
 	ScrollRestoration,
 	isRouteErrorResponse,
 } from "react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -83,6 +83,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+	if (typeof window !== "undefined" && import.meta.env.BUILD_DATE) {
+		console.log(
+			"Build date:",
+			new Date(import.meta.env.BUILD_DATE).toLocaleString(),
+		);
+	}
 	return (
 		<QueryClientProvider client={queryClient}>
 			<TooltipProvider>

@@ -26,6 +26,9 @@ export default defineConfig({
 		// 	},
 		// }),
 	],
+	define: {
+		"import.meta.env.BUILD_DATE": JSON.stringify(new Date().toISOString()),
+	},
 	server: {
 		allowedHosts: ["demo1.psg-labs.net"],
 	},
