@@ -1,3 +1,5 @@
+packages: []
+
 onlyBuiltDependencies:
   - '@prisma/client'
   - better-sqlite3
