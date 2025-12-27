@@ -19,6 +19,8 @@ const requestHandler = createRequestHandler(
 	import.meta.env.MODE,
 );
 
+import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
+
 export { Chat, WhatsAppAgent };
 
 export default {
@@ -135,7 +137,7 @@ export default {
 	},
 
 	async queue(
-		batch: MessageBatch<any>,
+		batch: MessageBatch<unknown>,
 		env: CloudflareBindings,
 	): Promise<void> {
 		for (const message of batch.messages) {
@@ -148,4 +150,12 @@ export default {
 			}
 		}
 	},
-} satisfies ExportedHandler<Env>;
+
+	async scheduled(
+		event: ScheduledEvent,
+		env: CloudflareBindings,
+		ctx: ExecutionContext,
+	): Promise<void> {
+		ctx.waitUntil(syncSurfForecasts(env));
+	},
+} satisfies ExportedHandler<CloudflareBindings>;

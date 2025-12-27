@@ -1,0 +1,1 @@
+ALTER TABLE `surf_spots` ADD `last_synced_at` integer;

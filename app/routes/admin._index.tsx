@@ -49,6 +49,14 @@ const menuItems = [
 		color: "text-primary",
 		bgColor: "bg-primary/10",
 	},
+	{
+		title: "Surf Spots",
+		description: "Configure and manage surf spots for forecast comparison.",
+		icon: Broadcast,
+		href: "/admin/surf-spots",
+		color: "text-primary",
+		bgColor: "bg-primary/10",
+	},
 ];
 
 export default function AdminDashboard() {
