@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { authClient } from "~/lib/auth-client";
+import { orpcClient } from "~/lib/orpc/client";
 import {
 	getCurrentPushSubscription,
 	getNotificationPermissionStatus,
@@ -54,27 +55,23 @@ export default function Profile() {
 		try {
 			if (enabled) {
 				// Get VAPID public key from the server
-				const vapidResponse = await fetch("/api/push/vapid-key");
-				if (!vapidResponse.ok) {
-					throw new Error("Failed to get VAPID key");
-				}
-				const { publicKey } = await vapidResponse.json();
+				const { publicKey } = await orpcClient.push.vapidKey();
 
 				// Subscribe to push notifications
 				const subscription = await subscribeToPushNotifications(publicKey);
 
-				// Save subscription to the server
-				const response = await fetch("/api/push/subscribe", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(subscription),
-				});
-
-				if (!response.ok) {
-					throw new Error("Failed to save subscription");
+				if (!subscription.keys.p256dh || !subscription.keys.auth) {
+					throw new Error("Invalid subscription keys");
 				}
+
+				// Save subscription to the server
+				await orpcClient.push.subscribe({
+					endpoint: subscription.endpoint,
+					keys: {
+						p256dh: subscription.keys.p256dh,
+						auth: subscription.keys.auth,
+					},
+				});
 
 				setNotificationsEnabled(true);
 				setSuccess("Notifications enabled successfully!");
@@ -83,13 +80,7 @@ export default function Profile() {
 				await unsubscribeFromPushNotifications();
 
 				// Remove subscription from the server
-				const response = await fetch("/api/push/unsubscribe", {
-					method: "POST",
-				});
-
-				if (!response.ok) {
-					throw new Error("Failed to remove subscription");
-				}
+				await orpcClient.push.unsubscribe();
 
 				setNotificationsEnabled(false);
 				setSuccess("Notifications disabled successfully!");
@@ -117,62 +108,60 @@ export default function Profile() {
 			// Verify subscription matches browser's actual subscription
 			const browserSubscription = await getCurrentPushSubscription();
 			if (!browserSubscription) {
-				throw new Error("No active push subscription found in browser. Please re-enable notifications.");
+				throw new Error(
+					"No active push subscription found in browser. Please re-enable notifications.",
+				);
 			}
 
 			// Get current VAPID key
-			const vapidResponse = await fetch("/api/push/vapid-key");
-			if (!vapidResponse.ok) {
-				throw new Error("Failed to get VAPID key");
-			}
-			const { publicKey: currentVapidKey } = await vapidResponse.json();
+			const { publicKey: currentVapidKey } = await orpcClient.push.vapidKey();
 
-			console.log("Browser subscription endpoint:", browserSubscription.endpoint);
+			console.log(
+				"Browser subscription endpoint:",
+				browserSubscription.endpoint,
+			);
 			console.log("Browser subscription keys:", {
-				p256dh: browserSubscription.keys.p256dh?.substring(0, 20) + "...",
-				auth: browserSubscription.keys.auth?.substring(0, 10) + "...",
+				p256dh: browserSubscription.keys.p256dh
+					? `${browserSubscription.keys.p256dh.substring(0, 20)}...`
+					: undefined,
+				auth: browserSubscription.keys.auth
+					? `${browserSubscription.keys.auth.substring(0, 10)}...`
+					: undefined,
 			});
 			console.log("Current VAPID public key:", currentVapidKey);
-			
+
 			// Verify the stored subscription matches the browser's subscription
 			// This helps catch cases where the database has an old subscription
-			const storedSubscriptionResponse = await fetch("/api/push/subscription-check");
-			if (storedSubscriptionResponse.ok) {
-				const stored = await storedSubscriptionResponse.json();
-				if (stored.endpoint && stored.endpoint !== browserSubscription.endpoint) {
-					console.warn("⚠️ Subscription mismatch detected!");
-					console.warn("Stored endpoint:", stored.endpoint);
-					console.warn("Browser endpoint:", browserSubscription.endpoint);
-					console.warn("Updating stored subscription to match browser...");
-					
-					// Auto-sync: update the stored subscription to match the browser
-					const syncResponse = await fetch("/api/push/subscribe", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify(browserSubscription),
-					});
-					
-					if (!syncResponse.ok) {
-						throw new Error("Failed to sync subscription. Please toggle notifications off and on again.");
-					}
-					
-					console.log("✅ Subscription synced successfully");
+			const stored = await orpcClient.push.subscriptionCheck();
+			if (stored.endpoint && stored.endpoint !== browserSubscription.endpoint) {
+				console.warn("⚠️ Subscription mismatch detected!");
+				console.warn("Stored endpoint:", stored.endpoint);
+				console.warn("Browser endpoint:", browserSubscription.endpoint);
+				console.warn("Updating stored subscription to match browser...");
+
+				// Auto-sync: update the stored subscription to match the browser
+				if (
+					!browserSubscription.keys.p256dh ||
+					!browserSubscription.keys.auth
+				) {
+					throw new Error("Invalid browser subscription keys");
 				}
+
+				await orpcClient.push.subscribe({
+					endpoint: browserSubscription.endpoint,
+					keys: {
+						p256dh: browserSubscription.keys.p256dh,
+						auth: browserSubscription.keys.auth,
+					},
+				});
+
+				console.log("✅ Subscription synced successfully");
 			}
 
-			const response = await fetch("/api/push/test", {
-				method: "POST",
-			});
-
-			if (!response.ok) {
-				const data = await response.json();
-				throw new Error(data.error || "Failed to send test notification");
-			}
+			await orpcClient.push.test();
 
 			setSuccess("Test notification sent! Check your notifications.");
-			
+
 			// Verify service worker is active and can receive push events
 			setTimeout(async () => {
 				try {
@@ -184,8 +173,9 @@ export default function Profile() {
 							waiting: !!registration.waiting,
 							scope: registration.scope,
 						});
-						
-						const subscription = await registration.pushManager.getSubscription();
+
+						const subscription =
+							await registration.pushManager.getSubscription();
 						if (subscription) {
 							console.log("Push subscription is active:", {
 								endpoint: subscription.endpoint,
@@ -200,8 +190,10 @@ export default function Profile() {
 				} catch (err) {
 					console.error("Error checking service worker:", err);
 				}
-				
-				console.log("If you don't see a notification, check the Service Worker console (DevTools > Application > Service Workers) for push event logs.");
+
+				console.log(
+					"If you don't see a notification, check the Service Worker console (DevTools > Application > Service Workers) for push event logs.",
+				);
 			}, 1000);
 		} catch (err) {
 			console.error("Error sending test notification:", err);

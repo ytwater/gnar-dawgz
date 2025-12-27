@@ -1,4 +1,3 @@
-import { handleIncomingMessage } from "~/lib/chat/handleIncomingMessage";
 import type { Route } from "./+types/api.whatsapp.webhook";
 
 /**
@@ -121,17 +120,34 @@ export async function action({ request, context }: Route.ActionArgs) {
 		const events = Array.isArray(params) ? params : [params];
 		for (const event of events) {
 			if (event?.type === "com.twilio.messaging.inbound-message.received") {
-				await handleIncomingMessage(event, env);
+				// Offload processing to Cloudflare Queue
+				await env.WHATSAPP_QUEUE.send(event);
 			}
 		}
 
-		console.log("webhook complete");
-		return Response.json({ success: true, message: "Webhook received" });
+		console.log("webhook enqueued events and sending response 'Thinking...'");
+		// Return immediate TwiML response to prevent Twilio timeout
+		// and provide "Thinking..." feedback to the user
+		return new Response(
+			`<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Message>Thinking...</Message>
+</Response>`,
+			{
+				headers: {
+					"Content-Type": "text/xml",
+				},
+			},
+		);
 	} catch (error) {
 		console.error(
 			"Error in api.whatsapp.webhook.ts:",
 			error instanceof Error ? error.message : "Unknown error",
 		);
+		// Even on error, try to return a valid TwiML to stop retries if possible,
+		// or just 200 OK.
+		// Sending 500 will cause Twilio to retry, which might be desired for transient errors,
+		// but for application logic errors it's better to stop.
 		return Response.json(
 			{ error: error instanceof Error ? error.message : "Unknown error" },
 			{ status: 500 },

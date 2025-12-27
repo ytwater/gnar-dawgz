@@ -13,6 +13,7 @@
 		}
 	],
 	"vars": {
+		"ENVIRONMENT": "prod",
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare",
 		"ACCOUNT_ID": "fa192b38975cc1a093d7dc819afa0c64",
 		"AI_GATEWAY_ID": "default",
@@ -20,7 +21,8 @@
 		"VAPID_PUBLIC_KEY": "BLesCxd24BjJTGhGCLKN_b9mOCwlyL-paNFAyCMybZb5UbQ854bSVNV9zgCZJPNFBYwusXwFQTEKhq8pWAR_LYM",
 		"VAPID_SUBJECT": "https://gnardawgs.surf",
 		"TWILIO_SERVICE_SID": "ISc485decce355478e8ddb9b82dec4ccaa",
-		"TWILIO_EVENT_SYNC_ID": "DGbd9f47b1c0b9e4f7ce4222a2fdb9bfc2",
+		"TWILIO_EVENT_SYNC_ID_DEV": "DGbd9f47b1c0b9e4f7ce4222a2fdb9bfc2",
+		"TWILIO_EVENT_SYNC_ID_PROD": "DFa3b682c8b233d900f5ad05f434d6e884"
 	},
 	"observability": {
 		"enabled": true
@@ -54,5 +56,21 @@
 			"binding": "KV",
 			"id": "e19b719f2e4f4ad49afb10ab1392a87f"
 		}
-	]
+	],
+	"queues": {
+		"producers": [
+			{
+				"binding": "WHATSAPP_QUEUE",
+				"queue": "gnar-dawgs-whatsapp-queue"
+			}
+		],
+		"consumers": [
+			{
+				"queue": "gnar-dawgs-whatsapp-queue",
+				"max_batch_size": 5,
+				"max_batch_timeout": 5,
+				"max_retries": 3
+			}
+		]
+	}
 }

@@ -58,6 +58,10 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 				},
 				user: {
 					additionalFields: {
+						whatsappNumber: {
+							type: "string",
+							defaultValue: "",
+						},
 						role: {
 							type: "string",
 							defaultValue: "user",

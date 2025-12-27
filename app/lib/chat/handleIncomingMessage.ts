@@ -1,8 +1,12 @@
+import { eq } from "drizzle-orm";
 import {
 	TWILIO_WHATSAPP_NUMBER,
 	VALID_WHATSAPP_INCOMING_NUMBERS,
 } from "~/config/constants";
 import { WhatsAppAgent } from "../../../workers/whatsapp-agent";
+import { createAuth } from "../auth";
+import { getDb } from "../db";
+import { users } from "../schema";
 import {
 	type CreateMessageBody,
 	createMessage,
@@ -34,10 +38,56 @@ export async function handleIncomingMessage(
 	env: CloudflareBindings,
 ): Promise<void> {
 	try {
-		// TODO Match whatsapp numbers to user
-		if (!VALID_WHATSAPP_INCOMING_NUMBERS.includes(event.data.from)) {
-			throw new Error("Invalid incoming number");
+		if (
+			!event.data.to ||
+			event.data.to !== `whatsapp:${TWILIO_WHATSAPP_NUMBER}`
+		) {
+			console.log("Invalid incoming number", event.data.to);
+			return;
 		}
+
+		const fromNumber = event.data.from?.replace("whatsapp:", "") ?? "";
+		if (!fromNumber) {
+			console.log("Invalid incoming number", event.data.from);
+			return;
+		}
+
+		if (
+			env.ENVIRONMENT !== "dev" &&
+			event.data.body.toLocaleLowerCase().startsWith("dev:")
+		) {
+			console.log("Dev message in non-dev environment, skipping");
+			return;
+		}
+		if (
+			env.ENVIRONMENT === "dev" &&
+			!event.data.body.toLocaleLowerCase().startsWith("dev:")
+		) {
+			console.log("Non-dev message in dev environment, skipping");
+			return;
+		}
+
+		// Load the user from the database
+		const db = getDb(env.DB);
+		const usersResult = await db
+			.select()
+			.from(users)
+			.where(eq(users.whatsappNumber, fromNumber));
+
+		if (usersResult.length === 0) {
+			console.log("User not found", fromNumber);
+			return;
+		}
+
+		const user = usersResult[0];
+
+		console.log(
+			"🚀 ~ handleIncomingMessage.ts:50 ~ handleIncomingMessage ~ user:",
+			user,
+		);
+		// if (!VALID_WHATSAPP_INCOMING_NUMBERS.includes(event.data.from)) {
+		// 	throw new Error("Invalid incoming number");
+		// }
 
 		console.log("Handling incoming message:", event);
 
@@ -52,7 +102,7 @@ export async function handleIncomingMessage(
 		// Create WhatsApp agent instance for this conversation
 		// TODO: Implement state persistence (e.g., using KV or Durable Objects)
 		// to maintain conversation history across webhook calls
-		const agent = new WhatsAppAgent(env);
+		const agent = new WhatsAppAgent(env, user);
 
 		// Get AI response from the agent
 		const responseText = await agent.onMessage(senderNumber, messageText);
@@ -64,13 +114,17 @@ export async function handleIncomingMessage(
 			Body: responseText,
 		};
 
-		console.log("🚀 ~ handleIncomingMessage ~ sending response:", payload);
+		// console.log("🚀 ~ handleIncomingMessage ~ sending response:", payload);
 
-		const messageResponse = await createMessage(env, payload);
 		console.log(
-			"🚀 ~ handleIncomingMessage ~ messageResponse:",
-			messageResponse,
+			"🚀 ~ handleIncomingMessage ~ sending response text:",
+			payload.Body,
 		);
+		const messageResponse = await createMessage(env, payload);
+		// console.log(
+		// 	"🚀 ~ handleIncomingMessage ~ messageResponse:",
+		// 	messageResponse,
+		// );
 	} catch (error) {
 		console.error("Error handling incoming message:", error);
 		// Optionally send an error message to the user
@@ -78,7 +132,7 @@ export async function handleIncomingMessage(
 			await createMessage(env, {
 				From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
 				To: event.data.from,
-				Body: "Sorry, I encountered an error processing your message. Please try again.",
+				Body: `Sorry, I encountered an error processing your message. Error ${error instanceof Error ? error.message : "Unknown error"}`,
 			});
 		} catch (sendError) {
 			console.error("Error sending error message:", sendError);

@@ -127,10 +127,10 @@ export const createMessage = async (
 	const headers = getTwilioAuthHeaders(env);
 
 	const options = { method: "POST", headers };
-	console.log(
-		"🚀 ~ classic-messages-api.ts:130 ~ createMessage ~ options:",
-		options,
-	);
+	// console.log(
+	// 	"🚀 ~ classic-messages-api.ts:130 ~ createMessage ~ options:",
+	// 	options,
+	// );
 
 	// Required fields
 	formUrlEncoded.append("To", createMessageBody.To);

@@ -19,6 +19,7 @@ type AdminUser = {
 	banned?: boolean;
 	image?: string;
 	createdAt: string | Date;
+	whatsappNumber?: string;
 };
 
 export default function AdminUsers() {
@@ -126,6 +127,50 @@ export default function AdminUsers() {
 		}
 	};
 
+	const handleWhatsAppUpdate = async (
+		userId: string,
+		whatsappNumber: string,
+	) => {
+		// Validate format: + followed by digits
+		if (whatsappNumber && !/^\+[1-9]\d{1,14}$/.test(whatsappNumber)) {
+			alert(
+				"Invalid WhatsApp number format. Must be in format +1234567890 (e.g., +16198064334)",
+			);
+			return;
+		}
+
+		try {
+			const formData = new FormData();
+			formData.append("userId", userId);
+			formData.append("whatsappNumber", whatsappNumber || "");
+
+			const { data: updatedUserResults, error: updateUserError } =
+				await authClient.admin.updateUser({
+					userId,
+					data: { whatsappNumber },
+				});
+
+			if (updateUserError) {
+				throw new Error(updateUserError.message);
+			}
+
+			// Refresh users
+			const { data } = await authClient.admin.listUsers({
+				query: { limit: 100 },
+			});
+			if (data?.users) {
+				setUsers(data.users as AdminUser[]);
+			}
+		} catch (error) {
+			console.error("Failed to update WhatsApp number:", error);
+			alert(
+				error instanceof Error
+					? error.message
+					: "Failed to update WhatsApp number",
+			);
+		}
+	};
+
 	if (sessionLoading || loading) {
 		return (
 			<div className="flex items-center justify-center p-12">
@@ -228,6 +273,9 @@ export default function AdminUsers() {
 									Role
 								</th>
 								<th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+									WhatsApp
+								</th>
+								<th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
 									Status
 								</th>
 								<th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
@@ -242,7 +290,7 @@ export default function AdminUsers() {
 							{filteredUsers.length === 0 ? (
 								<tr>
 									<td
-										colSpan={5}
+										colSpan={6}
 										className="px-6 py-12 text-center text-gray-500"
 									>
 										<div className="flex flex-col items-center gap-2">
@@ -259,7 +307,7 @@ export default function AdminUsers() {
 									>
 										<td className="px-6 py-4 whitespace-nowrap">
 											<div className="flex items-center">
-												<div className="h-10 w-10 flex-shrink-0">
+												<div className="h-10 w-10 shrink-0">
 													{user.image ? (
 														<img
 															className="h-10 w-10 rounded-full border border-white/10 object-cover"
@@ -297,6 +345,32 @@ export default function AdminUsers() {
 												<option value="admin">Admin</option>
 												<option value="gnar-dawg">Gnar Dawg</option>
 											</select>
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap">
+											<input
+												type="text"
+												value={user.whatsappNumber || ""}
+												onChange={(e) => {
+													// Update local state immediately for better UX
+													setUsers((prev) =>
+														prev.map((u) =>
+															u.id === user.id
+																? { ...u, whatsappNumber: e.target.value }
+																: u,
+														),
+													);
+												}}
+												onBlur={(e) => {
+													handleWhatsAppUpdate(user.id, e.target.value);
+												}}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														e.currentTarget.blur();
+													}
+												}}
+												placeholder="+16198064334"
+												className="bg-black/50 border border-white/10 text-sm rounded-lg px-2 py-1 focus:ring-indigo-500 focus:border-indigo-500 block w-40 transition-all hover:border-white/20"
+											/>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
 											{user.banned ? (

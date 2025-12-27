@@ -1,5 +1,7 @@
 import { routeAgentRequest } from "agents";
 import { createRequestHandler } from "react-router";
+import { REQUIRED_ENV_VARS } from "~/config/constants";
+import { handleIncomingMessage } from "~/lib/chat/handleIncomingMessage";
 import { Chat } from "./chat-agent";
 import { WhatsAppAgent } from "./whatsapp-agent";
 
@@ -45,24 +47,8 @@ export default {
 		);
 
 		// Validate ENV variables
-		const requiredEnvVars = [
-			"OPENAI_API_KEY",
-			"DEEPSEEK_API_KEY",
-			"CLOUDFLARE_API_TOKEN",
-			"GEMINI_API_KEY",
-			"BETTER_AUTH_SECRET",
-			"GOOGLE_CLIENT_SECRET",
-			"VAPID_PUBLIC_KEY",
-			"VAPID_PRIVATE_KEY",
-			"TWILIO_ACCOUNT_SID",
-			"TWILIO_API_KEY",
-			"TWILIO_API_SECRET",
-			"TWILIO_AUTH_TOKEN",
-			"TWILIO_SERVICE_SID",
-			"TWILIO_EVENT_SYNC_ID",
-		] as const;
 
-		const missingVars = requiredEnvVars.filter(
+		const missingVars = REQUIRED_ENV_VARS.filter(
 			(varName) => !env[varName] || env[varName] === "",
 		);
 
@@ -146,5 +132,20 @@ export default {
 		return requestHandler(request, {
 			cloudflare: { env, ctx },
 		});
+	},
+
+	async queue(
+		batch: MessageBatch<any>,
+		env: CloudflareBindings,
+	): Promise<void> {
+		for (const message of batch.messages) {
+			try {
+				await handleIncomingMessage(message.body, env);
+				message.ack();
+			} catch (error) {
+				console.error("Error processing queue message:", error);
+				message.retry();
+			}
+		}
 	},
 } satisfies ExportedHandler<Env>;
