@@ -1,4 +1,3 @@
-import { TORREY_PILES_LAT_LNG } from "~/app/config/constants";
 import { getPointForecastV1PointGet } from "~/app/lib/swellcloud/swellcloud-api";
 
 export async function fetchSwellcloudForecast({
@@ -20,7 +19,7 @@ export async function fetchSwellcloudForecast({
 			lat,
 			lon,
 			model: "gfs", // default model
-			vars: "hs,tp,dp", // wave height, period, direction
+			vars: "hs,tp,dp,wndspd,wnddir", // wave height, period, direction, wind speed, wind direction
 			units: "uk", // UK units (feet for height)
 			start: now.toISOString(),
 			end: endDate.toISOString(),
@@ -44,7 +43,9 @@ export async function fetchSwellcloudForecast({
 	//       "time": "2025-12-27T21:00:00Z",
 	//       "hs": 3.35,
 	//       "tp": 12,
-	//       "dp": 271.52
+	//       "dp": 271.52,
+	//       "ws": 15.5,
+	//       "wd": 270,
 	//     },
 	//     ...
 	//   ],
@@ -58,6 +59,8 @@ export async function fetchSwellcloudForecast({
 					hs: number; // wave height
 					tp: number; // wave period
 					dp: number; // wave direction
+					wndspd: number; // wind speed
+					wnddir: number; // wind direction
 				}[];
 				model?: string;
 				model_info?: unknown;
@@ -88,30 +91,36 @@ export async function fetchSwellcloudForecast({
 		return { waves: [] };
 	}
 
-	const waveData = data.map(
-		(p: {
-			time: string; // ISO string
-			hs: number; // wave height
-			tp: number; // wave period
-			dp: number; // wave direction
-		}) => {
-			// Parse ISO string timestamp
-			const timestamp = new Date(p.time);
-			if (isNaN(timestamp.getTime())) {
-				console.warn(`Invalid timestamp: ${p.time}`);
-				return null;
-			}
+	const waveData = data
+		.map(
+			(p: {
+				time: string; // ISO string
+				hs: number; // wave height
+				tp: number; // wave period
+				dp: number; // wave direction
+				wndspd: number; // wind speed
+				wnddir: number; // wind direction
+			}) => {
+				// Parse ISO string timestamp
+				const timestamp = new Date(p.time);
+				if (isNaN(timestamp.getTime())) {
+					console.warn(`Invalid timestamp: ${p.time}`);
+					return null;
+				}
 
-			return {
-				timestamp,
-				waveHeightMin: p.hs,
-				waveHeightMax: p.hs,
-				wavePeriod: p.tp,
-				waveDirection: p.dp,
-				swells: JSON.stringify([]), // Swellcloud doesn't provide individual swell components with basic vars
-			};
-		},
-	).filter((w): w is NonNullable<typeof w> => w !== null);
+				return {
+					timestamp,
+					waveHeightMin: p.hs,
+					waveHeightMax: p.hs,
+					wavePeriod: p.tp,
+					waveDirection: p.dp,
+					windSpeed: p.wndspd,
+					windDirection: p.wnddir,
+					swells: JSON.stringify([]), // Swellcloud doesn't provide individual swell components with basic vars
+				};
+			},
+		)
+		.filter((w): w is NonNullable<typeof w> => w !== null);
 
 	return {
 		waves: waveData,

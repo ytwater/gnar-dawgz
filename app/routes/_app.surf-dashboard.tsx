@@ -1,10 +1,12 @@
 import { and, asc, eq, gte } from "drizzle-orm";
+import { useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 import {
 	Area,
 	AreaChart,
 	CartesianGrid,
+	ComposedChart,
 	Line,
 	LineChart,
 	XAxis,
@@ -26,6 +28,8 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "~/app/components/ui/chart";
+import { Checkbox } from "~/app/components/ui/checkbox";
+import { Label } from "~/app/components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -230,6 +234,10 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 		swellcloudHeight: number | null;
 		surflinePeriod: number | null;
 		swellcloudPeriod: number | null;
+		surflineWindSpeed: number | null;
+		swellcloudWindSpeed: number | null;
+		surflineWindDirection: number | null;
+		swellcloudWindDirection: number | null;
 		rating: string | null;
 	}[] = [];
 	const timestamps = Array.from(
@@ -252,6 +260,10 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 				swellcloudHeight: swWave ? swWave.waveHeightMax : null, // Swellcloud max=min in our fetcher
 				surflinePeriod: sWave ? sWave.wavePeriod : null,
 				swellcloudPeriod: swWave ? swWave.wavePeriod : null,
+				surflineWindSpeed: sWave ? sWave.windSpeed : null,
+				swellcloudWindSpeed: swWave ? swWave.windSpeed : null,
+				surflineWindDirection: sWave ? sWave.windDirection : null,
+				swellcloudWindDirection: swWave ? swWave.windDirection : null,
 				rating: sWave ? sWave.rating : null,
 			});
 		}
@@ -269,11 +281,11 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 
 const CHART_CONFIG = {
 	surflineHeight: {
-		label: "Surfline (ft)",
+		label: "Surfline Height (ft)",
 		color: "var(--chart-1)",
 	},
 	swellcloudHeight: {
-		label: "Swellcloud (ft)",
+		label: "Swellcloud Height (ft)",
 		color: "var(--chart-2)",
 	},
 	surflinePeriod: {
@@ -284,9 +296,133 @@ const CHART_CONFIG = {
 		label: "Swellcloud Period (s)",
 		color: "var(--chart-4)",
 	},
+	surflineWindSpeed: {
+		label: "Surfline Wind Speed (mph)",
+		color: "var(--chart-5)",
+	},
+	swellcloudWindSpeed: {
+		label: "Swellcloud Wind Speed (mph)",
+		color: "var(--chart-1)",
+	},
 } satisfies ChartConfig;
 
 type DashboardData = Awaited<ReturnType<typeof loader>>;
+
+function CustomTooltipContent({
+	active,
+	payload,
+	label,
+	showSurfline,
+	showSwellcloud,
+}: {
+	active?: boolean;
+	payload?: Array<{
+		dataKey?: string;
+		value?: number | string;
+		name?: string;
+		color?: string;
+		payload?: Record<string, unknown>;
+	}>;
+	label?: string;
+	showSurfline: boolean;
+	showSwellcloud: boolean;
+}) {
+	if (!active || !payload?.length) return null;
+
+	const data = payload[0]?.payload as
+		| {
+				surflineWindDirection?: number | null;
+				swellcloudWindDirection?: number | null;
+		  }
+		| undefined;
+	if (!data) return null;
+
+	const getDirectionLabel = (degrees: number | null | undefined) => {
+		if (degrees === null || degrees === undefined) return null;
+		const directions = [
+			"N",
+			"NNE",
+			"NE",
+			"ENE",
+			"E",
+			"ESE",
+			"SE",
+			"SSE",
+			"S",
+			"SSW",
+			"SW",
+			"WSW",
+			"W",
+			"WNW",
+			"NW",
+			"NNW",
+		];
+		const index = Math.round(degrees / 22.5) % 16;
+		return `${directions[index]} (${degrees.toFixed(0)}°)`;
+	};
+
+	return (
+		<div className="border-border/50 bg-background rounded-lg border px-3 py-2 text-xs shadow-xl">
+			<div className="font-medium mb-2">{label}</div>
+			<div className="space-y-1">
+				{payload
+					.filter((item) => item.value !== null && item.value !== undefined)
+					.map((item) => {
+						const nameStr = String(item.dataKey || item.name || "");
+						const label =
+							CHART_CONFIG[nameStr as keyof typeof CHART_CONFIG]?.label ||
+							nameStr;
+						const value =
+							typeof item.value === "number"
+								? item.value
+								: Number.parseFloat(String(item.value));
+						if (Number.isNaN(value)) return null;
+
+						let displayValue = "";
+						if (nameStr.includes("WindSpeed")) {
+							displayValue = `${value.toFixed(1)} mph`;
+						} else if (nameStr.includes("Height")) {
+							displayValue = `${value.toFixed(1)} ft`;
+						} else if (nameStr.includes("Period")) {
+							displayValue = `${value.toFixed(0)}s`;
+						} else {
+							displayValue = value.toFixed(1);
+						}
+
+						return (
+							<div key={item.dataKey} className="flex items-center gap-2">
+								<div
+									className="h-2 w-2 rounded-[2px]"
+									style={{ backgroundColor: item.color }}
+								/>
+								<span className="text-muted-foreground">{label}:</span>
+								<span className="font-mono font-medium">{displayValue}</span>
+							</div>
+						);
+					})}
+				{/* Wind Direction Info */}
+				{(data.surflineWindDirection !== null ||
+					data.swellcloudWindDirection !== null) && (
+					<div className="pt-2 mt-2 border-t border-border/50">
+						<div className="text-muted-foreground text-[10px] font-medium mb-1">
+							Wind Direction:
+						</div>
+						{data.surflineWindDirection !== null && showSurfline && (
+							<div className="text-[10px]">
+								Surfline: {getDirectionLabel(data.surflineWindDirection)}
+							</div>
+						)}
+						{data.swellcloudWindDirection !== null && showSwellcloud && (
+							<div className="text-[10px]">
+								Swellcloud: {getDirectionLabel(data.swellcloudWindDirection)}
+							</div>
+						)}
+					</div>
+				)}
+			</div>
+		</div>
+	);
+}
 
 export function SurfDashboardContent({
 	data,
@@ -305,11 +441,25 @@ export function SurfDashboardContent({
 		dailyForecasts,
 	} = data;
 
+	const [showSurfline, setShowSurfline] = useState(true);
+	const [showSwellcloud, setShowSwellcloud] = useState(true);
+
 	const handleSpotChange = (value: string) => {
 		if (onSpotChange) {
 			onSpotChange(value);
 		}
 	};
+
+	// Filter data based on checkboxes
+	const filteredData = combinedData.map((item) => ({
+		...item,
+		surflineHeight: showSurfline ? item.surflineHeight : null,
+		surflinePeriod: showSurfline ? item.surflinePeriod : null,
+		surflineWindSpeed: showSurfline ? item.surflineWindSpeed : null,
+		swellcloudHeight: showSwellcloud ? item.swellcloudHeight : null,
+		swellcloudPeriod: showSwellcloud ? item.swellcloudPeriod : null,
+		swellcloudWindSpeed: showSwellcloud ? item.swellcloudWindSpeed : null,
+	}));
 
 	return (
 		<div className="container mx-auto py-8 space-y-8">
@@ -473,18 +623,56 @@ export function SurfDashboardContent({
 					</Card>
 
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						{/* Wave Height Comparison */}
+						{/* Combined Wave Height, Period, and Wind Chart */}
 						<Card className="col-span-1 md:col-span-2">
 							<CardHeader>
-								<CardTitle>Wave Height Comparison</CardTitle>
-								<CardDescription>Average wave height in feet</CardDescription>
+								<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+									<div>
+										<CardTitle>Wave Height, Period & Wind</CardTitle>
+										<CardDescription>
+											Wave height (ft), period (s), and wind speed (mph)
+										</CardDescription>
+									</div>
+									<div className="flex items-center gap-6">
+										<div className="flex items-center gap-2">
+											<Checkbox
+												id="show-surfline"
+												checked={showSurfline}
+												onCheckedChange={(checked) =>
+													setShowSurfline(checked === true)
+												}
+											/>
+											<Label
+												htmlFor="show-surfline"
+												className="text-sm font-medium cursor-pointer"
+											>
+												Surfline
+											</Label>
+										</div>
+										<div className="flex items-center gap-2">
+											<Checkbox
+												id="show-swellcloud"
+												checked={showSwellcloud}
+												onCheckedChange={(checked) =>
+													setShowSwellcloud(checked === true)
+												}
+											/>
+											<Label
+												htmlFor="show-swellcloud"
+												className="text-sm font-medium cursor-pointer"
+											>
+												Swellcloud
+											</Label>
+										</div>
+									</div>
+								</div>
 							</CardHeader>
 							<CardContent>
 								<ChartContainer
 									config={CHART_CONFIG}
-									className="min-h-[300px] w-full"
+									className="min-h-[400px] w-full"
 								>
-									<LineChart accessibilityLayer data={combinedData}>
+									<ComposedChart accessibilityLayer data={filteredData}>
 										<CartesianGrid vertical={false} strokeDasharray="3 3" />
 										<XAxis
 											dataKey="dateStr"
@@ -492,10 +680,39 @@ export function SurfDashboardContent({
 											axisLine={false}
 											tickMargin={8}
 										/>
-										<YAxis tickLine={false} axisLine={false} unit="ft" />
-										<ChartTooltip content={<ChartTooltipContent />} />
+										<YAxis
+											yAxisId="left"
+											tickLine={false}
+											axisLine={false}
+											label={{
+												value: "Height (ft) / Period (s)",
+												angle: -90,
+												position: "insideLeft",
+											}}
+										/>
+										<YAxis
+											yAxisId="right"
+											orientation="right"
+											tickLine={false}
+											axisLine={false}
+											label={{
+												value: "Wind Speed (mph)",
+												angle: 90,
+												position: "insideRight",
+											}}
+										/>
+										<ChartTooltip
+											content={
+												<CustomTooltipContent
+													showSurfline={showSurfline}
+													showSwellcloud={showSwellcloud}
+												/>
+											}
+										/>
 										<ChartLegend content={<ChartLegendContent />} />
+										{/* Wave Heights */}
 										<Line
+											yAxisId="left"
 											type="monotone"
 											dataKey="surflineHeight"
 											stroke="var(--color-surflineHeight)"
@@ -505,6 +722,7 @@ export function SurfDashboardContent({
 											activeDot={{ r: 4 }}
 										/>
 										<Line
+											yAxisId="left"
 											type="monotone"
 											dataKey="swellcloudHeight"
 											stroke="var(--color-swellcloudHeight)"
@@ -513,54 +731,53 @@ export function SurfDashboardContent({
 											connectNulls={true}
 											activeDot={{ r: 4 }}
 										/>
-									</LineChart>
-								</ChartContainer>
-							</CardContent>
-						</Card>
-
-						{/* Wave Period Comparison */}
-						<Card>
-							<CardHeader>
-								<CardTitle>Wave Period</CardTitle>
-								<CardDescription>
-									Primary swell period in seconds
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<ChartContainer
-									config={CHART_CONFIG}
-									className="min-h-[300px] w-full"
-								>
-									<LineChart accessibilityLayer data={combinedData}>
-										<CartesianGrid vertical={false} strokeDasharray="3 3" />
-										<XAxis
-											dataKey="dateStr"
-											tickLine={false}
-											axisLine={false}
-											tickMargin={8}
-										/>
-										<YAxis tickLine={false} axisLine={false} unit="s" />
-										<ChartTooltip content={<ChartTooltipContent />} />
-										<ChartLegend content={<ChartLegendContent />} />
+										{/* Wave Periods */}
 										<Line
+											yAxisId="left"
 											type="monotone"
 											dataKey="surflinePeriod"
 											stroke="var(--color-surflinePeriod)"
 											strokeWidth={2}
+											strokeDasharray="5 5"
 											dot={false}
 											connectNulls={true}
 											activeDot={{ r: 4 }}
 										/>
 										<Line
+											yAxisId="left"
 											type="monotone"
 											dataKey="swellcloudPeriod"
 											stroke="var(--color-swellcloudPeriod)"
 											strokeWidth={2}
+											strokeDasharray="5 5"
 											dot={false}
 											connectNulls={true}
 											activeDot={{ r: 4 }}
 										/>
-									</LineChart>
+										{/* Wind Speeds */}
+										<Line
+											yAxisId="right"
+											type="monotone"
+											dataKey="surflineWindSpeed"
+											stroke="var(--color-surflineWindSpeed)"
+											strokeWidth={2}
+											strokeDasharray="3 3"
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
+										/>
+										<Line
+											yAxisId="right"
+											type="monotone"
+											dataKey="swellcloudWindSpeed"
+											stroke="var(--color-swellcloudWindSpeed)"
+											strokeWidth={2}
+											strokeDasharray="3 3"
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
+										/>
+									</ComposedChart>
 								</ChartContainer>
 							</CardContent>
 						</Card>

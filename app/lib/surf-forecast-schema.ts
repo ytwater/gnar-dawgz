@@ -56,6 +56,10 @@ export const surfForecasts = sqliteTable(
 		wavePeriod: real("wave_period"),
 		waveDirection: real("wave_direction"),
 
+		windSpeed: real("wind_speed"),
+		windDirection: real("wind_direction"),
+		temperature: real("temperature"),
+
 		rating: text("rating"), // surfline only: "POOR", "FAIR", etc.
 
 		swells: text("swells"), // JSON string for multiple swell components

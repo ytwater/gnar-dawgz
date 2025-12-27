@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import {
 	SURFLINE_TORREY_PINES_SPOT_ID,
 	TORREY_PILES_LAT_LNG,
@@ -23,10 +23,15 @@ export async function syncSurfForecasts(
 	const now = new Date();
 
 	// 0. Ensure we have at least Torrey Pines
-	const spots = await db
+	// For cron updates (no spotId), only sync the spot with oldest/blank lastSyncedAt
+	const baseQuery = db
 		.select()
 		.from(surfSpots)
 		.where(spotId ? eq(surfSpots.id, spotId) : eq(surfSpots.isActive, true));
+
+	const spots = spotId
+		? await baseQuery
+		: await baseQuery.orderBy(asc(surfSpots.lastSyncedAt)).limit(1);
 
 	for (const spot of spots) {
 		const currentSpotId = spot.id;
@@ -49,6 +54,9 @@ export async function syncSurfForecasts(
 							waveDirection: number;
 							rating?: string;
 							swells: string;
+							windSpeed?: number;
+							windDirection?: number;
+							temperature?: number;
 						}) => ({
 							id: `surfline_${currentSpotId}_${w.timestamp.getTime()}`,
 							source: "surfline",
@@ -58,6 +66,9 @@ export async function syncSurfForecasts(
 							waveHeightMax: w.waveHeightMax,
 							wavePeriod: w.wavePeriod,
 							waveDirection: w.waveDirection,
+							windSpeed: w.windSpeed,
+							windDirection: w.windDirection,
+							temperature: w.temperature,
 							rating: w.rating,
 							swells: w.swells,
 						}),
@@ -79,6 +90,9 @@ export async function syncSurfForecasts(
 									waveHeightMax: sql`excluded.wave_height_max`,
 									wavePeriod: sql`excluded.wave_period`,
 									waveDirection: sql`excluded.wave_direction`,
+									windSpeed: sql`excluded.wind_speed`,
+									windDirection: sql`excluded.wind_direction`,
+									temperature: sql`excluded.temperature`,
 									rating: sql`excluded.rating`,
 									swells: sql`excluded.swells`,
 									fetchedAt: new Date(),
@@ -164,6 +178,9 @@ export async function syncSurfForecasts(
 						wavePeriod: number;
 						waveDirection: number;
 						swells: string;
+						windSpeed?: number;
+						windDirection?: number;
+						temperature?: number;
 					}) => ({
 						id: `swellcloud_${currentSpotId}_${w.timestamp.getTime()}`,
 						source: "swellcloud",
@@ -173,6 +190,9 @@ export async function syncSurfForecasts(
 						waveHeightMax: w.waveHeightMax,
 						wavePeriod: w.wavePeriod,
 						waveDirection: w.waveDirection,
+						windSpeed: w.windSpeed,
+						windDirection: w.windDirection,
+						temperature: w.temperature,
 						swells: w.swells,
 					}),
 				);
@@ -197,6 +217,9 @@ export async function syncSurfForecasts(
 								waveHeightMax: sql`excluded.wave_height_max`,
 								wavePeriod: sql`excluded.wave_period`,
 								waveDirection: sql`excluded.wave_direction`,
+								windSpeed: sql`excluded.wind_speed`,
+								windDirection: sql`excluded.wind_direction`,
+								temperature: sql`excluded.temperature`,
 								swells: sql`excluded.swells`,
 								fetchedAt: new Date(),
 							},

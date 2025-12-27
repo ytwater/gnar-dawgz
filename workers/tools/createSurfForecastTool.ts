@@ -6,11 +6,16 @@
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateText, tool } from "ai";
 import { add, set } from "date-fns";
+import { and, asc, eq, gte, lte } from "drizzle-orm";
 import { z } from "zod";
-import { TORREY_PILES_LAT_LNG } from "~/app/config/constants";
-import { getPointForecastV1PointGet } from "~/app/lib/swellcloud/swellcloud-api";
+import { SURFLINE_TORREY_PINES_SPOT_ID } from "~/app/config/constants";
+import { getDb } from "~/app/lib/db";
+import { surfForecasts, surfSpots } from "~/app/lib/surf-forecast-schema";
 
-export const createSurfForecastTool = (env: CloudflareBindings) =>
+export const createSurfForecastTool = (
+	env: CloudflareBindings,
+	source: "surfline" | "swellcloud" = "swellcloud",
+) =>
 	tool({
 		description:
 			"get the surf forecast for a specified location.  It will default to tomorrows forecast if no start or end date is provided.",
@@ -39,26 +44,60 @@ export const createSurfForecastTool = (env: CloudflareBindings) =>
 			),
 		}),
 		execute: async ({ startDate, endDate }) => {
-			const swellCloudApiKey = env.SWELL_CLOUD_API_KEY;
-			if (!swellCloudApiKey) {
-				return "Error: Swell Cloud API key is not set";
+			const db = getDb(env.DB);
+
+			// Find Torrey Pines spot
+			const torreyPines = await db
+				.select()
+				.from(surfSpots)
+				.where(
+					and(
+						eq(surfSpots.isActive, true),
+						eq(surfSpots.id, SURFLINE_TORREY_PINES_SPOT_ID),
+					),
+				)
+				.limit(1);
+
+			if (!torreyPines || torreyPines.length === 0) {
+				return "Error: Torrey Pines surf spot not found in database";
 			}
-			const response = await getPointForecastV1PointGet(
-				{
-					lat: TORREY_PILES_LAT_LNG.lat,
-					lon: TORREY_PILES_LAT_LNG.lng,
-					start: startDate,
-					end: endDate,
-					model: "gfs",
-					vars: "hs,tp,dp,wndspd,wnddir,ss_hs,ss_dp",
-					units: "uk",
-				},
-				{
-					headers: {
-						"X-API-Key": swellCloudApiKey,
-					},
-				},
-			);
+
+			const spot = torreyPines[0];
+			const startDateObj = new Date(startDate);
+			const endDateObj = new Date(endDate);
+
+			// Query forecasts from database
+			const forecasts = await db
+				.select()
+				.from(surfForecasts)
+				.where(
+					and(
+						eq(surfForecasts.spotId, spot.id),
+						eq(surfForecasts.source, source),
+						gte(surfForecasts.timestamp, startDateObj),
+						lte(surfForecasts.timestamp, endDateObj),
+					),
+				)
+				.orderBy(asc(surfForecasts.timestamp));
+
+			if (forecasts.length === 0) {
+				return "No forecast data available for the specified date range";
+			}
+
+			// Format forecasts for the prompt
+			const forecastData = forecasts.map((f) => ({
+				timestamp: new Date(f.timestamp).toISOString(),
+				source: f.source,
+				waveHeightMin: f.waveHeightMin,
+				waveHeightMax: f.waveHeightMax,
+				wavePeriod: f.wavePeriod,
+				waveDirection: f.waveDirection,
+				windSpeed: f.windSpeed,
+				windDirection: f.windDirection,
+				temperature: f.temperature,
+				rating: f.rating,
+				swells: f.swells ? JSON.parse(f.swells) : null,
+			}));
 
 			const today = set(new Date(), {
 				hours: 0,
@@ -67,19 +106,22 @@ export const createSurfForecastTool = (env: CloudflareBindings) =>
 				milliseconds: 0,
 			}).toISOString();
 
-			const FORECAST_PROMPT = `Given the following JSON of wind and swell data for the following start and end dates: ${startDate} to ${endDate} at Torrey Pines beach, today is ${today} (all dates are in UTC - .toISOString() format), can you rate the surf quality for each day?  If the duration is a single day, give us a forecast for morning and afternoon for the local time. Can you write it as a concise WhatsApp message with details for the next couple of days? Just output the text of the message.  Feel free to use WhatsApp formatting.
-Variables
-hs - Wave height (m or ft)
-tp - Peak wave period (s)
-dp - Wave direction (°)
-ss_hs - Secondary swell height (m or ft)
-ss_dp - Secondary swell direction (°)
-ww_hs - Wind wave height (m or ft)
-ww_dp - Wind wave direction (°)
-wndspd - Wind speed (m/s or mph)
-wnddir - Wind direction (°)
+			const FORECAST_PROMPT = `Given the following JSON of surf forecast data for the following start and end dates: ${startDate} to ${endDate} at Torrey Pines beach, today is ${today} (all dates are in UTC - .toISOString() format), can you rate the surf quality for each day?  If the duration is a single day, give us a forecast for morning and afternoon for the local time. Can you write it as a concise WhatsApp message with details for the next couple of days? Just output the text of the message.  Feel free to use WhatsApp formatting.
 
- ${JSON.stringify(response.data)}`;
+Variables:
+- timestamp - Forecast timestamp (ISO string)
+- source - Data source ("surfline" or "swellcloud")
+- waveHeightMin - Minimum wave height (feet)
+- waveHeightMax - Maximum wave height (feet)
+- wavePeriod - Wave period in seconds
+- waveDirection - Wave direction in degrees (0-360, where 0 is North)
+- windSpeed - Wind speed (units vary by source)
+- windDirection - Wind direction in degrees (0-360, where 0 is North)
+- temperature - Air temperature (units vary by source)
+- rating - Surf quality rating (surfline only: "POOR", "FAIR", "GOOD", "EPIC", etc.)
+- swells - JSON object containing multiple swell components (may be null)
+
+ ${JSON.stringify(forecastData)}`;
 			const baseURL = `https://gateway.ai.cloudflare.com/v1/${env.ACCOUNT_ID}/${env.AI_GATEWAY_ID}/deepseek`;
 			const deepseek = createDeepSeek({
 				apiKey: env.DEEPSEEK_API_KEY ?? "",
