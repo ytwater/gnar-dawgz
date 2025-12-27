@@ -286,11 +286,15 @@ const CHART_CONFIG = {
 	},
 } satisfies ChartConfig;
 
-export default function SurfDashboard() {
-	const data = useLoaderData<typeof loader>();
-	const navigate = useNavigate();
-	const [searchParams] = useSearchParams();
+type DashboardData = Awaited<ReturnType<typeof loader>>;
 
+export function SurfDashboardContent({
+	data,
+	onSpotChange,
+}: {
+	data: DashboardData;
+	onSpotChange?: (value: string) => void;
+}) {
 	if (!data) return null;
 	const {
 		combinedData,
@@ -302,9 +306,9 @@ export default function SurfDashboard() {
 	} = data;
 
 	const handleSpotChange = (value: string) => {
-		const params = new URLSearchParams(searchParams);
-		params.set("spotId", value);
-		navigate(`?${params.toString()}`);
+		if (onSpotChange) {
+			onSpotChange(value);
+		}
 	};
 
 	return (
@@ -615,4 +619,18 @@ export default function SurfDashboard() {
 			)}
 		</div>
 	);
+}
+
+export default function SurfDashboard() {
+	const data = useLoaderData<typeof loader>();
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
+
+	const handleSpotChange = (value: string) => {
+		const params = new URLSearchParams(searchParams);
+		params.set("spotId", value);
+		navigate(`?${params.toString()}`);
+	};
+
+	return <SurfDashboardContent data={data} onSpotChange={handleSpotChange} />;
 }
