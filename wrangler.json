@@ -22,7 +22,7 @@
 		"VAPID_SUBJECT": "https://gnardawgs.surf",
 		"TWILIO_SERVICE_SID": "ISc485decce355478e8ddb9b82dec4ccaa",
 		"TWILIO_EVENT_SYNC_ID_DEV": "DGbd9f47b1c0b9e4f7ce4222a2fdb9bfc2",
-		"TWILIO_EVENT_SYNC_ID_PROD": "DFa3b682c8b233d900f5ad05f434d6e884"
+		"TWILIO_EVENT_SYNC_ID_PROD": "DF2ebba80cc2694b7d743dcc6b346bebec"
 	},
 	"observability": {
 		"enabled": true

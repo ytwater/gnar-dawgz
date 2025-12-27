@@ -1,3 +1,8 @@
+import { TWILIO_WHATSAPP_NUMBER } from "~/config/constants";
+import {
+	type CreateMessageBody,
+	createMessage,
+} from "~/lib/twilio/classic-messages-api";
 import type { Route } from "./+types/api.whatsapp.webhook";
 
 /**
@@ -118,27 +123,28 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 		// Handle array of events (CloudEvents format)
 		const events = Array.isArray(params) ? params : [params];
+		const eventPromises = [];
 		for (const event of events) {
 			if (event?.type === "com.twilio.messaging.inbound-message.received") {
+				console.log(`processing message: ${event.data.body}`);
 				// Offload processing to Cloudflare Queue
-				await env.WHATSAPP_QUEUE.send(event);
+				const senderNumber = event.data.from;
+
+				const payload: CreateMessageBody = {
+					From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
+					To: senderNumber,
+					Body: "Thinking...",
+				};
+
+				// console.log("🚀 ~ handleIncomingMessage ~ sending response:", payload);
+				eventPromises.push(createMessage(env, payload));
+				eventPromises.push(env.WHATSAPP_QUEUE.send(event));
 			}
 		}
+		await Promise.all(eventPromises);
 
-		console.log("webhook enqueued events and sending response 'Thinking...'");
-		// Return immediate TwiML response to prevent Twilio timeout
-		// and provide "Thinking..." feedback to the user
-		return new Response(
-			`<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Message>Thinking...</Message>
-</Response>`,
-			{
-				headers: {
-					"Content-Type": "text/xml",
-				},
-			},
-		);
+		console.log("webhook finished");
+		return Response.json({ success: true }, { status: 200 });
 	} catch (error) {
 		console.error(
 			"Error in api.whatsapp.webhook.ts:",

@@ -7,7 +7,6 @@ module.exports = {
 			client: "react-query",
 			baseUrl: "https://conversations.twilio.com",
 			httpClient: "fetch",
-			prettier: true,
 			indexFiles: true,
 			override: {
 				operations: {
@@ -29,6 +28,9 @@ module.exports = {
 			target:
 				"https://raw.githubusercontent.com/twilio/twilio-oai/refs/heads/main/spec/json/twilio_conversations_v1.json",
 		},
+		hooks: {
+			afterAllFilesWrite: "npx biome format",
+		},
 	},
 	eventsApi: {
 		output: {
@@ -38,7 +40,6 @@ module.exports = {
 			client: "react-query",
 			baseUrl: "https://events.twilio.com",
 			httpClient: "fetch",
-			prettier: true,
 			indexFiles: true,
 			override: {
 				operations: {
@@ -69,7 +70,6 @@ module.exports = {
 			client: "react-query",
 			baseUrl: "https://api.twilio.com",
 			httpClient: "fetch",
-			prettier: true,
 			indexFiles: true,
 			override: {
 				operations: {
@@ -100,7 +100,6 @@ module.exports = {
 			client: "react-query",
 			baseUrl: "https://messaging.twilio.com",
 			httpClient: "fetch",
-			prettier: true,
 			indexFiles: true,
 			override: {
 				operations: {
@@ -131,7 +130,6 @@ module.exports = {
 			client: "react-query",
 			baseUrl: "https://api.swellcloud.net",
 			httpClient: "fetch",
-			prettier: true,
 			indexFiles: true,
 			override: {
 				operations: {

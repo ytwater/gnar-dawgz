@@ -1,4 +1,7 @@
-export const ADMIN_USER_IDS = ["ZvUmzplbR8KA82sSPom7UmkrgTM9XtXp"] as const;
+export const ADMIN_USER_IDS = [
+	"ZvUmzplbR8KA82sSPom7UmkrgTM9XtXp", // ytwater Dev
+	"vtpk6yV3s0xpTafnEJEC2IA8DKJHBzjd", // ytwater Prod
+] as const;
 export const MAIN_CONVERSATION_UNIQUE_NAME = "main" as const;
 export const TWILIO_WHATSAPP_NUMBER = "+18589520996" as const;
 

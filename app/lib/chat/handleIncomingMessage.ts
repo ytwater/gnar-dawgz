@@ -76,7 +76,7 @@ export async function handleIncomingMessage(
 
 		if (usersResult.length === 0) {
 			console.log("User not found", fromNumber);
-			return;
+			throw new Error(`User not found for number ${fromNumber}`);
 		}
 
 		const user = usersResult[0];
