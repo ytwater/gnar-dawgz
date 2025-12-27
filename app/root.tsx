@@ -10,8 +10,8 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { TooltipProvider } from "~/app/providers/TooltipProvider";
 import { ThemeProvider } from "~/app/providers/ThemeProvider";
+import { TooltipProvider } from "~/app/providers/TooltipProvider";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -54,8 +54,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
 			<head>
-				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<script
 					dangerouslySetInnerHTML={{
 						__html: `
@@ -75,6 +73,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             `,
 					}}
 				/>
+				<meta charSet="utf-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<style>{`
           /* Critical CSS for FCP */
           body { margin: 0; }
