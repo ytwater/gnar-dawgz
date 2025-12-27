@@ -1,3 +1,4 @@
+import { Layout } from "~/app/components/layout";
 import type { Route } from "./+types/_index";
 
 export function meta(_: Route.MetaArgs) {

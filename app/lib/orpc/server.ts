@@ -1,8 +1,8 @@
 import { os } from "@orpc/server";
 import { z } from "zod";
-import { ADMIN_USER_IDS } from "~/config/constants";
-import type { Auth } from "~/lib/auth";
-import type { getDb } from "~/lib/db";
+import { ADMIN_USER_IDS } from "~/app/config/constants";
+import type { Auth } from "~/app/lib/auth";
+import type { getDb } from "~/app/lib/db";
 
 export interface ORPCContext {
 	env: CloudflareBindings;

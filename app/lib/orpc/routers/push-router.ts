@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { pushSubscriptions } from "~/lib/push-subscriptions-schema";
-import { sendWebPushNotification } from "~/lib/web-push-helpers";
+import { pushSubscriptions } from "~/app/lib/push-subscriptions-schema";
+import { sendWebPushNotification } from "~/app/lib/web-push-helpers";
 import { authedProcedure, publicProcedure } from "../server";
 
 export const pushRouter = {

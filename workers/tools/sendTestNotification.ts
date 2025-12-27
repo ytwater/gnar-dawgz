@@ -1,14 +1,14 @@
+import { getCurrentAgent } from "agents";
 /**
  * Tool to send a test push notification to a user
  * This executes automatically without requiring human confirmation
  */
 import { tool } from "ai";
-import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { getCurrentAgent } from "agents";
-import { getDb } from "~/lib/db";
-import { pushSubscriptions } from "~/lib/push-subscriptions-schema";
-import { sendWebPushNotification } from "~/lib/web-push-helpers";
+import { z } from "zod";
+import { getDb } from "~/app/lib/db";
+import { pushSubscriptions } from "~/app/lib/push-subscriptions-schema";
+import { sendWebPushNotification } from "~/app/lib/web-push-helpers";
 import type { Chat } from "../chat-agent";
 
 export const sendTestNotification = tool({
@@ -88,4 +88,3 @@ export const sendTestNotification = tool({
 		}
 	},
 });
-

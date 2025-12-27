@@ -10,7 +10,8 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { TooltipProvider } from "~/providers/TooltipProvider";
+import { TooltipProvider } from "~/app/providers/TooltipProvider";
+import { ThemeProvider } from "~/app/providers/ThemeProvider";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -55,6 +56,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
+              (function() {
+                const theme = localStorage.getItem('theme') || 'system';
+                const resolved = theme === 'system' 
+                  ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                  : theme;
+                if (resolved === 'dark') {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                }
+              })();
+            `,
+					}}
+				/>
 				<style>{`
           /* Critical CSS for FCP */
           body { margin: 0; }
@@ -91,9 +111,11 @@ export default function App() {
 	}
 	return (
 		<QueryClientProvider client={queryClient}>
-			<TooltipProvider>
-				<Outlet />
-			</TooltipProvider>
+			<ThemeProvider>
+				<TooltipProvider>
+					<Outlet />
+				</TooltipProvider>
+			</ThemeProvider>
 		</QueryClientProvider>
 	);
 }

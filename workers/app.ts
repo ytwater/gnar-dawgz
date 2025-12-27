@@ -1,7 +1,7 @@
 import { routeAgentRequest } from "agents";
 import { createRequestHandler } from "react-router";
-import { REQUIRED_ENV_VARS } from "~/config/constants";
-import { handleIncomingMessage } from "~/lib/chat/handleIncomingMessage";
+import { REQUIRED_ENV_VARS } from "~/app/config/constants";
+import { handleIncomingMessage } from "~/app/lib/chat/handleIncomingMessage";
 import { Chat } from "./chat-agent";
 import { WhatsAppAgent } from "./whatsapp-agent";
 

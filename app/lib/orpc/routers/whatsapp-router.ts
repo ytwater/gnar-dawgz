@@ -3,13 +3,13 @@ import {
 	ADMIN_USER_IDS,
 	MAIN_CONVERSATION_UNIQUE_NAME,
 	TWILIO_WHATSAPP_NUMBER,
-} from "~/config/constants";
+} from "~/app/config/constants";
 import {
 	createServiceConversationParticipant,
 	deleteServiceConversationParticipant,
 	fetchServiceConversation,
 	listServiceConversationParticipant,
-} from "~/lib/twilio/conversation-api";
+} from "~/app/lib/twilio/conversation-api";
 import { authedProcedure, publicProcedure } from "../server";
 
 function getTwilioAuthHeaders(env: CloudflareBindings): HeadersInit {

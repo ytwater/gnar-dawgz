@@ -7,8 +7,8 @@ import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateText, tool } from "ai";
 import { add, set } from "date-fns";
 import { z } from "zod";
-import { TORREY_PILES_LAT_LNG } from "~/config/constants";
-import { getPointForecastV1PointGet } from "~/lib/swellcloud/swellcloud-api";
+import { TORREY_PILES_LAT_LNG } from "~/app/config/constants";
+import { getPointForecastV1PointGet } from "~/app/lib/swellcloud/swellcloud-api";
 
 export const createSurfForecastTool = (env: CloudflareBindings) =>
 	tool({

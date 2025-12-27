@@ -1,7 +1,7 @@
 import { RPCHandler } from "@orpc/server/fetch";
-import { createAuth } from "~/lib/auth";
-import { getDb } from "~/lib/db";
-import { appRouter } from "~/lib/orpc/router";
+import { createAuth } from "~/app/lib/auth";
+import { getDb } from "~/app/lib/db";
+import { appRouter } from "~/app/lib/orpc/router";
 import type { Route } from "./+types/api.orpc.$";
 
 export async function loader({ request, context }: Route.LoaderArgs) {

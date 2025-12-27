@@ -1,8 +1,8 @@
 import { desc, eq } from "drizzle-orm";
 import { Form, redirect, useLoaderData } from "react-router";
-import { accessRequests } from "~/lib/app-schema";
-import { createAuth } from "~/lib/auth";
-import { getDb } from "~/lib/db";
+import { accessRequests } from "~/app/lib/app-schema";
+import { createAuth } from "~/app/lib/auth";
+import { getDb } from "~/app/lib/db";
 import type { Route } from "../+types/admin";
 
 export const loader = async ({ request, context }: Route.LoaderArgs) => {

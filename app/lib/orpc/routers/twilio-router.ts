@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { MAIN_CONVERSATION_UNIQUE_NAME } from "~/config/constants";
-import { createTwilioAccessTokenJwt } from "~/lib/twilio/access-token";
+import { MAIN_CONVERSATION_UNIQUE_NAME } from "~/app/config/constants";
+import { createTwilioAccessTokenJwt } from "~/app/lib/twilio/access-token";
 import {
 	createServiceConversation,
 	createServiceConversationMessage,
@@ -10,7 +10,7 @@ import {
 	listServiceConversation,
 	listServiceConversationMessage,
 	listServiceConversationParticipant,
-} from "~/lib/twilio/conversation-api";
+} from "~/app/lib/twilio/conversation-api";
 import {
 	createSubscribedEvent,
 	deleteSubscribedEvent,
@@ -21,8 +21,8 @@ import {
 	listSubscription,
 	updateSubscribedEvent,
 	updateSubscription,
-} from "~/lib/twilio/events-api";
-import { getTwilioAuthHeaders } from "~/lib/twilio/getTwilioAuthHeaders";
+} from "~/app/lib/twilio/events-api";
+import { getTwilioAuthHeaders } from "~/app/lib/twilio/getTwilioAuthHeaders";
 import { authedProcedure } from "../server";
 
 async function ensureConversationAndParticipant(

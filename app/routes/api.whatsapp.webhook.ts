@@ -1,8 +1,8 @@
-import { TWILIO_WHATSAPP_NUMBER } from "~/config/constants";
+import { TWILIO_WHATSAPP_NUMBER } from "~/app/config/constants";
 import {
 	type CreateMessageBody,
 	createMessage,
-} from "~/lib/twilio/classic-messages-api";
+} from "~/app/lib/twilio/classic-messages-api";
 import type { Route } from "./+types/api.whatsapp.webhook";
 
 /**
