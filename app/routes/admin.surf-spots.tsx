@@ -12,7 +12,7 @@ import {
 	Prohibit,
 	Trash,
 } from "@phosphor-icons/react";
-import { and, eq, like } from "drizzle-orm";
+import { HydrationBoundary } from "@tanstack/react-query";
 import { useState } from "react";
 import {
 	Form,
@@ -44,6 +44,22 @@ import {
 } from "~/app/components/ui/table";
 import { createAuth } from "~/app/lib/auth";
 import { getDb } from "~/app/lib/db";
+import {
+	getSpots,
+	getTaxonomy,
+	getTaxonomyBreadcrumbs,
+} from "~/app/lib/orpc/call-procedure";
+import { createORPCContext } from "~/app/lib/orpc/server-helpers";
+import {
+	createQueryClient,
+	dehydrateQueryClient,
+} from "~/app/lib/orpc/query-client";
+import {
+	surfForecastKeys,
+	useSpots,
+	useTaxonomy,
+	useTaxonomyBreadcrumbs,
+} from "~/app/lib/orpc/hooks/use-surf-forecast";
 import { surfSpots, surfTaxonomy } from "~/app/lib/surf-forecast-schema";
 import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 
@@ -80,45 +96,35 @@ export const loader = async ({ request, context }: Route.LoaderArgs) => {
 	const parentId = url.searchParams.get("parentId") || SOCAL_REGION_ID;
 	const search = url.searchParams.get("search") || "";
 
-	const db = getDb(context.cloudflare.env.DB);
+	const orpcContext = await createORPCContext(
+		context.cloudflare.env,
+		request,
+	);
 
-	// Fetch user spots
-	const spots = await db.select().from(surfSpots);
+	// Fetch data via ORPC
+	const [spots, taxonomyItems, breadcrumbs] = await Promise.all([
+		getSpots(orpcContext),
+		getTaxonomy(orpcContext, search ? undefined : parentId, search || undefined),
+		getTaxonomyBreadcrumbs(orpcContext, parentId),
+	]);
 
-	// Fetch taxonomy from cache
-	let taxonomyItems = [];
-	if (search) {
-		taxonomyItems = await db
-			.select()
-			.from(surfTaxonomy)
-			.where(and(like(surfTaxonomy.name, `%${search}%`)))
-			.limit(50);
-	} else {
-		taxonomyItems = await db
-			.select()
-			.from(surfTaxonomy)
-			.where(eq(surfTaxonomy.parentId, parentId))
-			.orderBy(surfTaxonomy.type, surfTaxonomy.name);
-	}
+	// Create query client and pre-populate
+	const queryClient = createQueryClient();
+	queryClient.setQueryData(surfForecastKeys.spots(), spots);
+	queryClient.setQueryData(
+		surfForecastKeys.taxonomy(search ? undefined : parentId, search || undefined),
+		taxonomyItems,
+	);
+	queryClient.setQueryData(
+		surfForecastKeys.taxonomyBreadcrumbs(parentId),
+		breadcrumbs,
+	);
 
-	// Get breadcrumbs
-	const breadcrumbs = [];
-	let currentId: string | null = parentId;
-	while (currentId && breadcrumbs.length < 5) {
-		const parent = await db
-			.select()
-			.from(surfTaxonomy)
-			.where(eq(surfTaxonomy.id, currentId))
-			.get();
-		if (parent) {
-			breadcrumbs.unshift(parent);
-			currentId = parent.parentId;
-		} else {
-			break;
-		}
-	}
-
-	return { spots, taxonomyItems, breadcrumbs, parentId, search };
+	return {
+		dehydratedState: dehydrateQueryClient(queryClient),
+		parentId,
+		search,
+	};
 };
 
 export const action = async ({ request, context }: Route.ActionArgs) => {
@@ -475,8 +481,8 @@ export const action = async ({ request, context }: Route.ActionArgs) => {
 };
 
 export default function AdminSurfSpots() {
-	const { spots, taxonomyItems, breadcrumbs, parentId, search } =
-		useLoaderData<typeof loader>();
+	const loaderData = useLoaderData<typeof loader>();
+	const { parentId, search } = loaderData;
 	const actionData = useActionData<typeof action>();
 	const navigation = useNavigation();
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -485,8 +491,17 @@ export default function AdminSurfSpots() {
 	const syncingSpotId = navigation.formData?.get("id") as string | undefined;
 	const isForceSyncing = navigation.formData?.get("intent") === "force-sync";
 
+	// Use tanstack-query hooks
+	const { data: spots = [] } = useSpots();
+	const { data: taxonomyItems = [] } = useTaxonomy(
+		search ? undefined : parentId,
+		search || undefined,
+	);
+	const { data: breadcrumbs = [] } = useTaxonomyBreadcrumbs(parentId);
+
 	return (
-		<div className="space-y-8 p-6">
+		<HydrationBoundary state={loaderData.dehydratedState}>
+			<div className="space-y-8 p-6">
 			<div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
 				<div>
 					<h1 className="text-4xl font-extrabold tracking-tight">
@@ -834,5 +849,6 @@ export default function AdminSurfSpots() {
 				</div>
 			</div>
 		</div>
+		</HydrationBoundary>
 	);
 }

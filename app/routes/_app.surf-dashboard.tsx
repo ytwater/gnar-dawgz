@@ -1,4 +1,4 @@
-import { and, asc, eq, gte } from "drizzle-orm";
+import { HydrationBoundary } from "@tanstack/react-query";
 import { useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useNavigate, useSearchParams } from "react-router";
@@ -9,9 +9,12 @@ import {
 	ComposedChart,
 	Line,
 	LineChart,
+	Label as RechartsLabel,
+	ReferenceLine,
 	XAxis,
 	YAxis,
 } from "recharts";
+import useLocalStorageState from "use-local-storage-state";
 import { Layout } from "~/app/components/layout";
 import {
 	Card,
@@ -37,29 +40,34 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/app/components/ui/select";
-import { getDb } from "~/app/lib/db";
 import {
-	surfForecasts,
-	surfSpots,
-	tideForecasts,
-} from "~/app/lib/surf-forecast-schema";
+	getActiveSpots,
+	getDashboardData,
+} from "~/app/lib/orpc/call-procedure";
+import {
+	surfForecastKeys,
+	useActiveSpots,
+	useDashboardData,
+} from "~/app/lib/orpc/hooks/use-surf-forecast";
+import {
+	createQueryClient,
+	dehydrateQueryClient,
+} from "~/app/lib/orpc/query-client";
+import { SURFLINE_TORREY_PINES_SPOT_ID } from "../config/constants";
+import { createORPCContext } from "../lib/orpc/server-helpers";
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
-	const db = getDb(context.cloudflare.env.DB);
+	const orpcContext = await createORPCContext(context.cloudflare.env, request);
 	const url = new URL(request.url);
-	const now = new Date();
-
-	const allSpots = await db
-		.select()
-		.from(surfSpots)
-		.where(eq(surfSpots.isActive, true));
+	console.log("LOADING SPOTS");
+	// Get active spots via ORPC routes
+	const allSpots = await getActiveSpots(orpcContext);
 
 	// Determine default spot: try Torrey Pines by name or id, otherwise first active spot
 	let defaultSpotId: string | null = null;
 	const torreyPines = allSpots.find(
-		(spot) =>
-			spot.id === "torrey_pines" ||
-			spot.name.toLowerCase().includes("torrey pines"),
+		(spot: (typeof allSpots)[number]) =>
+			spot.id === SURFLINE_TORREY_PINES_SPOT_ID,
 	);
 	if (torreyPines) {
 		defaultSpotId = torreyPines.id;
@@ -68,214 +76,43 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 	}
 
 	let selectedSpotId =
-		url.searchParams.get("spotId") || defaultSpotId || "torrey_pines";
+		url.searchParams.get("spotId") ||
+		defaultSpotId ||
+		SURFLINE_TORREY_PINES_SPOT_ID;
 
 	// Validate that the selected spot exists and is active
-	let selectedSpot = allSpots.find((spot) => spot.id === selectedSpotId);
+	let selectedSpot = allSpots.find(
+		(spot: (typeof allSpots)[number]) => spot.id === selectedSpotId,
+	);
 	if (!selectedSpot && defaultSpotId) {
 		// Fall back to default if selected spot doesn't exist
 		selectedSpotId = defaultSpotId;
-		selectedSpot = allSpots.find((spot) => spot.id === selectedSpotId);
+		selectedSpot = allSpots.find(
+			(spot: (typeof allSpots)[number]) => spot.id === selectedSpotId,
+		);
 	} else if (!selectedSpot && allSpots.length > 0) {
 		// Fall back to first active spot if default doesn't exist
 		selectedSpotId = allSpots[0].id;
 		selectedSpot = allSpots[0];
 	}
 
-	const allWaves = await db
-		.select()
-		.from(surfForecasts)
-		.where(
-			and(
-				eq(surfForecasts.spotId, selectedSpotId),
-				gte(surfForecasts.timestamp, now),
-			),
-		)
-		.orderBy(asc(surfForecasts.timestamp));
+	// Get dashboard data via ORPC routes
+	const dashboardData = await getDashboardData(orpcContext, selectedSpotId);
 
-	const allTides = await db
-		.select()
-		.from(tideForecasts)
-		.where(
-			and(
-				eq(tideForecasts.spotId, selectedSpotId),
-				gte(tideForecasts.timestamp, now),
-			),
-		)
-		.orderBy(asc(tideForecasts.timestamp));
-
-	// Group waves by source
-	const surflineWaves = allWaves.filter((w) => w.source === "surfline");
-	const swellcloudWaves = allWaves.filter((w) => w.source === "swellcloud");
-
-	// Group forecasts by day for the forecast widget (next 5 days)
-	const fiveDaysFromNow = new Date(now);
-	fiveDaysFromNow.setDate(fiveDaysFromNow.getDate() + 5);
-
-	const dailyForecasts: {
-		date: string;
-		dateObj: Date;
-		surfline: {
-			heightMin: number | null;
-			heightMax: number | null;
-			heightAvg: number | null;
-			period: number | null;
-			rating: string | null;
-		};
-		swellcloud: {
-			heightMin: number | null;
-			heightMax: number | null;
-			heightAvg: number | null;
-			period: number | null;
-		};
-	}[] = [];
-
-	// Group by day
-	const dayGroups = new Map<string, typeof allWaves>();
-	for (const wave of allWaves) {
-		if (wave.timestamp > fiveDaysFromNow) break;
-		const dayKey = wave.timestamp.toISOString().split("T")[0];
-		if (!dayGroups.has(dayKey)) {
-			dayGroups.set(dayKey, []);
-		}
-		const dayGroup = dayGroups.get(dayKey);
-		if (dayGroup) {
-			dayGroup.push(wave);
-		}
-	}
-
-	// Process each day
-	for (const [dayKey, waves] of dayGroups.entries()) {
-		const dayDate = new Date(`${dayKey}T00:00:00`);
-		const daySurfline = waves.filter((w) => w.source === "surfline");
-		const daySwellcloud = waves.filter((w) => w.source === "swellcloud");
-
-		const surflineHeights = daySurfline
-			.map((w) => {
-				if (w.waveHeightMin && w.waveHeightMax) {
-					return (w.waveHeightMin + w.waveHeightMax) / 2;
-				}
-				return null;
-			})
-			.filter((h): h is number => h !== null);
-
-		const swellcloudHeights = daySwellcloud
-			.map((w) => w.waveHeightMax)
-			.filter((h): h is number => h !== null);
-
-		const surflinePeriods = daySurfline
-			.map((w) => w.wavePeriod)
-			.filter((p): p is number => p !== null);
-
-		const swellcloudPeriods = daySwellcloud
-			.map((w) => w.wavePeriod)
-			.filter((p): p is number => p !== null);
-
-		dailyForecasts.push({
-			date: dayKey,
-			dateObj: dayDate,
-			surfline: {
-				heightMin:
-					daySurfline.length > 0
-						? Math.min(
-								...daySurfline
-									.map((w) => w.waveHeightMin)
-									.filter((h): h is number => h !== null),
-							)
-						: null,
-				heightMax:
-					daySurfline.length > 0
-						? Math.max(
-								...daySurfline
-									.map((w) => w.waveHeightMax)
-									.filter((h): h is number => h !== null),
-							)
-						: null,
-				heightAvg:
-					surflineHeights.length > 0
-						? surflineHeights.reduce((a, b) => a + b, 0) /
-							surflineHeights.length
-						: null,
-				period:
-					surflinePeriods.length > 0
-						? surflinePeriods.reduce((a, b) => a + b, 0) /
-							surflinePeriods.length
-						: null,
-				rating: daySurfline.find((w) => w.rating)?.rating || null,
-			},
-			swellcloud: {
-				heightMin:
-					swellcloudHeights.length > 0 ? Math.min(...swellcloudHeights) : null,
-				heightMax:
-					swellcloudHeights.length > 0 ? Math.max(...swellcloudHeights) : null,
-				heightAvg:
-					swellcloudHeights.length > 0
-						? swellcloudHeights.reduce((a, b) => a + b, 0) /
-							swellcloudHeights.length
-						: null,
-				period:
-					swellcloudPeriods.length > 0
-						? swellcloudPeriods.reduce((a, b) => a + b, 0) /
-							swellcloudPeriods.length
-						: null,
-			},
-		});
-	}
-
-	// Sort by date and limit to 5 days
-	dailyForecasts.sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
-	const nextFiveDays = dailyForecasts.slice(0, 5);
-
-	// Merge for comparison chart
-	const combinedData: {
-		timestamp: number;
-		dateStr: string;
-		surflineHeight: number | null;
-		swellcloudHeight: number | null;
-		surflinePeriod: number | null;
-		swellcloudPeriod: number | null;
-		surflineWindSpeed: number | null;
-		swellcloudWindSpeed: number | null;
-		surflineWindDirection: number | null;
-		swellcloudWindDirection: number | null;
-		rating: string | null;
-	}[] = [];
-	const timestamps = Array.from(
-		new Set(allWaves.map((w) => w.timestamp.getTime())),
-	).sort();
-
-	for (const ts of timestamps) {
-		const sWave = surflineWaves.find((w) => w.timestamp.getTime() === ts);
-		const swWave = swellcloudWaves.find((w) => w.timestamp.getTime() === ts);
-		if (sWave || swWave) {
-			combinedData.push({
-				timestamp: ts,
-				dateStr: new Date(ts).toLocaleString([], {
-					weekday: "short",
-					hour: "numeric",
-				}),
-				surflineHeight: sWave
-					? ((sWave.waveHeightMax ?? 0) + (sWave.waveHeightMin ?? 0)) / 2
-					: null,
-				swellcloudHeight: swWave ? swWave.waveHeightMax : null, // Swellcloud max=min in our fetcher
-				surflinePeriod: sWave ? sWave.wavePeriod : null,
-				swellcloudPeriod: swWave ? swWave.wavePeriod : null,
-				surflineWindSpeed: sWave ? sWave.windSpeed : null,
-				swellcloudWindSpeed: swWave ? swWave.windSpeed : null,
-				surflineWindDirection: sWave ? sWave.windDirection : null,
-				swellcloudWindDirection: swWave ? swWave.windDirection : null,
-				rating: sWave ? sWave.rating : null,
-			});
-		}
-	}
+	// Create query client and pre-populate
+	const queryClient = createQueryClient();
+	queryClient.setQueryData(surfForecastKeys.activeSpots(), allSpots);
+	queryClient.setQueryData(
+		surfForecastKeys.dashboardData(selectedSpotId),
+		dashboardData,
+	);
 
 	return {
-		combinedData,
-		allTides,
-		allSpots,
+		dehydratedState: dehydrateQueryClient(queryClient),
 		selectedSpotId,
 		selectedSpot: selectedSpot || null,
-		dailyForecasts: nextFiveDays,
+		allSpots,
+		dashboardData,
 	};
 };
 
@@ -305,8 +142,6 @@ const CHART_CONFIG = {
 		color: "var(--chart-1)",
 	},
 } satisfies ChartConfig;
-
-type DashboardData = Awaited<ReturnType<typeof loader>>;
 
 function CustomTooltipContent({
 	active,
@@ -425,24 +260,46 @@ function CustomTooltipContent({
 }
 
 export function SurfDashboardContent({
-	data,
+	selectedSpotId,
+	selectedSpot,
 	onSpotChange,
+	initialAllSpots,
+	initialDashboardData,
 }: {
-	data: DashboardData;
+	selectedSpotId: string;
+	selectedSpot: { id: string; name: string } | null;
 	onSpotChange?: (value: string) => void;
+	initialAllSpots?: Awaited<ReturnType<typeof getActiveSpots>>;
+	initialDashboardData?: Awaited<ReturnType<typeof getDashboardData>>;
 }) {
-	if (!data) return null;
-	const {
-		combinedData,
-		allTides,
-		allSpots,
+	const { data: allSpots } = useActiveSpots(initialAllSpots);
+	const { data: dashboardData } = useDashboardData(
 		selectedSpotId,
-		selectedSpot,
-		dailyForecasts,
-	} = data;
+		initialDashboardData,
+	);
 
-	const [showSurfline, setShowSurfline] = useState(true);
-	const [showSwellcloud, setShowSwellcloud] = useState(true);
+	if (!allSpots || !dashboardData) {
+		return (
+			<div className="container mx-auto py-8">
+				<div className="text-center text-muted-foreground">Loading...</div>
+			</div>
+		);
+	}
+
+	const { combinedData, allTides, dailyForecasts } = dashboardData;
+
+	const [showSurfline, setShowSurfline] = useLocalStorageState(
+		"surf-dashboard-show-surfline",
+		{
+			defaultValue: true,
+		},
+	);
+	const [showSwellcloud, setShowSwellcloud] = useLocalStorageState(
+		"surf-dashboard-show-swellcloud",
+		{
+			defaultValue: true,
+		},
+	);
 
 	const handleSpotChange = (value: string) => {
 		if (onSpotChange) {
@@ -669,7 +526,13 @@ export function SurfDashboardContent({
 							</CardHeader>
 							<CardContent>
 								<ChartContainer
-									config={CHART_CONFIG}
+									config={Object.fromEntries(
+										Object.entries(CHART_CONFIG).filter(([key]) => {
+											if (key.startsWith("surfline")) return showSurfline;
+											if (key.startsWith("swellcloud")) return showSwellcloud;
+											return true;
+										}),
+									)}
 									className="min-h-[400px] w-full"
 								>
 									<ComposedChart accessibilityLayer data={filteredData}>
@@ -711,72 +574,84 @@ export function SurfDashboardContent({
 										/>
 										<ChartLegend content={<ChartLegendContent />} />
 										{/* Wave Heights */}
-										<Line
-											yAxisId="left"
-											type="monotone"
-											dataKey="surflineHeight"
-											stroke="var(--color-surflineHeight)"
-											strokeWidth={2}
-											dot={false}
-											connectNulls={true}
-											activeDot={{ r: 4 }}
-										/>
-										<Line
-											yAxisId="left"
-											type="monotone"
-											dataKey="swellcloudHeight"
-											stroke="var(--color-swellcloudHeight)"
-											strokeWidth={2}
-											dot={false}
-											connectNulls={true}
-											activeDot={{ r: 4 }}
-										/>
+										{showSurfline && (
+											<Line
+												yAxisId="left"
+												type="monotone"
+												dataKey="surflineHeight"
+												stroke="var(--color-surflineHeight)"
+												strokeWidth={2}
+												dot={false}
+												connectNulls={true}
+												activeDot={{ r: 4 }}
+											/>
+										)}
+										{showSwellcloud && (
+											<Line
+												yAxisId="left"
+												type="monotone"
+												dataKey="swellcloudHeight"
+												stroke="var(--color-swellcloudHeight)"
+												strokeWidth={2}
+												dot={false}
+												connectNulls={true}
+												activeDot={{ r: 4 }}
+											/>
+										)}
 										{/* Wave Periods */}
-										<Line
-											yAxisId="left"
-											type="monotone"
-											dataKey="surflinePeriod"
-											stroke="var(--color-surflinePeriod)"
-											strokeWidth={2}
-											strokeDasharray="5 5"
-											dot={false}
-											connectNulls={true}
-											activeDot={{ r: 4 }}
-										/>
-										<Line
-											yAxisId="left"
-											type="monotone"
-											dataKey="swellcloudPeriod"
-											stroke="var(--color-swellcloudPeriod)"
-											strokeWidth={2}
-											strokeDasharray="5 5"
-											dot={false}
-											connectNulls={true}
-											activeDot={{ r: 4 }}
-										/>
+										{showSurfline && (
+											<Line
+												yAxisId="left"
+												type="monotone"
+												dataKey="surflinePeriod"
+												stroke="var(--color-surflinePeriod)"
+												strokeWidth={2}
+												strokeDasharray="5 5"
+												dot={false}
+												connectNulls={true}
+												activeDot={{ r: 4 }}
+											/>
+										)}
+										{showSwellcloud && (
+											<Line
+												yAxisId="left"
+												type="monotone"
+												dataKey="swellcloudPeriod"
+												stroke="var(--color-swellcloudPeriod)"
+												strokeWidth={2}
+												strokeDasharray="5 5"
+												dot={false}
+												connectNulls={true}
+												activeDot={{ r: 4 }}
+											/>
+										)}
 										{/* Wind Speeds */}
-										<Line
-											yAxisId="right"
-											type="monotone"
-											dataKey="surflineWindSpeed"
-											stroke="var(--color-surflineWindSpeed)"
-											strokeWidth={2}
-											strokeDasharray="3 3"
-											dot={false}
-											connectNulls={true}
-											activeDot={{ r: 4 }}
-										/>
-										<Line
-											yAxisId="right"
-											type="monotone"
-											dataKey="swellcloudWindSpeed"
-											stroke="var(--color-swellcloudWindSpeed)"
-											strokeWidth={2}
-											strokeDasharray="3 3"
-											dot={false}
-											connectNulls={true}
-											activeDot={{ r: 4 }}
-										/>
+										{showSurfline && (
+											<Line
+												yAxisId="right"
+												type="monotone"
+												dataKey="surflineWindSpeed"
+												stroke="var(--color-surflineWindSpeed)"
+												strokeWidth={2}
+												strokeDasharray="3 3"
+												dot={false}
+												connectNulls={true}
+												activeDot={{ r: 4 }}
+											/>
+										)}
+										{showSwellcloud && (
+											<Line
+												yAxisId="right"
+												type="monotone"
+												dataKey="swellcloudWindSpeed"
+												stroke="var(--color-swellcloudWindSpeed)"
+												strokeWidth={2}
+												strokeDasharray="3 3"
+												dot={false}
+												connectNulls={true}
+												activeDot={{ r: 4 }}
+											/>
+										)}
 									</ComposedChart>
 								</ChartContainer>
 							</CardContent>
@@ -787,48 +662,137 @@ export function SurfDashboardContent({
 							<CardHeader>
 								<CardTitle>Tide Forecast</CardTitle>
 								<CardDescription>
-									Predicted tide height (Surfline)
+									Predicted tide height (Surfline) - Next 24 hours
 								</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<ChartContainer
-									config={{
-										height: {
-											label: "Tide Height (ft)",
-											color: "var(--chart-5)",
+								{(() => {
+									const filteredTides = allTides.filter(
+										(t: { timestamp: Date; height: number | null }) => {
+											const now = new Date();
+											const tideTime = new Date(t.timestamp);
+											const hoursFromNow =
+												(tideTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+											return hoursFromNow >= 0 && hoursFromNow <= 24;
 										},
-									}}
-									className="min-h-[300px] w-full"
-								>
-									<AreaChart
-										accessibilityLayer
-										data={allTides.map(
-											(t: { timestamp: Date; height: number | null }) => ({
-												dateStr: new Date(t.timestamp).toLocaleString([], {
-													hour: "numeric",
-												}),
-												height: t.height,
+									);
+
+									const tideData = filteredTides.map(
+										(t: { timestamp: Date; height: number | null }) => ({
+											dateStr: new Date(t.timestamp).toLocaleString([], {
+												hour: "numeric",
 											}),
-										)}
-									>
-										<CartesianGrid vertical={false} strokeDasharray="3 3" />
-										<XAxis
-											dataKey="dateStr"
-											tickLine={false}
-											axisLine={false}
-											tickMargin={8}
-										/>
-										<YAxis tickLine={false} axisLine={false} unit="ft" />
-										<ChartTooltip content={<ChartTooltipContent />} />
-										<Area
-											type="monotone"
-											dataKey="height"
-											fill="var(--color-height)"
-											fillOpacity={0.3}
-											stroke="var(--color-height)"
-										/>
-									</AreaChart>
-								</ChartContainer>
+											height: t.height,
+											timestamp: t.timestamp,
+										}),
+									);
+
+									// Find high and low tides (local maxima and minima)
+									const highTides: Array<{
+										dateStr: string;
+										height: number;
+										timestamp: Date;
+									}> = [];
+									const lowTides: Array<{
+										dateStr: string;
+										height: number;
+										timestamp: Date;
+									}> = [];
+
+									for (let i = 1; i < tideData.length - 1; i++) {
+										const prev = tideData[i - 1]?.height;
+										const curr = tideData[i]?.height;
+										const next = tideData[i + 1]?.height;
+
+										if (prev !== null && curr !== null && next !== null) {
+											// High tide: current is greater than both neighbors
+											if (curr > prev && curr > next) {
+												highTides.push({
+													dateStr: tideData[i].dateStr,
+													height: curr,
+													timestamp: tideData[i].timestamp,
+												});
+											}
+											// Low tide: current is less than both neighbors
+											if (curr < prev && curr < next) {
+												lowTides.push({
+													dateStr: tideData[i].dateStr,
+													height: curr,
+													timestamp: tideData[i].timestamp,
+												});
+											}
+										}
+									}
+
+									return (
+										<ChartContainer
+											config={{
+												height: {
+													label: "Tide Height (ft)",
+													color: "var(--chart-5)",
+												},
+											}}
+											className="min-h-[300px] w-full"
+										>
+											<AreaChart
+												accessibilityLayer
+												data={tideData}
+												margin={{ top: 20, right: 10, bottom: 20, left: 10 }}
+											>
+												<CartesianGrid vertical={false} strokeDasharray="3 3" />
+												<XAxis
+													dataKey="dateStr"
+													tickLine={false}
+													axisLine={false}
+													tickMargin={8}
+												/>
+												<YAxis tickLine={false} axisLine={false} unit="ft" />
+												<ChartTooltip content={<ChartTooltipContent />} />
+												<Area
+													type="monotone"
+													dataKey="height"
+													fill="var(--color-height)"
+													fillOpacity={0.3}
+													stroke="var(--color-height)"
+												/>
+												{highTides.map((tide) => (
+													<ReferenceLine
+														key={`high-${tide.timestamp.getTime()}`}
+														x={tide.dateStr}
+														stroke="hsl(var(--chart-1))"
+														strokeDasharray="2 2"
+														strokeWidth={1.5}
+														isFront={true}
+													>
+														<RechartsLabel
+															value={`${tide.dateStr}\nH: ${tide.height.toFixed(1)}ft`}
+															position="top"
+															offset={10}
+															className="fill-foreground text-xs"
+														/>
+													</ReferenceLine>
+												))}
+												{lowTides.map((tide) => (
+													<ReferenceLine
+														key={`low-${tide.timestamp.getTime()}`}
+														x={tide.dateStr}
+														stroke="hsl(var(--chart-2))"
+														strokeDasharray="2 2"
+														strokeWidth={1.5}
+														isFront={true}
+													>
+														<RechartsLabel
+															value={`${tide.dateStr}\nL: ${tide.height.toFixed(1)}ft`}
+															position="bottom"
+															offset={10}
+															className="fill-foreground text-xs"
+														/>
+													</ReferenceLine>
+												))}
+											</AreaChart>
+										</ChartContainer>
+									);
+								})()}
 							</CardContent>
 						</Card>
 					</div>
@@ -839,7 +803,7 @@ export function SurfDashboardContent({
 }
 
 export default function SurfDashboard() {
-	const data = useLoaderData<typeof loader>();
+	const loaderData = useLoaderData<typeof loader>();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 
@@ -849,5 +813,15 @@ export default function SurfDashboard() {
 		navigate(`?${params.toString()}`);
 	};
 
-	return <SurfDashboardContent data={data} onSpotChange={handleSpotChange} />;
+	return (
+		<HydrationBoundary state={loaderData.dehydratedState}>
+			<SurfDashboardContent
+				selectedSpotId={loaderData.selectedSpotId}
+				selectedSpot={loaderData.selectedSpot}
+				onSpotChange={handleSpotChange}
+				initialAllSpots={loaderData.allSpots}
+				initialDashboardData={loaderData.dashboardData}
+			/>
+		</HydrationBoundary>
+	);
 }

@@ -1,3 +1,4 @@
+import { HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 import { createAuth } from "~/app/lib/auth";
 import { authClient } from "~/app/lib/auth-client";
@@ -40,7 +41,7 @@ export default function Home() {
 		);
 	}
 
-	if (session?.user && loaderData && "combinedData" in loaderData) {
+	if (session?.user && loaderData && "dehydratedState" in loaderData) {
 		const handleSpotChange = (value: string) => {
 			const params = new URLSearchParams(searchParams);
 			params.set("spotId", value);
@@ -61,10 +62,15 @@ export default function Home() {
 								decoding="sync"
 							/>
 						</div>
-						<SurfDashboardContent
-							data={loaderData}
-							onSpotChange={handleSpotChange}
-						/>
+						<HydrationBoundary state={loaderData.dehydratedState}>
+							<SurfDashboardContent
+								selectedSpotId={loaderData.selectedSpotId}
+								selectedSpot={loaderData.selectedSpot}
+								onSpotChange={handleSpotChange}
+								initialAllSpots={loaderData.allSpots}
+								initialDashboardData={loaderData.dashboardData}
+							/>
+						</HydrationBoundary>
 					</div>
 				</main>
 			</Layout>

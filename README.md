@@ -1,6 +1,17 @@
 # Welcome to React Router!
 
 
+## Onboarding
+
+Gnar Dawgs must send a whatsapp message "woof woof" or "ruff ruff" to be invited to the group.
+
+Onboarding Agent: On invite we will ask for their name and email address to create an account.
+
+
+
+
+
+
 ## API Sources
 https://api.swellcloud.net/v1/point
 X-API-Key header

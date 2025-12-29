@@ -1,10 +1,6 @@
 import { eq } from "drizzle-orm";
-import {
-	TWILIO_WHATSAPP_NUMBER,
-	VALID_WHATSAPP_INCOMING_NUMBERS,
-} from "~/app/config/constants";
+import { TWILIO_WHATSAPP_NUMBER } from "~/app/config/constants";
 import { WhatsAppAgent } from "../../../workers/whatsapp-agent";
-import { createAuth } from "../auth";
 import { getDb } from "../db";
 import { users } from "../schema";
 import {

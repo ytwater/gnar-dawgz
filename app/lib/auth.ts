@@ -1,10 +1,11 @@
 import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin } from "better-auth/plugins";
+import { admin, phoneNumber } from "better-auth/plugins";
+import { eq } from "drizzle-orm";
 import { ADMIN_USER_IDS } from "../config/constants";
 import { getDb } from "./db";
-import * as schema from "./schema";
+import { users } from "./schema";
 
 // biome-ignore lint/suspicious/noExplicitAny: types for Cloudflare and Drizzle can be inconsistent across environments
 export const createAuth = (env?: CloudflareBindings, cf?: any) => {
@@ -44,6 +45,14 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 						}
 					: {},
 				plugins: [
+					phoneNumber({
+						sendOTP: async ({ phoneNumber, code }, ctx) => {
+							if (!env) return;
+							const db = getDb(env.DB);
+							// const authenticatingUser = await db.select().from(users).where(eq(users., phoneNumber));
+							// await createMessage
+						},
+					}),
 					admin({
 						// defaultRole: "user",
 						// adminRole: "admin"
@@ -58,10 +67,10 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 				},
 				user: {
 					additionalFields: {
-						whatsappNumber: {
-							type: "string",
-							defaultValue: "",
-						},
+						// whatsappNumber: {
+						// 	type: "string",
+						// 	defaultValue: "",
+						// },
 						role: {
 							type: "string",
 							defaultValue: "user",
