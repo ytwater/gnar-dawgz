@@ -3,9 +3,17 @@ import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, phoneNumber } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
-import { ADMIN_USER_IDS } from "../config/constants";
+import {
+	ADMIN_USER_IDS,
+	TWILIO_WHATSAPP_NUMBER,
+	TWILIO_WHATSAPP_OTP_TEMPLATE_SID,
+} from "../config/constants";
 import { getDb } from "./db";
 import { users } from "./schema";
+import {
+	type CreateMessageBody,
+	createMessage,
+} from "./twilio/classic-messages-api";
 
 // biome-ignore lint/suspicious/noExplicitAny: types for Cloudflare and Drizzle can be inconsistent across environments
 export const createAuth = (env?: CloudflareBindings, cf?: any) => {
@@ -36,22 +44,50 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 			},
 			{
 				secret: env?.BETTER_AUTH_SECRET,
-				socialProviders: env
-					? {
-							google: {
-								clientId: env.GOOGLE_CLIENT_ID as string,
-								clientSecret: env.GOOGLE_CLIENT_SECRET as string,
-							},
-						}
-					: {},
+				// socialProviders: env
+				// 	? {
+				// 			google: {
+				// 				clientId: env.GOOGLE_CLIENT_ID as string,
+				// 				clientSecret: env.GOOGLE_CLIENT_SECRET as string,
+				// 			},
+				// 		}
+				// 	: {},
 				plugins: [
 					phoneNumber({
 						sendOTP: async ({ phoneNumber, code }, ctx) => {
+							console.log(
+								"🚀 ~ auth.ts:50 ~ createAuth ~ phoneNumber:",
+								phoneNumber,
+							);
 							if (!env) return;
-							const db = getDb(env.DB);
+							// const db = getDb(env.DB);
 							// const authenticatingUser = await db.select().from(users).where(eq(users., phoneNumber));
-							// await createMessage
+
+							const createMessagePayload: CreateMessageBody = {
+								From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
+								To: `whatsapp:${phoneNumber}`,
+								ContentSid: TWILIO_WHATSAPP_OTP_TEMPLATE_SID,
+								ContentVariables: JSON.stringify({
+									"1": code, // correct
+								}),
+							};
+							console.log(
+								"🚀 ~ auth.ts:74 ~ createAuth ~ createMessagePayload:",
+								createMessagePayload,
+							);
+							const results = await createMessage(env, createMessagePayload);
+							console.log("🚀 ~ auth.ts:75 ~ createAuth ~ results:", results);
 						},
+						// We do not support sign-up with phone number.
+						// The users will onboard via whatsapp chat.
+						// signUpOnVerification: {
+						// 	getTempEmail: (phoneNumber) => {
+						// 		return `${phoneNumber.replace(/\D/g, "")}@gnar-dawgs.temp`;
+						// 	},
+						// 	getTempName: (phoneNumber) => {
+						// 		return phoneNumber;
+						// 	},
+						// },
 					}),
 					admin({
 						// defaultRole: "user",

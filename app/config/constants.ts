@@ -4,6 +4,8 @@ export const ADMIN_USER_IDS: string[] = [
 ] as const;
 export const MAIN_CONVERSATION_UNIQUE_NAME = "main" as const;
 export const TWILIO_WHATSAPP_NUMBER = "+18589520996" as const;
+export const TWILIO_WHATSAPP_OTP_TEMPLATE_SID =
+	"HX9b5f7b983db5c8777ee84ea09fbd7de1" as const;
 
 export const SURFLINE_TORREY_PINES_SPOT_ID =
 	"584204204e65fad6a7709994" as const;

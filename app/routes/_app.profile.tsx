@@ -1,6 +1,7 @@
 import { Bell, PaperPlaneTilt, User } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { Layout } from "~/app/components/layout";
+import { PhoneNumberForm } from "~/app/components/phone-number-form";
 import { Alert, AlertDescription } from "~/app/components/ui/alert";
 import {
 	Avatar,
@@ -295,6 +296,11 @@ export default function Profile() {
 					)}
 				</CardContent>
 			</Card>
+
+			<PhoneNumberForm
+				initialPhoneNumber={user.phoneNumber}
+				phoneNumberVerified={user.phoneNumberVerified}
+			/>
 
 			<Card>
 				<CardHeader>

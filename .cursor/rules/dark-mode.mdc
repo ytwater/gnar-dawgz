@@ -1,0 +1,8 @@
+---
+globs: app/**/*.tsx
+alwaysApply: false
+---
+
+When creating UI, use the Shadcn Components in app/components/ui.
+
+Always respect dark mode using classes.
