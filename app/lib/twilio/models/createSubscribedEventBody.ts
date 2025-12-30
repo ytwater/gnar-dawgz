@@ -7,8 +7,8 @@
  */
 
 export type CreateSubscribedEventBody = {
-  /** Type of event being subscribed to. */
-  Type: string;
-  /** The schema version that the Subscription should use. */
-  SchemaVersion?: number;
+	/** Type of event being subscribed to. */
+	Type: string;
+	/** The schema version that the Subscription should use. */
+	SchemaVersion?: number;
 };

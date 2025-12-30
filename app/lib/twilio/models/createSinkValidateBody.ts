@@ -7,6 +7,6 @@
  */
 
 export type CreateSinkValidateBody = {
-  /** A 34 character string that uniquely identifies the test event for a Sink being validated. */
-  TestId: string;
+	/** A 34 character string that uniquely identifies the test event for a Sink being validated. */
+	TestId: string;
 };

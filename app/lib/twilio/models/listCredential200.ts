@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1Credential } from './conversationsV1Credential';
-import type { ListCredential200Meta } from './listCredential200Meta';
+import type { ConversationsV1Credential } from "./conversationsV1Credential";
+import type { ListCredential200Meta } from "./listCredential200Meta";
 
 export type ListCredential200 = {
-  credentials?: ConversationsV1Credential[];
-  meta?: ListCredential200Meta;
+	credentials?: ConversationsV1Credential[];
+	meta?: ListCredential200Meta;
 };

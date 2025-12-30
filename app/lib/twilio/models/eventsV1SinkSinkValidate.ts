@@ -7,9 +7,9 @@
  */
 
 export interface EventsV1SinkSinkValidate {
-  /**
-   * Feedback indicating whether the given Sink was validated.
-   * @nullable
-   */
-  result?: string | null;
+	/**
+	 * Feedback indicating whether the given Sink was validated.
+	 * @nullable
+	 */
+	result?: string | null;
 }

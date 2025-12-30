@@ -25,7 +25,8 @@ export async function createTwilioAccessTokenJwt(params: {
 	if (!accountSid) throw new Error("accountSid is required");
 	if (!apiKeySid) throw new Error("apiKeySid is required");
 	if (!apiKeySecret) throw new Error("apiKeySecret is required");
-	if (!options?.identity) throw new Error("identity is required to be specified in options");
+	if (!options?.identity)
+		throw new Error("identity is required to be specified in options");
 
 	const ttl = options.ttl ?? 3600;
 	const now = Math.floor(Date.now() / 1000);
@@ -65,5 +66,3 @@ export async function createTwilioAccessTokenJwt(params: {
 		.setExpirationTime(now + ttl)
 		.sign(new TextEncoder().encode(apiKeySecret));
 }
-
-

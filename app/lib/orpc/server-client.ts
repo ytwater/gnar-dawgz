@@ -1,4 +1,3 @@
-import { createORPCClient } from "@orpc/client";
 import { RPCHandler } from "@orpc/server/fetch";
 import { createAuth } from "~/app/lib/auth";
 import { getDb } from "~/app/lib/db";
@@ -90,7 +89,3 @@ export function createServerORPCClient(context: {
 		},
 	});
 }
-
-
-
-

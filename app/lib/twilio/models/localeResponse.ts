@@ -5,9 +5,9 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { LanguageProperties } from './languageProperties';
+import type { LanguageProperties } from "./languageProperties";
 
 export interface LocaleResponse {
-  /** List of supported languages for opt-out configurations */
-  languages: LanguageProperties[];
+	/** List of supported languages for opt-out configurations */
+	languages: LanguageProperties[];
 }

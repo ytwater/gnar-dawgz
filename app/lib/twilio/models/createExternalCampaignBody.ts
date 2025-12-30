@@ -7,15 +7,15 @@
  */
 
 export type CreateExternalCampaignBody = {
-  /** ID of the preregistered campaign. */
-  CampaignId: string;
-  /**
-   * The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^MG[0-9a-fA-F]{32}$
-   */
-  MessagingServiceSid: string;
-  /** Customers should use this flag during the ERC registration process to indicate to Twilio that the campaign being registered is undergoing CNP migration. It is important for the user to first trigger the CNP migration process for said campaign in their CSP portal and have Twilio accept the sharing request, before making this api call. */
-  CnpMigration?: boolean;
+	/** ID of the preregistered campaign. */
+	CampaignId: string;
+	/**
+	 * The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^MG[0-9a-fA-F]{32}$
+	 */
+	MessagingServiceSid: string;
+	/** Customers should use this flag during the ERC registration process to indicate to Twilio that the campaign being registered is undergoing CNP migration. It is important for the user to first trigger the CNP migration process for said campaign in their CSP portal and have Twilio accept the sharing request, before making this api call. */
+	CnpMigration?: boolean;
 };

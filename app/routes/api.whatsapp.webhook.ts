@@ -7,7 +7,6 @@ import {
 	type CreateMessageBody,
 	createMessage,
 } from "~/app/lib/twilio/classic-messages-api";
-import { createAuth } from "../lib/auth";
 import type { Route } from "./+types/api.whatsapp.webhook";
 
 /**

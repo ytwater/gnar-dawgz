@@ -9,12 +9,12 @@
 /**
  * The current state of this User Conversation. One of `inactive`, `active` or `closed`.
  */
-export type UserConversationEnumState = typeof UserConversationEnumState[keyof typeof UserConversationEnumState];
-
+export type UserConversationEnumState =
+	(typeof UserConversationEnumState)[keyof typeof UserConversationEnumState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserConversationEnumState = {
-  inactive: 'inactive',
-  active: 'active',
-  closed: 'closed',
+	inactive: "inactive",
+	active: "active",
+	closed: "closed",
 } as const;

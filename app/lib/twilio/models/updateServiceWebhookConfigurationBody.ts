@@ -7,12 +7,12 @@
  */
 
 export type UpdateServiceWebhookConfigurationBody = {
-  /** The absolute url the pre-event webhook request should be sent to. */
-  PreWebhookUrl?: string;
-  /** The absolute url the post-event webhook request should be sent to. */
-  PostWebhookUrl?: string;
-  /** The list of events that your configured webhook targets will receive. Events not configured here will not fire. Possible values are `onParticipantAdd`, `onParticipantAdded`, `onDeliveryUpdated`, `onConversationUpdated`, `onConversationRemove`, `onParticipantRemove`, `onConversationUpdate`, `onMessageAdd`, `onMessageRemoved`, `onParticipantUpdated`, `onConversationAdded`, `onMessageAdded`, `onConversationAdd`, `onConversationRemoved`, `onParticipantUpdate`, `onMessageRemove`, `onMessageUpdated`, `onParticipantRemoved`, `onMessageUpdate` or `onConversationStateUpdated`. */
-  Filters?: string[];
-  /** The HTTP method to be used when sending a webhook request. One of `GET` or `POST`. */
-  Method?: string;
+	/** The absolute url the pre-event webhook request should be sent to. */
+	PreWebhookUrl?: string;
+	/** The absolute url the post-event webhook request should be sent to. */
+	PostWebhookUrl?: string;
+	/** The list of events that your configured webhook targets will receive. Events not configured here will not fire. Possible values are `onParticipantAdd`, `onParticipantAdded`, `onDeliveryUpdated`, `onConversationUpdated`, `onConversationRemove`, `onParticipantRemove`, `onConversationUpdate`, `onMessageAdd`, `onMessageRemoved`, `onParticipantUpdated`, `onConversationAdded`, `onMessageAdded`, `onConversationAdd`, `onConversationRemoved`, `onParticipantUpdate`, `onMessageRemove`, `onMessageUpdated`, `onParticipantRemoved`, `onMessageUpdate` or `onConversationStateUpdated`. */
+	Filters?: string[];
+	/** The HTTP method to be used when sending a webhook request. One of `GET` or `POST`. */
+	Method?: string;
 };

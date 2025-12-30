@@ -10,13 +10,13 @@
  * Individual keyword configuration
  */
 export interface KeywordItem {
-  /**
-   * The actual keyword text
-   * @minLength 1
-   * @maxLength 34
-   * @pattern ^[A-Z0-9]+$
-   */
-  keyword: string;
-  /** Indicates whether this keyword is reserved by the system and cannot be modified */
-  reserved: boolean;
+	/**
+	 * The actual keyword text
+	 * @minLength 1
+	 * @maxLength 34
+	 * @pattern ^[A-Z0-9]+$
+	 */
+	keyword: string;
+	/** Indicates whether this keyword is reserved by the system and cannot be modified */
+	reserved: boolean;
 }

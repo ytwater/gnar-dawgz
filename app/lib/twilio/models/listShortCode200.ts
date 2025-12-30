@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessagingV1ServiceShortCode } from './messagingV1ServiceShortCode';
-import type { ListShortCode200Meta } from './listShortCode200Meta';
+import type { MessagingV1ServiceShortCode } from "./messagingV1ServiceShortCode";
+import type { ListShortCode200Meta } from "./listShortCode200Meta";
 
 export type ListShortCode200 = {
-  short_codes?: MessagingV1ServiceShortCode[];
-  meta?: ListShortCode200Meta;
+	short_codes?: MessagingV1ServiceShortCode[];
+	meta?: ListShortCode200Meta;
 };

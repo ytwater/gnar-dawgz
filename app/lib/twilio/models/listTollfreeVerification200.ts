@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessagingV1TollfreeVerification } from './messagingV1TollfreeVerification';
-import type { ListTollfreeVerification200Meta } from './listTollfreeVerification200Meta';
+import type { MessagingV1TollfreeVerification } from "./messagingV1TollfreeVerification";
+import type { ListTollfreeVerification200Meta } from "./listTollfreeVerification200Meta";
 
 export type ListTollfreeVerification200 = {
-  verifications?: MessagingV1TollfreeVerification[];
-  meta?: ListTollfreeVerification200Meta;
+	verifications?: MessagingV1TollfreeVerification[];
+	meta?: ListTollfreeVerification200Meta;
 };

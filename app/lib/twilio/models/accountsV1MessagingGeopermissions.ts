@@ -5,12 +5,12 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { AccountsV1MessagingGeopermissionsPermissions } from './accountsV1MessagingGeopermissionsPermissions';
+import type { AccountsV1MessagingGeopermissionsPermissions } from "./accountsV1MessagingGeopermissionsPermissions";
 
 export interface AccountsV1MessagingGeopermissions {
-  /**
-   * A list of objects where each object represents the result of processing a messaging Geo Permission. Each object contains the following fields: `country_code`, the country code of the country for which the permission was updated; `type`, the type of the permission i.e. country; `enabled`, true if the permission is enabled else false; `error_code`, an integer where 0 indicates success and any non-zero value represents an error; and `error_messages`, an array of strings describing specific validation errors encountered. If the request is successful, the error_messages array will be empty.
-   * @nullable
-   */
-  permissions?: AccountsV1MessagingGeopermissionsPermissions;
+	/**
+	 * A list of objects where each object represents the result of processing a messaging Geo Permission. Each object contains the following fields: `country_code`, the country code of the country for which the permission was updated; `type`, the type of the permission i.e. country; `enabled`, true if the permission is enabled else false; `error_code`, an integer where 0 indicates success and any non-zero value represents an error; and `error_messages`, an array of strings describing specific validation errors encountered. If the request is successful, the error_messages array will be empty.
+	 * @nullable
+	 */
+	permissions?: AccountsV1MessagingGeopermissionsPermissions;
 }

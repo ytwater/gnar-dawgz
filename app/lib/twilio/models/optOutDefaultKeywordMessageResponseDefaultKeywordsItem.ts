@@ -7,12 +7,12 @@
  */
 
 export type OptOutDefaultKeywordMessageResponseDefaultKeywordsItem = {
-  /** The opt-out keyword */
-  keyword?: string;
-  /** The type of message (SMS, etc.) */
-  messageType?: string;
-  /** Language code for the message */
-  language?: string;
-  /** The default response message sent when this keyword is used */
-  message?: string;
+	/** The opt-out keyword */
+	keyword?: string;
+	/** The type of message (SMS, etc.) */
+	messageType?: string;
+	/** Language code for the message */
+	language?: string;
+	/** The default response message sent when this keyword is used */
+	message?: string;
 };

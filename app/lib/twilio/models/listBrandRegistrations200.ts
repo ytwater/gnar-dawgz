@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessagingV1BrandRegistrations } from './messagingV1BrandRegistrations';
-import type { ListBrandRegistrations200Meta } from './listBrandRegistrations200Meta';
+import type { MessagingV1BrandRegistrations } from "./messagingV1BrandRegistrations";
+import type { ListBrandRegistrations200Meta } from "./listBrandRegistrations200Meta";
 
 export type ListBrandRegistrations200 = {
-  data?: MessagingV1BrandRegistrations[];
-  meta?: ListBrandRegistrations200Meta;
+	data?: MessagingV1BrandRegistrations[];
+	meta?: ListBrandRegistrations200Meta;
 };

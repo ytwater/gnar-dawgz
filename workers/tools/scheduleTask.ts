@@ -39,4 +39,3 @@ export const scheduleTask = tool({
 		return `Task scheduled for type "${when.type}" : ${input}`;
 	},
 });
-

@@ -5,10 +5,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export * from './getChartV1ChartsVariableForecastHourGetParams';
-export * from './getPointForecastV1PointGetParams';
-export * from './hTTPValidationError';
-export * from './listChartsV1ChartsGetParams';
-export * from './validationError';
-export * from './validationErrorLocItem';
-export * from './wmtsProxyV1WmtsProxyZXYGetParams';
+export * from "./getChartV1ChartsVariableForecastHourGetParams";
+export * from "./getPointForecastV1PointGetParams";
+export * from "./hTTPValidationError";
+export * from "./listChartsV1ChartsGetParams";
+export * from "./validationError";
+export * from "./validationErrorLocItem";
+export * from "./wmtsProxyV1WmtsProxyZXYGetParams";

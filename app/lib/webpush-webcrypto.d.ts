@@ -29,9 +29,7 @@ declare module "webpush-webcrypto" {
 		urgency?: "very-low" | "low" | "normal" | "high";
 	}
 
-	export function generatePushHTTPRequest(
-		options: PushOptions,
-	): Promise<{
+	export function generatePushHTTPRequest(options: PushOptions): Promise<{
 		headers: Record<string, string>;
 		body: ArrayBuffer;
 		endpoint: string;
@@ -39,4 +37,3 @@ declare module "webpush-webcrypto" {
 
 	export function setWebCrypto(crypto: Crypto): void;
 }
-

@@ -7,23 +7,23 @@
  */
 
 export type ListDestinationAlphaSenderParams = {
-/**
- * Optional filter to return only alphanumeric sender IDs associated with the specified two-character ISO country code.
- */
-IsoCountryCode?: string;
-/**
- * How many resources to return in each list page. The default is 50, and the maximum is 1000.
- * @minimum 1
- * @maximum 1000
- */
-PageSize?: number;
-/**
- * The page index. This value is simply for client state.
- * @minimum 0
- */
-Page?: number;
-/**
- * The page token. This is provided by the API.
- */
-PageToken?: string;
+	/**
+	 * Optional filter to return only alphanumeric sender IDs associated with the specified two-character ISO country code.
+	 */
+	IsoCountryCode?: string;
+	/**
+	 * How many resources to return in each list page. The default is 50, and the maximum is 1000.
+	 * @minimum 1
+	 * @maximum 1000
+	 */
+	PageSize?: number;
+	/**
+	 * The page index. This value is simply for client state.
+	 * @minimum 0
+	 */
+	Page?: number;
+	/**
+	 * The page token. This is provided by the API.
+	 */
+	PageToken?: string;
 };

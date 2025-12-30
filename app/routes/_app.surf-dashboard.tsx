@@ -1,6 +1,5 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import { RotateCw } from "lucide-react";
-import { useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 import {
@@ -9,14 +8,12 @@ import {
 	CartesianGrid,
 	ComposedChart,
 	Line,
-	LineChart,
 	Label as RechartsLabel,
 	ReferenceLine,
 	XAxis,
 	YAxis,
 } from "recharts";
 import useLocalStorageState from "use-local-storage-state";
-import { Layout } from "~/app/components/layout";
 import { Button } from "~/app/components/ui/button";
 import {
 	Card,

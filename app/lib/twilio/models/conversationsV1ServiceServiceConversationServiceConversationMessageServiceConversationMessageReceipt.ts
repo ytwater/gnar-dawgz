@@ -5,81 +5,81 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ServiceConversationMessageReceiptEnumDeliveryStatus } from './serviceConversationMessageReceiptEnumDeliveryStatus';
+import type { ServiceConversationMessageReceiptEnumDeliveryStatus } from "./serviceConversationMessageReceiptEnumDeliveryStatus";
 
 export interface ConversationsV1ServiceServiceConversationServiceConversationMessageServiceConversationMessageReceipt {
-  /**
-   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this participant.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Message resource is associated with.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^IS[0-9a-fA-F]{32}$
-   */
-  chat_service_sid?: string | null;
-  /**
-   * The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this message.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^CH[0-9a-fA-F]{32}$
-   */
-  conversation_sid?: string | null;
-  /**
-   * The SID of the message within a [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) the delivery receipt belongs to
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^IM[0-9a-fA-F]{32}$
-   */
-  message_sid?: string | null;
-  /**
-   * A 34 character string that uniquely identifies this resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^DY[0-9a-fA-F]{32}$
-   */
-  sid?: string | null;
-  /**
-   * A messaging channel-specific identifier for the message delivered to participant e.g. `SMxx` for SMS, `WAxx` for Whatsapp etc. 
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^[a-zA-Z]{2}[0-9a-fA-F]{32}$
-   */
-  channel_message_sid?: string | null;
-  /**
-   * The unique ID of the participant the delivery receipt belongs to.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^MB[0-9a-fA-F]{32}$
-   */
-  participant_sid?: string | null;
-  status?: ServiceConversationMessageReceiptEnumDeliveryStatus;
-  /** The message [delivery error code](https://www.twilio.com/docs/sms/api/message-resource#delivery-related-errors) for a `failed` status,  */
-  error_code?: number;
-  /**
-   * The date that this resource was created.
-   * @nullable
-   */
-  date_created?: string | null;
-  /**
-   * The date that this resource was last updated. `null` if the delivery receipt has not been updated.
-   * @nullable
-   */
-  date_updated?: string | null;
-  /**
-   * An absolute API resource URL for this delivery receipt.
-   * @nullable
-   */
-  url?: string | null;
+	/**
+	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this participant.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Message resource is associated with.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^IS[0-9a-fA-F]{32}$
+	 */
+	chat_service_sid?: string | null;
+	/**
+	 * The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this message.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^CH[0-9a-fA-F]{32}$
+	 */
+	conversation_sid?: string | null;
+	/**
+	 * The SID of the message within a [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) the delivery receipt belongs to
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^IM[0-9a-fA-F]{32}$
+	 */
+	message_sid?: string | null;
+	/**
+	 * A 34 character string that uniquely identifies this resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^DY[0-9a-fA-F]{32}$
+	 */
+	sid?: string | null;
+	/**
+	 * A messaging channel-specific identifier for the message delivered to participant e.g. `SMxx` for SMS, `WAxx` for Whatsapp etc.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^[a-zA-Z]{2}[0-9a-fA-F]{32}$
+	 */
+	channel_message_sid?: string | null;
+	/**
+	 * The unique ID of the participant the delivery receipt belongs to.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^MB[0-9a-fA-F]{32}$
+	 */
+	participant_sid?: string | null;
+	status?: ServiceConversationMessageReceiptEnumDeliveryStatus;
+	/** The message [delivery error code](https://www.twilio.com/docs/sms/api/message-resource#delivery-related-errors) for a `failed` status,  */
+	error_code?: number;
+	/**
+	 * The date that this resource was created.
+	 * @nullable
+	 */
+	date_created?: string | null;
+	/**
+	 * The date that this resource was last updated. `null` if the delivery receipt has not been updated.
+	 * @nullable
+	 */
+	date_updated?: string | null;
+	/**
+	 * An absolute API resource URL for this delivery receipt.
+	 * @nullable
+	 */
+	url?: string | null;
 }

@@ -11,8 +11,9 @@ export const getWeatherInformation = tool({
 	// Omitting execute function makes this tool require human confirmation
 });
 
-export const getWeatherInformationExecute = async ({ city }: { city: string }) => {
+export const getWeatherInformationExecute = async ({
+	city,
+}: { city: string }) => {
 	console.log(`Getting weather information for ${city}`);
 	return `The weather in ${city} is sunny`;
 };
-

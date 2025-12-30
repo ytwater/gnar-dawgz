@@ -1,8 +1,4 @@
 import { asc, eq, sql } from "drizzle-orm";
-import {
-	SURFLINE_TORREY_PINES_SPOT_ID,
-	TORREY_PILES_LAT_LNG,
-} from "~/app/config/constants";
 import { getDb } from "~/app/lib/db";
 import {
 	surfForecasts,

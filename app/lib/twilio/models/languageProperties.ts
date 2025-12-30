@@ -5,11 +5,11 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { LanguagePropertiesKey } from './languagePropertiesKey';
+import type { LanguagePropertiesKey } from "./languagePropertiesKey";
 
 export interface LanguageProperties {
-  /** The language key/identifier (typically uppercase) */
-  key: LanguagePropertiesKey;
-  /** Human-readable display name for the language */
-  friendly_name: string;
+	/** The language key/identifier (typically uppercase) */
+	key: LanguagePropertiesKey;
+	/** Human-readable display name for the language */
+	friendly_name: string;
 }

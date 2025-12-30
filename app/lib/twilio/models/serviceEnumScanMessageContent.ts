@@ -9,12 +9,12 @@
 /**
  * Reserved.
  */
-export type ServiceEnumScanMessageContent = typeof ServiceEnumScanMessageContent[keyof typeof ServiceEnumScanMessageContent];
-
+export type ServiceEnumScanMessageContent =
+	(typeof ServiceEnumScanMessageContent)[keyof typeof ServiceEnumScanMessageContent];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceEnumScanMessageContent = {
-  inherit: 'inherit',
-  enable: 'enable',
-  disable: 'disable',
+	inherit: "inherit",
+	enable: "enable",
+	disable: "disable",
 } as const;

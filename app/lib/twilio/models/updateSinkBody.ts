@@ -7,6 +7,6 @@
  */
 
 export type UpdateSinkBody = {
-  /** A human readable description for the Sink **This value should not contain PII.** */
-  Description: string;
+	/** A human readable description for the Sink **This value should not contain PII.** */
+	Description: string;
 };

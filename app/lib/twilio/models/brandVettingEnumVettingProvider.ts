@@ -9,11 +9,11 @@
 /**
  * The third-party provider that has conducted the vetting. One of “CampaignVerify” (Campaign Verify tokens) or “AEGIS” (Secondary Vetting).
  */
-export type BrandVettingEnumVettingProvider = typeof BrandVettingEnumVettingProvider[keyof typeof BrandVettingEnumVettingProvider];
-
+export type BrandVettingEnumVettingProvider =
+	(typeof BrandVettingEnumVettingProvider)[keyof typeof BrandVettingEnumVettingProvider];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const BrandVettingEnumVettingProvider = {
-  'campaign-verify': 'campaign-verify',
-  aegis: 'aegis',
+	"campaign-verify": "campaign-verify",
+	aegis: "aegis",
 } as const;

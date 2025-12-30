@@ -5,16 +5,16 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { KeywordLocaleType } from './keywordLocaleType';
+import type { KeywordLocaleType } from "./keywordLocaleType";
 
 export interface OptOutMessagesEntity {
-  keywordType: KeywordLocaleType;
-  /** Message type (typically country code or region identifier) */
-  messageType: string;
-  /**
-   * The message text content (max 320 characters)
-   * @minLength 1
-   * @maxLength 320
-   */
-  message: string;
+	keywordType: KeywordLocaleType;
+	/** Message type (typically country code or region identifier) */
+	messageType: string;
+	/**
+	 * The message text content (max 320 characters)
+	 * @minLength 1
+	 * @maxLength 320
+	 */
+	message: string;
 }

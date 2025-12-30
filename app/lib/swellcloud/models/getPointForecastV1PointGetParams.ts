@@ -6,25 +6,25 @@
  */
 
 export type GetPointForecastV1PointGetParams = {
-/**
- * Latitude (-90 to 90 degrees)
- * @minimum -90
- * @maximum 90
- */
-lat: number;
-/**
- * Longitude (-180 to 180 degrees, slight overflow allowed)
- * @minimum -181
- * @maximum 181
- */
-lon: number;
-vars?: string;
-/**
- * Wave model to use: gfs or cmems-global
- */
-model?: string;
-start?: string | null;
-end?: string | null;
-units?: string;
-interp?: string;
+	/**
+	 * Latitude (-90 to 90 degrees)
+	 * @minimum -90
+	 * @maximum 90
+	 */
+	lat: number;
+	/**
+	 * Longitude (-180 to 180 degrees, slight overflow allowed)
+	 * @minimum -181
+	 * @maximum 181
+	 */
+	lon: number;
+	vars?: string;
+	/**
+	 * Wave model to use: gfs or cmems-global
+	 */
+	model?: string;
+	start?: string | null;
+	end?: string | null;
+	units?: string;
+	interp?: string;
 };

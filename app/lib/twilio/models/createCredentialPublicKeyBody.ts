@@ -7,15 +7,15 @@
  */
 
 export type CreateCredentialPublicKeyBody = {
-  /** A URL encoded representation of the public key. For example, `-----BEGIN PUBLIC KEY-----MIIBIjANB.pa9xQIDAQAB-----END PUBLIC KEY-----` */
-  PublicKey: string;
-  /** A descriptive string that you create to describe the resource. It can be up to 64 characters long. */
-  FriendlyName?: string;
-  /**
-   * The SID of the Subaccount that this Credential should be associated with. Must be a valid Subaccount of the account issuing the request
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  AccountSid?: string;
+	/** A URL encoded representation of the public key. For example, `-----BEGIN PUBLIC KEY-----MIIBIjANB.pa9xQIDAQAB-----END PUBLIC KEY-----` */
+	PublicKey: string;
+	/** A descriptive string that you create to describe the resource. It can be up to 64 characters long. */
+	FriendlyName?: string;
+	/**
+	 * The SID of the Subaccount that this Credential should be associated with. Must be a valid Subaccount of the account issuing the request
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	AccountSid?: string;
 };

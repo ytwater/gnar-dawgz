@@ -37,8 +37,38 @@ declare namespace Cloudflare {
 }
 interface CloudflareBindings extends Cloudflare.Env {}
 type StringifyValues<EnvType extends Record<string, unknown>> = {
-	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
+	[Binding in keyof EnvType]: EnvType[Binding] extends string
+		? EnvType[Binding]
+		: string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "VALUE_FROM_CLOUDFLARE" | "ACCOUNT_ID" | "AI_GATEWAY_ID" | "GOOGLE_CLIENT_ID" | "TWILIO_EVENT_SYNC_ID_DEV" | "TWILIO_EVENT_SYNC_ID_PROD" | "ENVIRONMENT" | "OPENAI_API_KEY" | "DEEPSEEK_API_KEY" | "CLOUDFLARE_API_TOKEN" | "GEMINI_API_KEY" | "BETTER_AUTH_SECRET" | "GOOGLE_CLIENT_SECRET" | "VAPID_PUBLIC_KEY" | "VAPID_PRIVATE_KEY" | "VAPID_SUBJECT" | "TWILIO_ACCOUNT_SID" | "TWILIO_API_KEY" | "TWILIO_API_SECRET" | "TWILIO_AUTH_TOKEN" | "TWILIO_SERVICE_SID" | "TWILIO_EVENT_SYNC_ID" | "SWELL_CLOUD_API_KEY">> {}
+	interface ProcessEnv
+		extends StringifyValues<
+			Pick<
+				Cloudflare.Env,
+				| "VALUE_FROM_CLOUDFLARE"
+				| "ACCOUNT_ID"
+				| "AI_GATEWAY_ID"
+				| "GOOGLE_CLIENT_ID"
+				| "TWILIO_EVENT_SYNC_ID_DEV"
+				| "TWILIO_EVENT_SYNC_ID_PROD"
+				| "ENVIRONMENT"
+				| "OPENAI_API_KEY"
+				| "DEEPSEEK_API_KEY"
+				| "CLOUDFLARE_API_TOKEN"
+				| "GEMINI_API_KEY"
+				| "BETTER_AUTH_SECRET"
+				| "GOOGLE_CLIENT_SECRET"
+				| "VAPID_PUBLIC_KEY"
+				| "VAPID_PRIVATE_KEY"
+				| "VAPID_SUBJECT"
+				| "TWILIO_ACCOUNT_SID"
+				| "TWILIO_API_KEY"
+				| "TWILIO_API_SECRET"
+				| "TWILIO_AUTH_TOKEN"
+				| "TWILIO_SERVICE_SID"
+				| "TWILIO_EVENT_SYNC_ID"
+				| "SWELL_CLOUD_API_KEY"
+			>
+		> {}
 }

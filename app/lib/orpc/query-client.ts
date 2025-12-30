@@ -14,4 +14,3 @@ export function createQueryClient() {
 export function dehydrateQueryClient(queryClient: QueryClient) {
 	return dehydrate(queryClient);
 }
-

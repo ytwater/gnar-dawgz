@@ -7,15 +7,15 @@
  */
 
 export type CreateSubscriptionBody = {
-  /** A human readable description for the Subscription **This value should not contain PII.** */
-  Description: string;
-  /**
-   * The SID of the sink that events selected by this subscription should be sent to. Sink must be active for the subscription to be created.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^DG[0-9a-fA-F]{32}$
-   */
-  SinkSid: string;
-  /** An array of objects containing the subscribed Event Types */
-  Types: unknown[];
+	/** A human readable description for the Subscription **This value should not contain PII.** */
+	Description: string;
+	/**
+	 * The SID of the sink that events selected by this subscription should be sent to. Sink must be active for the subscription to be created.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^DG[0-9a-fA-F]{32}$
+	 */
+	SinkSid: string;
+	/** An array of objects containing the subscribed Event Types */
+	Types: unknown[];
 };

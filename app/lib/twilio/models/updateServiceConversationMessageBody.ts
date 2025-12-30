@@ -7,16 +7,16 @@
  */
 
 export type UpdateServiceConversationMessageBody = {
-  /** The channel specific identifier of the message's author. Defaults to `system`. */
-  Author?: string;
-  /** The content of the message, can be up to 1,600 characters long. */
-  Body?: string;
-  /** The date that this resource was created. */
-  DateCreated?: string;
-  /** The date that this resource was last updated. `null` if the message has not been edited. */
-  DateUpdated?: string;
-  /** A string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
-  Attributes?: string;
-  /** The subject of the message, can be up to 256 characters long. */
-  Subject?: string;
+	/** The channel specific identifier of the message's author. Defaults to `system`. */
+	Author?: string;
+	/** The content of the message, can be up to 1,600 characters long. */
+	Body?: string;
+	/** The date that this resource was created. */
+	DateCreated?: string;
+	/** The date that this resource was last updated. `null` if the message has not been edited. */
+	DateUpdated?: string;
+	/** A string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
+	Attributes?: string;
+	/** The subject of the message, can be up to 256 characters long. */
+	Subject?: string;
 };

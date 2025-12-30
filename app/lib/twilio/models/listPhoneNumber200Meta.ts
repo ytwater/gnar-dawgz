@@ -7,13 +7,13 @@
  */
 
 export type ListPhoneNumber200Meta = {
-  first_page_url?: string;
-  key?: string;
-  /** @nullable */
-  next_page_url?: string | null;
-  page?: number;
-  page_size?: number;
-  /** @nullable */
-  previous_page_url?: string | null;
-  url?: string;
+	first_page_url?: string;
+	key?: string;
+	/** @nullable */
+	next_page_url?: string | null;
+	page?: number;
+	page_size?: number;
+	/** @nullable */
+	previous_page_url?: string | null;
+	url?: string;
 };

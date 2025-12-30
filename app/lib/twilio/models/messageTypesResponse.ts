@@ -5,19 +5,19 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessageTypeConfig } from './messageTypeConfig';
+import type { MessageTypeConfig } from "./messageTypeConfig";
 
 export interface MessageTypesResponse {
-  /**
-   * The SID of the account that owns this opt-out configuration
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid: string;
-  /**
-   * The SID of the opt-out configuration
-   * @pattern ^OO[0-9a-fA-F]{32}$
-   */
-  opt_out_sid: string;
-  /** List of message types associated with this opt-out configuration */
-  message_types: MessageTypeConfig[];
+	/**
+	 * The SID of the account that owns this opt-out configuration
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid: string;
+	/**
+	 * The SID of the opt-out configuration
+	 * @pattern ^OO[0-9a-fA-F]{32}$
+	 */
+	opt_out_sid: string;
+	/** List of message types associated with this opt-out configuration */
+	message_types: MessageTypeConfig[];
 }

@@ -7,18 +7,18 @@
  */
 
 export interface MessagingV1DomainDnsValidation {
-  /**
-   * The unique string that we created to identify the Domain resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^DN[0-9a-fA-F]{32}$
-   */
-  domain_sid?: string | null;
-  /** @nullable */
-  is_valid?: boolean | null;
-  /** @nullable */
-  reason?: string | null;
-  /** @nullable */
-  url?: string | null;
+	/**
+	 * The unique string that we created to identify the Domain resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^DN[0-9a-fA-F]{32}$
+	 */
+	domain_sid?: string | null;
+	/** @nullable */
+	is_valid?: boolean | null;
+	/** @nullable */
+	reason?: string | null;
+	/** @nullable */
+	url?: string | null;
 }

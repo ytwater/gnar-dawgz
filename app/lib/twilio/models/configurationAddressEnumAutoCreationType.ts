@@ -6,12 +6,12 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ConfigurationAddressEnumAutoCreationType = typeof ConfigurationAddressEnumAutoCreationType[keyof typeof ConfigurationAddressEnumAutoCreationType];
-
+export type ConfigurationAddressEnumAutoCreationType =
+	(typeof ConfigurationAddressEnumAutoCreationType)[keyof typeof ConfigurationAddressEnumAutoCreationType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConfigurationAddressEnumAutoCreationType = {
-  webhook: 'webhook',
-  studio: 'studio',
-  default: 'default',
+	webhook: "webhook",
+	studio: "studio",
+	default: "default",
 } as const;

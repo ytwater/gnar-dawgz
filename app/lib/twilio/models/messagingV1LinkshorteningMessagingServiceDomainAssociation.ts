@@ -7,22 +7,22 @@
  */
 
 export interface MessagingV1LinkshorteningMessagingServiceDomainAssociation {
-  /**
-   * The unique string that we created to identify the Domain resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^DN[0-9a-fA-F]{32}$
-   */
-  domain_sid?: string | null;
-  /**
-   * The unique string that identifies the messaging service
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^MG[0-9a-fA-F]{32}$
-   */
-  messaging_service_sid?: string | null;
-  /** @nullable */
-  url?: string | null;
+	/**
+	 * The unique string that we created to identify the Domain resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^DN[0-9a-fA-F]{32}$
+	 */
+	domain_sid?: string | null;
+	/**
+	 * The unique string that identifies the messaging service
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^MG[0-9a-fA-F]{32}$
+	 */
+	messaging_service_sid?: string | null;
+	/** @nullable */
+	url?: string | null;
 }

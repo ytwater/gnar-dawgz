@@ -5,44 +5,44 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ServiceWebhookConfigurationEnumMethod } from './serviceWebhookConfigurationEnumMethod';
+import type { ServiceWebhookConfigurationEnumMethod } from "./serviceWebhookConfigurationEnumMethod";
 
 export interface ConversationsV1ServiceServiceConfigurationServiceWebhookConfiguration {
-  /**
-   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this service.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * The unique ID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) this conversation belongs to.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^IS[0-9a-fA-F]{32}$
-   */
-  chat_service_sid?: string | null;
-  /**
-   * The absolute url the pre-event webhook request should be sent to.
-   * @nullable
-   */
-  pre_webhook_url?: string | null;
-  /**
-   * The absolute url the post-event webhook request should be sent to.
-   * @nullable
-   */
-  post_webhook_url?: string | null;
-  /**
-   * The list of events that your configured webhook targets will receive. Events not configured here will not fire. Possible values are `onParticipantAdd`, `onParticipantAdded`, `onDeliveryUpdated`, `onConversationUpdated`, `onConversationRemove`, `onParticipantRemove`, `onConversationUpdate`, `onMessageAdd`, `onMessageRemoved`, `onParticipantUpdated`, `onConversationAdded`, `onMessageAdded`, `onConversationAdd`, `onConversationRemoved`, `onParticipantUpdate`, `onMessageRemove`, `onMessageUpdated`, `onParticipantRemoved`, `onMessageUpdate` or `onConversationStateUpdated`.
-   * @nullable
-   */
-  filters?: string[] | null;
-  method?: ServiceWebhookConfigurationEnumMethod;
-  /**
-   * An absolute API resource URL for this webhook.
-   * @nullable
-   */
-  url?: string | null;
+	/**
+	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this service.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * The unique ID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) this conversation belongs to.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^IS[0-9a-fA-F]{32}$
+	 */
+	chat_service_sid?: string | null;
+	/**
+	 * The absolute url the pre-event webhook request should be sent to.
+	 * @nullable
+	 */
+	pre_webhook_url?: string | null;
+	/**
+	 * The absolute url the post-event webhook request should be sent to.
+	 * @nullable
+	 */
+	post_webhook_url?: string | null;
+	/**
+	 * The list of events that your configured webhook targets will receive. Events not configured here will not fire. Possible values are `onParticipantAdd`, `onParticipantAdded`, `onDeliveryUpdated`, `onConversationUpdated`, `onConversationRemove`, `onParticipantRemove`, `onConversationUpdate`, `onMessageAdd`, `onMessageRemoved`, `onParticipantUpdated`, `onConversationAdded`, `onMessageAdded`, `onConversationAdd`, `onConversationRemoved`, `onParticipantUpdate`, `onMessageRemove`, `onMessageUpdated`, `onParticipantRemoved`, `onMessageUpdate` or `onConversationStateUpdated`.
+	 * @nullable
+	 */
+	filters?: string[] | null;
+	method?: ServiceWebhookConfigurationEnumMethod;
+	/**
+	 * An absolute API resource URL for this webhook.
+	 * @nullable
+	 */
+	url?: string | null;
 }

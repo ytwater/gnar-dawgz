@@ -10,11 +10,12 @@
  * The HTTP method we use to call `fallback_url`. Can be: `GET` or `POST`.
  * @nullable
  */
-export type MessagingV1ServiceFallbackMethod = typeof MessagingV1ServiceFallbackMethod[keyof typeof MessagingV1ServiceFallbackMethod] | null;
-
+export type MessagingV1ServiceFallbackMethod =
+	| (typeof MessagingV1ServiceFallbackMethod)[keyof typeof MessagingV1ServiceFallbackMethod]
+	| null;
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const MessagingV1ServiceFallbackMethod = {
-  GET: 'GET',
-  POST: 'POST',
+	GET: "GET",
+	POST: "POST",
 } as const;

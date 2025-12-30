@@ -90,7 +90,8 @@ export function useTaxonomyBreadcrumbs(parentId: string) {
 export function useSyncSpot() {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (spotId: string) => orpcClient.surfForecast.syncSpot({ spotId }),
+		mutationFn: (spotId: string) =>
+			orpcClient.surfForecast.syncSpot({ spotId }),
 		onSuccess: (_, spotId) => {
 			// Invalidate and refetch relevant queries to refresh data including lastSyncedAt
 			queryClient.invalidateQueries({

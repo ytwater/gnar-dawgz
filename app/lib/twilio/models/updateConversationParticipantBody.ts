@@ -7,30 +7,30 @@
  */
 
 export type UpdateConversationParticipantBody = {
-  /** The date that this resource was created. */
-  DateCreated?: string;
-  /** The date that this resource was last updated. */
-  DateUpdated?: string;
-  /** An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
-  Attributes?: string;
-  /**
-   * The SID of a conversation-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the participant.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^RL[0-9a-fA-F]{32}$
-   */
-  RoleSid?: string;
-  /** The address of the Twilio phone number that the participant is in contact with. 'null' value will remove it. */
-  'MessagingBinding.ProxyAddress'?: string;
-  /** The address of the Twilio phone number that is used in Group MMS. 'null' value will remove it. */
-  'MessagingBinding.ProjectedAddress'?: string;
-  /** A unique string identifier for the conversation participant as [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource). This parameter is non-null if (and only if) the participant is using the Conversations SDK to communicate. Limited to 256 characters. */
-  Identity?: string;
-  /**
-   * Index of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant.
-   * @nullable
-   */
-  LastReadMessageIndex?: number | null;
-  /** Timestamp of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant. */
-  LastReadTimestamp?: string;
+	/** The date that this resource was created. */
+	DateCreated?: string;
+	/** The date that this resource was last updated. */
+	DateUpdated?: string;
+	/** An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
+	Attributes?: string;
+	/**
+	 * The SID of a conversation-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the participant.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^RL[0-9a-fA-F]{32}$
+	 */
+	RoleSid?: string;
+	/** The address of the Twilio phone number that the participant is in contact with. 'null' value will remove it. */
+	"MessagingBinding.ProxyAddress"?: string;
+	/** The address of the Twilio phone number that is used in Group MMS. 'null' value will remove it. */
+	"MessagingBinding.ProjectedAddress"?: string;
+	/** A unique string identifier for the conversation participant as [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource). This parameter is non-null if (and only if) the participant is using the Conversations SDK to communicate. Limited to 256 characters. */
+	Identity?: string;
+	/**
+	 * Index of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant.
+	 * @nullable
+	 */
+	LastReadMessageIndex?: number | null;
+	/** Timestamp of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant. */
+	LastReadTimestamp?: string;
 };

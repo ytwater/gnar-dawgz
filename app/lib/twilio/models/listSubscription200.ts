@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { EventsV1Subscription } from './eventsV1Subscription';
-import type { ListSubscription200Meta } from './listSubscription200Meta';
+import type { EventsV1Subscription } from "./eventsV1Subscription";
+import type { ListSubscription200Meta } from "./listSubscription200Meta";
 
 export type ListSubscription200 = {
-  subscriptions?: EventsV1Subscription[];
-  meta?: ListSubscription200Meta;
+	subscriptions?: EventsV1Subscription[];
+	meta?: ListSubscription200Meta;
 };

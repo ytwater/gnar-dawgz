@@ -1,19 +1,15 @@
 import {
 	ArrowClockwise,
-	CaretLeft,
 	CaretRight,
-	CheckCircle,
 	CircleNotch,
 	Database,
 	Globe,
 	MagnifyingGlass,
 	MapPin,
 	Plus,
-	Prohibit,
 	Trash,
 } from "@phosphor-icons/react";
 import { HydrationBoundary } from "@tanstack/react-query";
-import { useState } from "react";
 import {
 	Form,
 	redirect,
@@ -96,15 +92,16 @@ export const loader = async ({ request, context }: Route.LoaderArgs) => {
 	const parentId = url.searchParams.get("parentId") || SOCAL_REGION_ID;
 	const search = url.searchParams.get("search") || "";
 
-	const orpcContext = await createORPCContext(
-		context.cloudflare.env,
-		request,
-	);
+	const orpcContext = await createORPCContext(context.cloudflare.env, request);
 
 	// Fetch data via ORPC
 	const [spots, taxonomyItems, breadcrumbs] = await Promise.all([
 		getSpots(orpcContext),
-		getTaxonomy(orpcContext, search ? undefined : parentId, search || undefined),
+		getTaxonomy(
+			orpcContext,
+			search ? undefined : parentId,
+			search || undefined,
+		),
 		getTaxonomyBreadcrumbs(orpcContext, parentId),
 	]);
 
@@ -112,7 +109,10 @@ export const loader = async ({ request, context }: Route.LoaderArgs) => {
 	const queryClient = createQueryClient();
 	queryClient.setQueryData(surfForecastKeys.spots(), spots);
 	queryClient.setQueryData(
-		surfForecastKeys.taxonomy(search ? undefined : parentId, search || undefined),
+		surfForecastKeys.taxonomy(
+			search ? undefined : parentId,
+			search || undefined,
+		),
 		taxonomyItems,
 	);
 	queryClient.setQueryData(
@@ -502,353 +502,363 @@ export default function AdminSurfSpots() {
 	return (
 		<HydrationBoundary state={loaderData.dehydratedState}>
 			<div className="space-y-8 p-6">
-			<div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-				<div>
-					<h1 className="text-4xl font-extrabold tracking-tight">
-						Surf Forecast Setup
-					</h1>
-					<p className="mt-2 text-muted-foreground">
-						Manage spots and browse the Surfline taxonomy to find new locations.
-					</p>
+				<div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+					<div>
+						<h1 className="text-4xl font-extrabold tracking-tight">
+							Surf Forecast Setup
+						</h1>
+						<p className="mt-2 text-muted-foreground">
+							Manage spots and browse the Surfline taxonomy to find new
+							locations.
+						</p>
+					</div>
 				</div>
-			</div>
 
-			<div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-				{/* Tracking Module */}
-				<div className="space-y-6">
-					<Card>
-						<CardHeader className="flex flex-row items-center justify-between space-y-0">
-							<div>
-								<CardTitle>My Tracked Spots</CardTitle>
-								<CardDescription>
-									Spots currently being synchronized every 6 hours.
-								</CardDescription>
-							</div>
-							<Badge variant="outline" className="h-6">
-								{spots.length} Spots
-							</Badge>
-						</CardHeader>
-						<CardContent>
-							<Table>
-								<TableHeader>
-									<TableRow>
-										<TableHead>Spot Name</TableHead>
-										<TableHead>Status</TableHead>
-										<TableHead>Last Synced</TableHead>
-										<TableHead>Sync</TableHead>
-										<TableHead className="text-right">Action</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{spots.length === 0 ? (
+				<div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+					{/* Tracking Module */}
+					<div className="space-y-6">
+						<Card>
+							<CardHeader className="flex flex-row items-center justify-between space-y-0">
+								<div>
+									<CardTitle>My Tracked Spots</CardTitle>
+									<CardDescription>
+										Spots currently being synchronized every 6 hours.
+									</CardDescription>
+								</div>
+								<Badge variant="outline" className="h-6">
+									{spots.length} Spots
+								</Badge>
+							</CardHeader>
+							<CardContent>
+								<Table>
+									<TableHeader>
 										<TableRow>
-											<TableCell
-												colSpan={5}
-												className="text-center py-8 text-muted-foreground"
-											>
-												No spots tracked yet.
-											</TableCell>
+											<TableHead>Spot Name</TableHead>
+											<TableHead>Status</TableHead>
+											<TableHead>Last Synced</TableHead>
+											<TableHead>Sync</TableHead>
+											<TableHead className="text-right">Action</TableHead>
 										</TableRow>
-									) : (
-										spots.map((spot) => (
-											<TableRow key={spot.id}>
-												<TableCell>
-													<div className="font-medium">{spot.name}</div>
-													<div className="text-xs text-muted-foreground font-mono">
-														{spot.surflineId}
-													</div>
-												</TableCell>
-												<TableCell>
-													<Form method="post">
-														<input type="hidden" name="id" value={spot.id} />
-														<input
-															type="hidden"
-															name="isActive"
-															value={String(spot.isActive)}
-														/>
-														<Button
-															type="submit"
-															name="intent"
-															value="toggle-active"
-															variant="ghost"
-															className="h-auto p-0 hover:bg-transparent"
-														>
-															{spot.isActive ? (
-																<Badge className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20">
-																	Active
-																</Badge>
-															) : (
-																<Badge variant="secondary">Inactive</Badge>
-															)}
-														</Button>
-													</Form>
-												</TableCell>
-												<TableCell>
-													{spot.lastSyncedAt ? (
-														<div className="text-sm">
-															{new Date(spot.lastSyncedAt).toLocaleString()}
-														</div>
-													) : (
-														<span className="text-xs text-muted-foreground">
-															Never
-														</span>
-													)}
-												</TableCell>
-												<TableCell>
-													<Form method="post">
-														<input type="hidden" name="id" value={spot.id} />
-														<Button
-															type="submit"
-															name="intent"
-															value="force-sync"
-															variant="outline"
-															size="sm"
-															disabled={
-																isForceSyncing && syncingSpotId === spot.id
-															}
-														>
-															{isForceSyncing && syncingSpotId === spot.id ? (
-																<>
-																	<CircleNotch
-																		className="animate-spin mr-2"
-																		size={16}
-																	/>
-																	Syncing...
-																</>
-															) : (
-																<>
-																	<ArrowClockwise size={16} className="mr-2" />
-																	Sync
-																</>
-															)}
-														</Button>
-													</Form>
-												</TableCell>
-												<TableCell className="text-right">
-													<Form
-														method="post"
-														onSubmit={(e) =>
-															!confirm("Delete spot?") && e.preventDefault()
-														}
-													>
-														<input type="hidden" name="id" value={spot.id} />
-														<Button
-															variant="ghost"
-															size="icon"
-															name="intent"
-															value="delete"
-															className="text-destructive"
-														>
-															<Trash size={18} />
-														</Button>
-													</Form>
+									</TableHeader>
+									<TableBody>
+										{spots.length === 0 ? (
+											<TableRow>
+												<TableCell
+													colSpan={5}
+													className="text-center py-8 text-muted-foreground"
+												>
+													No spots tracked yet.
 												</TableCell>
 											</TableRow>
-										))
-									)}
-								</TableBody>
-							</Table>
-						</CardContent>
-					</Card>
-
-					<Card className="border-primary/20 bg-primary/5">
-						<CardHeader>
-							<CardTitle className="text-lg flex items-center gap-2">
-								<Plus weight="bold" /> Manual Add
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<Form method="post" className="flex gap-2">
-								<Input
-									name="surflineId"
-									placeholder="Surfline ID"
-									required
-									className="bg-background"
-								/>
-								<Button name="intent" value="add" disabled={isAdding}>
-									{isAdding ? <CircleNotch className="animate-spin" /> : "Add"}
-								</Button>
-							</Form>
-							{actionData?.error && (
-								<p className="text-destructive text-sm mt-2">
-									{actionData.error}
-								</p>
-							)}
-						</CardContent>
-					</Card>
-				</div>
-
-				{/* Explorer Module */}
-				<div className="space-y-6">
-					<Card className="min-h-[600px] flex flex-col">
-						<CardHeader>
-							<div className="flex items-center justify-between">
-								<CardTitle className="flex items-center gap-2">
-									<Globe weight="bold" /> Spot Explorer
-								</CardTitle>
-								<Form method="post">
-									<input type="hidden" name="id" value={parentId} />
-									<Button
-										variant="outline"
-										size="sm"
-										name="intent"
-										value="sync-taxonomy"
-										disabled={isSyncing}
-									>
-										{isSyncing ? (
-											<CircleNotch className="animate-spin mr-2" />
 										) : (
-											<Database className="mr-2" />
-										)}
-										Sync Level
-									</Button>
-								</Form>
-							</div>
-							<div className="relative mt-2">
-								<MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-								<Input
-									placeholder="Search cached spots..."
-									className="pl-10"
-									value={search}
-									onChange={(e) =>
-										setSearchParams({ search: e.target.value, parentId })
-									}
-								/>
-							</div>
-						</CardHeader>
-						<CardContent className="flex-1 overflow-auto p-0">
-							<div className="px-6 py-2 border-b bg-muted/30 flex items-center gap-1 text-sm overflow-x-auto whitespace-nowrap">
-								<Button
-									variant="ghost"
-									size="sm"
-									className={`h-7 px-2 ${parentId === SOCAL_REGION_ID ? "font-bold underline" : ""}`}
-									onClick={() => setSearchParams({ parentId: SOCAL_REGION_ID })}
-								>
-									SoCal
-								</Button>
-								<Button
-									variant="ghost"
-									size="sm"
-									className={`h-7 px-2 ${parentId === SANDIEGO_SUBREGION_ID ? "font-bold underline" : ""}`}
-									onClick={() =>
-										setSearchParams({ parentId: SANDIEGO_SUBREGION_ID })
-									}
-								>
-									San Diego
-								</Button>
-								{breadcrumbs.map((bc) => (
-									<div key={bc.id} className="flex items-center gap-1">
-										<CaretRight size={12} />
-										<Button
-											variant="ghost"
-											size="sm"
-											className={`h-7 px-2 ${bc.id === parentId ? "font-bold underline" : ""}`}
-											onClick={() => setSearchParams({ parentId: bc.id })}
-										>
-											{bc.name}
-										</Button>
-									</div>
-								))}
-							</div>
-
-							<Table>
-								<TableBody>
-									{taxonomyItems.length === 0 ? (
-										<TableRow>
-											<TableCell className="text-center py-20 text-muted-foreground">
-												<div className="flex flex-col items-center gap-2">
-													<p>No items found in cache for this level.</p>
-													<p className="text-xs">
-														Click "Sync Level" to fetch from Surfline.
-													</p>
-												</div>
-											</TableCell>
-										</TableRow>
-									) : (
-										taxonomyItems.map((item) => (
-											<TableRow
-												key={item.id}
-												className="group hover:bg-muted/50 transition-colors"
-											>
-												<TableCell className="py-4">
-													<div className="flex items-center gap-3">
-														<div
-															className={`p-2 rounded-md ${item.type === "spot" ? "bg-blue-500/10 text-blue-500" : "bg-orange-500/10 text-orange-500"}`}
-														>
-															{item.type === "spot" ? (
-																<MapPin weight="fill" />
-															) : (
-																<Globe weight="fill" />
-															)}
+											spots.map((spot) => (
+												<TableRow key={spot.id}>
+													<TableCell>
+														<div className="font-medium">{spot.name}</div>
+														<div className="text-xs text-muted-foreground font-mono">
+															{spot.surflineId}
 														</div>
-														<div>
-															<div className="font-semibold">{item.name}</div>
-															<div className="text-xs text-muted-foreground uppercase tracking-wider">
-																{item.type}
-															</div>
-														</div>
-													</div>
-												</TableCell>
-												<TableCell className="text-right py-4 pr-6">
-													{item.type === "spot" ? (
+													</TableCell>
+													<TableCell>
 														<Form method="post">
+															<input type="hidden" name="id" value={spot.id} />
 															<input
 																type="hidden"
-																name="surflineId"
-																value={item.spotId ?? ""}
-															/>
-															<input
-																type="hidden"
-																name="name"
-																value={item.name}
-															/>
-															<input
-																type="hidden"
-																name="lat"
-																value={item.lat ?? 0}
-															/>
-															<input
-																type="hidden"
-																name="lng"
-																value={item.lng ?? 0}
+																name="isActive"
+																value={String(spot.isActive)}
 															/>
 															<Button
-																size="sm"
+																type="submit"
 																name="intent"
-																value="add-taxonomy"
-																disabled={spots.some(
-																	(s) => s.id === item.spotId,
-																)}
+																value="toggle-active"
+																variant="ghost"
+																className="h-auto p-0 hover:bg-transparent"
 															>
-																{spots.some((s) => s.id === item.spotId) ? (
-																	"Tracked"
+																{spot.isActive ? (
+																	<Badge className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20">
+																		Active
+																	</Badge>
 																) : (
-																	<Plus weight="bold" />
+																	<Badge variant="secondary">Inactive</Badge>
 																)}
 															</Button>
 														</Form>
-													) : (
-														<Button
-															variant="ghost"
-															size="sm"
-															onClick={() =>
-																setSearchParams({ parentId: item.id })
+													</TableCell>
+													<TableCell>
+														{spot.lastSyncedAt ? (
+															<div className="text-sm">
+																{new Date(spot.lastSyncedAt).toLocaleString()}
+															</div>
+														) : (
+															<span className="text-xs text-muted-foreground">
+																Never
+															</span>
+														)}
+													</TableCell>
+													<TableCell>
+														<Form method="post">
+															<input type="hidden" name="id" value={spot.id} />
+															<Button
+																type="submit"
+																name="intent"
+																value="force-sync"
+																variant="outline"
+																size="sm"
+																disabled={
+																	isForceSyncing && syncingSpotId === spot.id
+																}
+															>
+																{isForceSyncing && syncingSpotId === spot.id ? (
+																	<>
+																		<CircleNotch
+																			className="animate-spin mr-2"
+																			size={16}
+																		/>
+																		Syncing...
+																	</>
+																) : (
+																	<>
+																		<ArrowClockwise
+																			size={16}
+																			className="mr-2"
+																		/>
+																		Sync
+																	</>
+																)}
+															</Button>
+														</Form>
+													</TableCell>
+													<TableCell className="text-right">
+														<Form
+															method="post"
+															onSubmit={(e) =>
+																!confirm("Delete spot?") && e.preventDefault()
 															}
 														>
-															View <CaretRight className="ml-1" />
-														</Button>
-													)}
+															<input type="hidden" name="id" value={spot.id} />
+															<Button
+																variant="ghost"
+																size="icon"
+																name="intent"
+																value="delete"
+																className="text-destructive"
+															>
+																<Trash size={18} />
+															</Button>
+														</Form>
+													</TableCell>
+												</TableRow>
+											))
+										)}
+									</TableBody>
+								</Table>
+							</CardContent>
+						</Card>
+
+						<Card className="border-primary/20 bg-primary/5">
+							<CardHeader>
+								<CardTitle className="text-lg flex items-center gap-2">
+									<Plus weight="bold" /> Manual Add
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<Form method="post" className="flex gap-2">
+									<Input
+										name="surflineId"
+										placeholder="Surfline ID"
+										required
+										className="bg-background"
+									/>
+									<Button name="intent" value="add" disabled={isAdding}>
+										{isAdding ? (
+											<CircleNotch className="animate-spin" />
+										) : (
+											"Add"
+										)}
+									</Button>
+								</Form>
+								{actionData?.error && (
+									<p className="text-destructive text-sm mt-2">
+										{actionData.error}
+									</p>
+								)}
+							</CardContent>
+						</Card>
+					</div>
+
+					{/* Explorer Module */}
+					<div className="space-y-6">
+						<Card className="min-h-[600px] flex flex-col">
+							<CardHeader>
+								<div className="flex items-center justify-between">
+									<CardTitle className="flex items-center gap-2">
+										<Globe weight="bold" /> Spot Explorer
+									</CardTitle>
+									<Form method="post">
+										<input type="hidden" name="id" value={parentId} />
+										<Button
+											variant="outline"
+											size="sm"
+											name="intent"
+											value="sync-taxonomy"
+											disabled={isSyncing}
+										>
+											{isSyncing ? (
+												<CircleNotch className="animate-spin mr-2" />
+											) : (
+												<Database className="mr-2" />
+											)}
+											Sync Level
+										</Button>
+									</Form>
+								</div>
+								<div className="relative mt-2">
+									<MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+									<Input
+										placeholder="Search cached spots..."
+										className="pl-10"
+										value={search}
+										onChange={(e) =>
+											setSearchParams({ search: e.target.value, parentId })
+										}
+									/>
+								</div>
+							</CardHeader>
+							<CardContent className="flex-1 overflow-auto p-0">
+								<div className="px-6 py-2 border-b bg-muted/30 flex items-center gap-1 text-sm overflow-x-auto whitespace-nowrap">
+									<Button
+										variant="ghost"
+										size="sm"
+										className={`h-7 px-2 ${parentId === SOCAL_REGION_ID ? "font-bold underline" : ""}`}
+										onClick={() =>
+											setSearchParams({ parentId: SOCAL_REGION_ID })
+										}
+									>
+										SoCal
+									</Button>
+									<Button
+										variant="ghost"
+										size="sm"
+										className={`h-7 px-2 ${parentId === SANDIEGO_SUBREGION_ID ? "font-bold underline" : ""}`}
+										onClick={() =>
+											setSearchParams({ parentId: SANDIEGO_SUBREGION_ID })
+										}
+									>
+										San Diego
+									</Button>
+									{breadcrumbs.map((bc) => (
+										<div key={bc.id} className="flex items-center gap-1">
+											<CaretRight size={12} />
+											<Button
+												variant="ghost"
+												size="sm"
+												className={`h-7 px-2 ${bc.id === parentId ? "font-bold underline" : ""}`}
+												onClick={() => setSearchParams({ parentId: bc.id })}
+											>
+												{bc.name}
+											</Button>
+										</div>
+									))}
+								</div>
+
+								<Table>
+									<TableBody>
+										{taxonomyItems.length === 0 ? (
+											<TableRow>
+												<TableCell className="text-center py-20 text-muted-foreground">
+													<div className="flex flex-col items-center gap-2">
+														<p>No items found in cache for this level.</p>
+														<p className="text-xs">
+															Click "Sync Level" to fetch from Surfline.
+														</p>
+													</div>
 												</TableCell>
 											</TableRow>
-										))
-									)}
-								</TableBody>
-							</Table>
-						</CardContent>
-					</Card>
+										) : (
+											taxonomyItems.map((item) => (
+												<TableRow
+													key={item.id}
+													className="group hover:bg-muted/50 transition-colors"
+												>
+													<TableCell className="py-4">
+														<div className="flex items-center gap-3">
+															<div
+																className={`p-2 rounded-md ${item.type === "spot" ? "bg-blue-500/10 text-blue-500" : "bg-orange-500/10 text-orange-500"}`}
+															>
+																{item.type === "spot" ? (
+																	<MapPin weight="fill" />
+																) : (
+																	<Globe weight="fill" />
+																)}
+															</div>
+															<div>
+																<div className="font-semibold">{item.name}</div>
+																<div className="text-xs text-muted-foreground uppercase tracking-wider">
+																	{item.type}
+																</div>
+															</div>
+														</div>
+													</TableCell>
+													<TableCell className="text-right py-4 pr-6">
+														{item.type === "spot" ? (
+															<Form method="post">
+																<input
+																	type="hidden"
+																	name="surflineId"
+																	value={item.spotId ?? ""}
+																/>
+																<input
+																	type="hidden"
+																	name="name"
+																	value={item.name}
+																/>
+																<input
+																	type="hidden"
+																	name="lat"
+																	value={item.lat ?? 0}
+																/>
+																<input
+																	type="hidden"
+																	name="lng"
+																	value={item.lng ?? 0}
+																/>
+																<Button
+																	size="sm"
+																	name="intent"
+																	value="add-taxonomy"
+																	disabled={spots.some(
+																		(s) => s.id === item.spotId,
+																	)}
+																>
+																	{spots.some((s) => s.id === item.spotId) ? (
+																		"Tracked"
+																	) : (
+																		<Plus weight="bold" />
+																	)}
+																</Button>
+															</Form>
+														) : (
+															<Button
+																variant="ghost"
+																size="sm"
+																onClick={() =>
+																	setSearchParams({ parentId: item.id })
+																}
+															>
+																View <CaretRight className="ml-1" />
+															</Button>
+														)}
+													</TableCell>
+												</TableRow>
+											))
+										)}
+									</TableBody>
+								</Table>
+							</CardContent>
+						</Card>
+					</div>
 				</div>
 			</div>
-		</div>
 		</HydrationBoundary>
 	);
 }

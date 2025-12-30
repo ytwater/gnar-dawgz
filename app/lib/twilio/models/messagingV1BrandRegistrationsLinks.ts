@@ -9,4 +9,6 @@
 /**
  * @nullable
  */
-export type MessagingV1BrandRegistrationsLinks = { [key: string]: unknown } | null;
+export type MessagingV1BrandRegistrationsLinks = {
+	[key: string]: unknown;
+} | null;

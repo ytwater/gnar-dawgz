@@ -7,32 +7,32 @@
  */
 
 export interface EventsV1SubscriptionSubscribedEvent {
-  /**
-   * The unique SID identifier of the Account.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * Type of event being subscribed to.
-   * @nullable
-   */
-  type?: string | null;
-  /** The schema version that the Subscription should use. */
-  schema_version?: number;
-  /**
-   * The unique SID identifier of the Subscription.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^DF[0-9a-fA-F]{32}$
-   */
-  subscription_sid?: string | null;
-  /**
-   * The URL of this resource.
-   * @nullable
-   */
-  url?: string | null;
+	/**
+	 * The unique SID identifier of the Account.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * Type of event being subscribed to.
+	 * @nullable
+	 */
+	type?: string | null;
+	/** The schema version that the Subscription should use. */
+	schema_version?: number;
+	/**
+	 * The unique SID identifier of the Subscription.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^DF[0-9a-fA-F]{32}$
+	 */
+	subscription_sid?: string | null;
+	/**
+	 * The URL of this resource.
+	 * @nullable
+	 */
+	url?: string | null;
 }

@@ -7,8 +7,8 @@
  */
 
 export type FetchSafelistParams = {
-/**
- * The phone number or phone number 1k prefix to be fetched from SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
- */
-PhoneNumber?: string;
+	/**
+	 * The phone number or phone number 1k prefix to be fetched from SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+	 */
+	PhoneNumber?: string;
 };

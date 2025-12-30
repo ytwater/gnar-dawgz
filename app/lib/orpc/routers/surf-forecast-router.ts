@@ -7,7 +7,7 @@ import {
 	tideForecasts,
 } from "~/app/lib/surf-forecast-schema";
 import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
-import { adminProcedure, authedProcedure, publicProcedure } from "../server";
+import { adminProcedure, publicProcedure } from "../server";
 
 export const surfForecastRouter = {
 	// Get all active spots
@@ -240,7 +240,9 @@ export const surfForecastRouter = {
 
 			for (const ts of timestamps) {
 				const sWave = surflineWaves.find((w) => w.timestamp.getTime() === ts);
-				const swWave = swellcloudWaves.find((w) => w.timestamp.getTime() === ts);
+				const swWave = swellcloudWaves.find(
+					(w) => w.timestamp.getTime() === ts,
+				);
 				if (sWave || swWave) {
 					combinedData.push({
 						timestamp: ts,
@@ -352,4 +354,3 @@ export const surfForecastRouter = {
 			return { success: true };
 		}),
 };
-

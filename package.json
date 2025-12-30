@@ -26,7 +26,9 @@
 		"db:nuke:dev": "npx tsx scripts/nuke.ts development",
 		"db:nuke:prod": "npx tsx scripts/nuke.ts production",
 		"db:drop:dev": "npx tsx scripts/drop.ts development",
-		"db:drop:prod": "npx tsx scripts/drop.ts production"
+		"db:drop:prod": "npx tsx scripts/drop.ts production",
+		"format": "biome format --write .",
+		"lint": "biome lint"
 	},
 	"dependencies": {
 		"@ai-sdk/deepseek": "^1.0.31",

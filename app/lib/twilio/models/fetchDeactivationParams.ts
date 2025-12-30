@@ -7,8 +7,8 @@
  */
 
 export type FetchDeactivationParams = {
-/**
- * The request will return a list of all United States Phone Numbers that were deactivated on the day specified by this parameter. This date should be specified in YYYY-MM-DD format.
- */
-Date?: string;
+	/**
+	 * The request will return a list of all United States Phone Numbers that were deactivated on the day specified by this parameter. This date should be specified in YYYY-MM-DD format.
+	 */
+	Date?: string;
 };

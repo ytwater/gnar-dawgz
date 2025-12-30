@@ -5,9 +5,9 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessageTypeConfig } from './messageTypeConfig';
+import type { MessageTypeConfig } from "./messageTypeConfig";
 
 export interface SupportedMessageTypes {
-  /** List of supported message types for opt-out configurations */
-  message_types: MessageTypeConfig[];
+	/** List of supported message types for opt-out configurations */
+	message_types: MessageTypeConfig[];
 }

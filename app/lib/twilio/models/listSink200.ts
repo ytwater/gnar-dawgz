@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { EventsV1Sink } from './eventsV1Sink';
-import type { ListSink200Meta } from './listSink200Meta';
+import type { EventsV1Sink } from "./eventsV1Sink";
+import type { ListSink200Meta } from "./listSink200Meta";
 
 export type ListSink200 = {
-  sinks?: EventsV1Sink[];
-  meta?: ListSink200Meta;
+	sinks?: EventsV1Sink[];
+	meta?: ListSink200Meta;
 };

@@ -6,16 +6,16 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ReplayEnumStatus = typeof ReplayEnumStatus[keyof typeof ReplayEnumStatus];
-
+export type ReplayEnumStatus =
+	(typeof ReplayEnumStatus)[keyof typeof ReplayEnumStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ReplayEnumStatus = {
-  submitted: 'submitted',
-  starting: 'starting',
-  running: 'running',
-  cancelling: 'cancelling',
-  cancelled: 'cancelled',
-  failed: 'failed',
-  completed: 'completed',
+	submitted: "submitted",
+	starting: "starting",
+	running: "running",
+	cancelling: "cancelling",
+	cancelled: "cancelled",
+	failed: "failed",
+	completed: "completed",
 } as const;

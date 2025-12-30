@@ -7,10 +7,10 @@
  */
 
 export interface MessageProperties {
-  /** The keyword type in format KeywordType.Locale (e.g., STOP.ENGLISH, HELP.FRENCH) */
-  keyword_type: string;
-  /** The message type identifier (typically country codes or special identifiers) */
-  message_type: string;
-  /** The actual opt-out message text to be sent */
-  message: string;
+	/** The keyword type in format KeywordType.Locale (e.g., STOP.ENGLISH, HELP.FRENCH) */
+	keyword_type: string;
+	/** The message type identifier (typically country codes or special identifiers) */
+	message_type: string;
+	/** The actual opt-out message text to be sent */
+	message: string;
 }

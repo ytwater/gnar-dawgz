@@ -9,11 +9,11 @@
 /**
  * The routing target of the webhook. Can be ordinary or route internally to Flex
  */
-export type ConfigurationWebhookEnumTarget = typeof ConfigurationWebhookEnumTarget[keyof typeof ConfigurationWebhookEnumTarget];
-
+export type ConfigurationWebhookEnumTarget =
+	(typeof ConfigurationWebhookEnumTarget)[keyof typeof ConfigurationWebhookEnumTarget];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConfigurationWebhookEnumTarget = {
-  webhook: 'webhook',
-  flex: 'flex',
+	webhook: "webhook",
+	flex: "flex",
 } as const;

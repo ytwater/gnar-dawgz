@@ -7,15 +7,15 @@
  */
 
 export type UpdateUserBody = {
-  /** The string that you assigned to describe the resource. */
-  FriendlyName?: string;
-  /** The JSON Object string that stores application-specific data. If attributes have not been set, `{}` is returned. */
-  Attributes?: string;
-  /**
-   * The SID of a service-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the user.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^RL[0-9a-fA-F]{32}$
-   */
-  RoleSid?: string;
+	/** The string that you assigned to describe the resource. */
+	FriendlyName?: string;
+	/** The JSON Object string that stores application-specific data. If attributes have not been set, `{}` is returned. */
+	Attributes?: string;
+	/**
+	 * The SID of a service-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the user.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^RL[0-9a-fA-F]{32}$
+	 */
+	RoleSid?: string;
 };

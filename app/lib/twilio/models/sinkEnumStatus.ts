@@ -9,13 +9,13 @@
 /**
  * The Status of this Sink. One of `initialized`, `validating`, `active` or `failed`.
  */
-export type SinkEnumStatus = typeof SinkEnumStatus[keyof typeof SinkEnumStatus];
-
+export type SinkEnumStatus =
+	(typeof SinkEnumStatus)[keyof typeof SinkEnumStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SinkEnumStatus = {
-  initialized: 'initialized',
-  validating: 'validating',
-  active: 'active',
-  failed: 'failed',
+	initialized: "initialized",
+	validating: "validating",
+	active: "active",
+	failed: "failed",
 } as const;

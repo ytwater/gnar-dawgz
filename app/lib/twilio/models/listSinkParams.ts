@@ -7,27 +7,27 @@
  */
 
 export type ListSinkParams = {
-/**
- * A boolean query parameter filtering the results to return sinks used/not used by a subscription.
- */
-InUse?: boolean;
-/**
- * A String query parameter filtering the results by status `initialized`, `validating`, `active` or `failed`.
- */
-Status?: string;
-/**
- * How many resources to return in each list page. The default is 50, and the maximum is 1000.
- * @minimum 1
- * @maximum 1000
- */
-PageSize?: number;
-/**
- * The page index. This value is simply for client state.
- * @minimum 0
- */
-Page?: number;
-/**
- * The page token. This is provided by the API.
- */
-PageToken?: string;
+	/**
+	 * A boolean query parameter filtering the results to return sinks used/not used by a subscription.
+	 */
+	InUse?: boolean;
+	/**
+	 * A String query parameter filtering the results by status `initialized`, `validating`, `active` or `failed`.
+	 */
+	Status?: string;
+	/**
+	 * How many resources to return in each list page. The default is 50, and the maximum is 1000.
+	 * @minimum 1
+	 * @maximum 1000
+	 */
+	PageSize?: number;
+	/**
+	 * The page index. This value is simply for client state.
+	 * @minimum 0
+	 */
+	Page?: number;
+	/**
+	 * The page token. This is provided by the API.
+	 */
+	PageToken?: string;
 };

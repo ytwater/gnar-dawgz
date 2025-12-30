@@ -7,11 +7,11 @@
  */
 
 export type CreateShortCodeBody = {
-  /**
-   * The SID of the ShortCode resource being added to the Service.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^SC[0-9a-fA-F]{32}$
-   */
-  ShortCodeSid: string;
+	/**
+	 * The SID of the ShortCode resource being added to the Service.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^SC[0-9a-fA-F]{32}$
+	 */
+	ShortCodeSid: string;
 };

@@ -7,9 +7,9 @@
  */
 
 export interface MessagingV1Usecase {
-  /**
-   * Human readable use case details (usecase, description and purpose) of Messaging Service Use Cases.
-   * @nullable
-   */
-  usecases?: unknown[] | null;
+	/**
+	 * Human readable use case details (usecase, description and purpose) of Messaging Service Use Cases.
+	 * @nullable
+	 */
+	usecases?: unknown[] | null;
 }

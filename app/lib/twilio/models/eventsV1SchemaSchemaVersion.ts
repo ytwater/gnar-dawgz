@@ -7,23 +7,23 @@
  */
 
 export interface EventsV1SchemaSchemaVersion {
-  /**
-   * The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
-   * @nullable
-   */
-  id?: string | null;
-  /** The version of this schema. */
-  schema_version?: number;
-  /**
-   * The date the schema version was created, given in ISO 8601 format.
-   * @nullable
-   */
-  date_created?: string | null;
-  /**
-   * The URL of this resource.
-   * @nullable
-   */
-  url?: string | null;
-  /** @nullable */
-  raw?: string | null;
+	/**
+	 * The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
+	 * @nullable
+	 */
+	id?: string | null;
+	/** The version of this schema. */
+	schema_version?: number;
+	/**
+	 * The date the schema version was created, given in ISO 8601 format.
+	 * @nullable
+	 */
+	date_created?: string | null;
+	/**
+	 * The URL of this resource.
+	 * @nullable
+	 */
+	url?: string | null;
+	/** @nullable */
+	raw?: string | null;
 }

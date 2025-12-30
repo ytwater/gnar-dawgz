@@ -2,14 +2,12 @@ import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, phoneNumber } from "better-auth/plugins";
-import { eq } from "drizzle-orm";
 import {
 	ADMIN_USER_IDS,
 	TWILIO_WHATSAPP_NUMBER,
 	TWILIO_WHATSAPP_OTP_TEMPLATE_SID,
 } from "../config/constants";
 import { getDb } from "./db";
-import { users } from "./schema";
 import {
 	type CreateMessageBody,
 	createMessage,

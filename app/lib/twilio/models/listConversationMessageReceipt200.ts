@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1ConversationConversationMessageConversationMessageReceipt } from './conversationsV1ConversationConversationMessageConversationMessageReceipt';
-import type { ListConversationMessageReceipt200Meta } from './listConversationMessageReceipt200Meta';
+import type { ConversationsV1ConversationConversationMessageConversationMessageReceipt } from "./conversationsV1ConversationConversationMessageConversationMessageReceipt";
+import type { ListConversationMessageReceipt200Meta } from "./listConversationMessageReceipt200Meta";
 
 export type ListConversationMessageReceipt200 = {
-  delivery_receipts?: ConversationsV1ConversationConversationMessageConversationMessageReceipt[];
-  meta?: ListConversationMessageReceipt200Meta;
+	delivery_receipts?: ConversationsV1ConversationConversationMessageConversationMessageReceipt[];
+	meta?: ListConversationMessageReceipt200Meta;
 };

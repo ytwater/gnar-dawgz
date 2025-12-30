@@ -7,41 +7,41 @@
  */
 
 export type CreateUsAppToPersonBody = {
-  /**
-   * A2P Brand Registration SID
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^BN[0-9a-fA-F]{32}$
-   */
-  BrandRegistrationSid: string;
-  /** A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters. */
-  Description: string;
-  /** Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum. */
-  MessageFlow: string;
-  /** An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars. */
-  MessageSamples: string[];
-  /** A2P Campaign Use Case. Examples: [ 2FA, EMERGENCY, MARKETING..] */
-  UsAppToPersonUsecase: string;
-  /** Indicates that this SMS campaign will send messages that contain links. */
-  HasEmbeddedLinks: boolean;
-  /** Indicates that this SMS campaign will send messages that contain phone numbers. */
-  HasEmbeddedPhone: boolean;
-  /** If end users can text in a keyword to start receiving messages from this campaign, the auto-reply messages sent to the end users must be provided. The opt-in response should include the Brand name, confirmation of opt-in enrollment to a recurring message campaign, how to get help, and clear description of how to opt-out. This field is required if end users can text in a keyword to start receiving messages from this campaign. 20 character minimum. 320 character maximum. */
-  OptInMessage?: string;
-  /** Upon receiving the opt-out keywords from the end users, Twilio customers are expected to send back an auto-generated response, which must provide acknowledgment of the opt-out request and confirmation that no further messages will be sent. It is also recommended that these opt-out messages include the brand name. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum. */
-  OptOutMessage?: string;
-  /** When customers receive the help keywords from their end users, Twilio customers are expected to send back an auto-generated response; this may include the brand name and additional support contact information. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum. */
-  HelpMessage?: string;
-  /** If end users can text in a keyword to start receiving messages from this campaign, those keywords must be provided. This field is required if end users can text in a keyword to start receiving messages from this campaign. Values must be alphanumeric. 255 character maximum. */
-  OptInKeywords?: string[];
-  /** End users should be able to text in a keyword to stop receiving messages from this campaign. Those keywords must be provided. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum. */
-  OptOutKeywords?: string[];
-  /** End users should be able to text in a keyword to receive help. Those keywords must be provided as part of the campaign registration request. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum. */
-  HelpKeywords?: string[];
-  /** A boolean that specifies whether campaign has Subscriber Optin or not. */
-  SubscriberOptIn?: boolean;
-  /** A boolean that specifies whether campaign is age gated or not. */
-  AgeGated?: boolean;
-  /** A boolean that specifies whether campaign allows direct lending or not. */
-  DirectLending?: boolean;
+	/**
+	 * A2P Brand Registration SID
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^BN[0-9a-fA-F]{32}$
+	 */
+	BrandRegistrationSid: string;
+	/** A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters. */
+	Description: string;
+	/** Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum. */
+	MessageFlow: string;
+	/** An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars. */
+	MessageSamples: string[];
+	/** A2P Campaign Use Case. Examples: [ 2FA, EMERGENCY, MARKETING..] */
+	UsAppToPersonUsecase: string;
+	/** Indicates that this SMS campaign will send messages that contain links. */
+	HasEmbeddedLinks: boolean;
+	/** Indicates that this SMS campaign will send messages that contain phone numbers. */
+	HasEmbeddedPhone: boolean;
+	/** If end users can text in a keyword to start receiving messages from this campaign, the auto-reply messages sent to the end users must be provided. The opt-in response should include the Brand name, confirmation of opt-in enrollment to a recurring message campaign, how to get help, and clear description of how to opt-out. This field is required if end users can text in a keyword to start receiving messages from this campaign. 20 character minimum. 320 character maximum. */
+	OptInMessage?: string;
+	/** Upon receiving the opt-out keywords from the end users, Twilio customers are expected to send back an auto-generated response, which must provide acknowledgment of the opt-out request and confirmation that no further messages will be sent. It is also recommended that these opt-out messages include the brand name. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum. */
+	OptOutMessage?: string;
+	/** When customers receive the help keywords from their end users, Twilio customers are expected to send back an auto-generated response; this may include the brand name and additional support contact information. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum. */
+	HelpMessage?: string;
+	/** If end users can text in a keyword to start receiving messages from this campaign, those keywords must be provided. This field is required if end users can text in a keyword to start receiving messages from this campaign. Values must be alphanumeric. 255 character maximum. */
+	OptInKeywords?: string[];
+	/** End users should be able to text in a keyword to stop receiving messages from this campaign. Those keywords must be provided. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum. */
+	OptOutKeywords?: string[];
+	/** End users should be able to text in a keyword to receive help. Those keywords must be provided as part of the campaign registration request. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum. */
+	HelpKeywords?: string[];
+	/** A boolean that specifies whether campaign has Subscriber Optin or not. */
+	SubscriberOptIn?: boolean;
+	/** A boolean that specifies whether campaign is age gated or not. */
+	AgeGated?: boolean;
+	/** A boolean that specifies whether campaign allows direct lending or not. */
+	DirectLending?: boolean;
 };

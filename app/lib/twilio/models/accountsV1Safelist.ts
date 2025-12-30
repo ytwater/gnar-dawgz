@@ -7,17 +7,17 @@
  */
 
 export interface AccountsV1Safelist {
-  /**
-   * The unique string that we created to identify the SafeList resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^GN[0-9a-fA-F]{32}$
-   */
-  sid?: string | null;
-  /**
-   * The phone number or phone number 1k prefix in SafeList.
-   * @nullable
-   */
-  phone_number?: string | null;
+	/**
+	 * The unique string that we created to identify the SafeList resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^GN[0-9a-fA-F]{32}$
+	 */
+	sid?: string | null;
+	/**
+	 * The phone number or phone number 1k prefix in SafeList.
+	 * @nullable
+	 */
+	phone_number?: string | null;
 }

@@ -7,10 +7,10 @@
  */
 
 export interface KeywordConfiguration {
-  /** The keyword type in format KeywordType.Locale (e.g., STOP.ENGLISH, HELP.FRENCH) */
-  keyword_type: string;
-  /** The message type identifier (typically country codes or special identifiers) */
-  message_type: string;
-  /** Array of keyword strings for this configuration */
-  keywords: string[];
+	/** The keyword type in format KeywordType.Locale (e.g., STOP.ENGLISH, HELP.FRENCH) */
+	keyword_type: string;
+	/** The message type identifier (typically country codes or special identifiers) */
+	message_type: string;
+	/** Array of keyword strings for this configuration */
+	keywords: string[];
 }

@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessagingV1ServiceChannelSender } from './messagingV1ServiceChannelSender';
-import type { ListChannelSender200Meta } from './listChannelSender200Meta';
+import type { MessagingV1ServiceChannelSender } from "./messagingV1ServiceChannelSender";
+import type { ListChannelSender200Meta } from "./listChannelSender200Meta";
 
 export type ListChannelSender200 = {
-  senders?: MessagingV1ServiceChannelSender[];
-  meta?: ListChannelSender200Meta;
+	senders?: MessagingV1ServiceChannelSender[];
+	meta?: ListChannelSender200Meta;
 };

@@ -1,14 +1,15 @@
 import { fetchForecast } from "surfline";
-import { SURFLINE_TORREY_PINES_SPOT_ID } from "~/app/config/constants";
 
 export async function fetchSurflineForecast(spotId: string) {
-	const [waveRes, ratingRes, tidesRes, windRes, weatherRes] = await Promise.all([
-		fetchForecast({ spotId, type: "wave", days: 7 }),
-		fetchForecast({ spotId, type: "rating", days: 7 }),
-		fetchForecast({ spotId, type: "tides", days: 7 }),
-		fetchForecast({ spotId, type: "wind", days: 7 }),
-		fetchForecast({ spotId, type: "weather", days: 7 }),
-	]);
+	const [waveRes, ratingRes, tidesRes, windRes, weatherRes] = await Promise.all(
+		[
+			fetchForecast({ spotId, type: "wave", days: 7 }),
+			fetchForecast({ spotId, type: "rating", days: 7 }),
+			fetchForecast({ spotId, type: "tides", days: 7 }),
+			fetchForecast({ spotId, type: "wind", days: 7 }),
+			fetchForecast({ spotId, type: "weather", days: 7 }),
+		],
+	);
 
 	// Normalize data
 	// Wave data

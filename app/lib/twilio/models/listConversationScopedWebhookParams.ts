@@ -7,19 +7,19 @@
  */
 
 export type ListConversationScopedWebhookParams = {
-/**
- * How many resources to return in each list page. The default is 5, and the maximum is 5.
- * @minimum 1
- * @maximum 5
- */
-PageSize?: number;
-/**
- * The page index. This value is simply for client state.
- * @minimum 0
- */
-Page?: number;
-/**
- * The page token. This is provided by the API.
- */
-PageToken?: string;
+	/**
+	 * How many resources to return in each list page. The default is 5, and the maximum is 5.
+	 * @minimum 1
+	 * @maximum 5
+	 */
+	PageSize?: number;
+	/**
+	 * The page index. This value is simply for client state.
+	 * @minimum 0
+	 */
+	Page?: number;
+	/**
+	 * The page token. This is provided by the API.
+	 */
+	PageToken?: string;
 };

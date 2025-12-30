@@ -9,16 +9,16 @@
 /**
  * Describe how a user opts-in to text messages.
  */
-export type TollfreeVerificationEnumOptInType = typeof TollfreeVerificationEnumOptInType[keyof typeof TollfreeVerificationEnumOptInType];
-
+export type TollfreeVerificationEnumOptInType =
+	(typeof TollfreeVerificationEnumOptInType)[keyof typeof TollfreeVerificationEnumOptInType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TollfreeVerificationEnumOptInType = {
-  VERBAL: 'VERBAL',
-  WEB_FORM: 'WEB_FORM',
-  PAPER_FORM: 'PAPER_FORM',
-  VIA_TEXT: 'VIA_TEXT',
-  MOBILE_QR_CODE: 'MOBILE_QR_CODE',
-  IMPORT: 'IMPORT',
-  IMPORT_PLEASE_REPLACE: 'IMPORT_PLEASE_REPLACE',
+	VERBAL: "VERBAL",
+	WEB_FORM: "WEB_FORM",
+	PAPER_FORM: "PAPER_FORM",
+	VIA_TEXT: "VIA_TEXT",
+	MOBILE_QR_CODE: "MOBILE_QR_CODE",
+	IMPORT: "IMPORT",
+	IMPORT_PLEASE_REPLACE: "IMPORT_PLEASE_REPLACE",
 } as const;

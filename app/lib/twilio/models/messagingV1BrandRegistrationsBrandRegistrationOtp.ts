@@ -7,20 +7,20 @@
  */
 
 export interface MessagingV1BrandRegistrationsBrandRegistrationOtp {
-  /**
-   * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Brand Registration resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * The unique string to identify Brand Registration of Sole Proprietor Brand
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^BN[0-9a-fA-F]{32}$
-   */
-  brand_registration_sid?: string | null;
+	/**
+	 * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Brand Registration resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * The unique string to identify Brand Registration of Sole Proprietor Brand
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^BN[0-9a-fA-F]{32}$
+	 */
+	brand_registration_sid?: string | null;
 }

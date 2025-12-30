@@ -5,19 +5,19 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { KeywordConfiguration } from './keywordConfiguration';
+import type { KeywordConfiguration } from "./keywordConfiguration";
 
 export interface KeywordsResponse {
-  /**
-   * The SID of the account that owns this opt-out configuration
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid: string;
-  /**
-   * The SID of the opt-out configuration
-   * @pattern ^OO[0-9a-fA-F]{32}$
-   */
-  opt_out_sid: string;
-  /** List of keyword configurations for different keyword types */
-  config: KeywordConfiguration[];
+	/**
+	 * The SID of the account that owns this opt-out configuration
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid: string;
+	/**
+	 * The SID of the opt-out configuration
+	 * @pattern ^OO[0-9a-fA-F]{32}$
+	 */
+	opt_out_sid: string;
+	/** List of keyword configurations for different keyword types */
+	config: KeywordConfiguration[];
 }

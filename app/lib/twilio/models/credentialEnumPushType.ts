@@ -9,12 +9,12 @@
 /**
  * The type of push-notification service the credential is for. Can be: `fcm`, `gcm`, or `apn`.
  */
-export type CredentialEnumPushType = typeof CredentialEnumPushType[keyof typeof CredentialEnumPushType];
-
+export type CredentialEnumPushType =
+	(typeof CredentialEnumPushType)[keyof typeof CredentialEnumPushType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CredentialEnumPushType = {
-  apn: 'apn',
-  gcm: 'gcm',
-  fcm: 'fcm',
+	apn: "apn",
+	gcm: "gcm",
+	fcm: "fcm",
 } as const;

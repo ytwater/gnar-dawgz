@@ -26,11 +26,8 @@
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
-	"i18n-ally.localesPaths": [
-		"apps/expo/src/i18n",
-		"apps/expo/src/i18n/locale"
-	],
+	"i18n-ally.localesPaths": ["apps/expo/src/i18n", "apps/expo/src/i18n/locale"],
 	"[jsonc]": {
 		"editor.defaultFormatter": "vscode.json-language-features"
-	},
+	}
 }

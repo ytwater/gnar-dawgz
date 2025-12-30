@@ -7,8 +7,8 @@
  */
 
 export interface MessageTypeConfig {
-  /** The message type key/identifier (typically country codes or special identifiers) */
-  key: string;
-  /** Human-readable display name for the message type */
-  friendly_name: string;
+	/** The message type key/identifier (typically country codes or special identifiers) */
+	key: string;
+	/** Human-readable display name for the message type */
+	friendly_name: string;
 }

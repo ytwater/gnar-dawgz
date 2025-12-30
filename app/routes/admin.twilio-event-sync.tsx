@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { authClient } from "~/app/lib/auth-client";
 import { orpcClient } from "~/app/lib/orpc/client";
-import type {
-	EventsV1Subscription,
-	EventsV1SubscriptionSubscribedEvent,
-} from "~/app/lib/twilio/models";
+import type { EventsV1SubscriptionSubscribedEvent } from "~/app/lib/twilio/models";
 
 export default function AdminTwilioEventSync() {
 	const { data: session, isPending: sessionLoading } = authClient.useSession();

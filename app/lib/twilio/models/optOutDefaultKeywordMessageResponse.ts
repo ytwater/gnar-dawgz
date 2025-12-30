@@ -5,8 +5,8 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { OptOutDefaultKeywordMessageResponseDefaultKeywordsItem } from './optOutDefaultKeywordMessageResponseDefaultKeywordsItem';
+import type { OptOutDefaultKeywordMessageResponseDefaultKeywordsItem } from "./optOutDefaultKeywordMessageResponseDefaultKeywordsItem";
 
 export interface OptOutDefaultKeywordMessageResponse {
-  defaultKeywords?: OptOutDefaultKeywordMessageResponseDefaultKeywordsItem[];
+	defaultKeywords?: OptOutDefaultKeywordMessageResponseDefaultKeywordsItem[];
 }

@@ -1,18 +1,4 @@
-/**
- * Tool definitions for the AI chat agent
- * Tools can either require human confirmation or execute automatically
- */
-import type { ToolSet } from "ai";
-
-import { cancelScheduledTask } from "./cancelScheduledTask";
-import { getLocalTime } from "./getLocalTime";
-import { getScheduledTasks } from "./getScheduledTasks";
-import {
-	getWeatherInformation,
-	getWeatherInformationExecute,
-} from "./getWeatherInformation";
-import { scheduleTask } from "./scheduleTask";
-import { sendTestNotification } from "./sendTestNotification";
+import { getWeatherInformationExecute } from "./getWeatherInformation";
 
 /**
  * Export all available tools

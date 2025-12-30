@@ -7,8 +7,8 @@
  */
 
 export type FetchMessagingGeopermissionsParams = {
-/**
- * The country code to filter the geo permissions. If provided, only the geo permission for the specified country will be returned.
- */
-CountryCode?: string;
+	/**
+	 * The country code to filter the geo permissions. If provided, only the geo permission for the specified country will be returned.
+	 */
+	CountryCode?: string;
 };

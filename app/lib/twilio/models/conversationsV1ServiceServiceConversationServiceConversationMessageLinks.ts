@@ -10,4 +10,5 @@
  * Contains an absolute API resource URL to access the delivery & read receipts of this message.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConversationServiceConversationMessageLinks = { [key: string]: unknown } | null;
+export type ConversationsV1ServiceServiceConversationServiceConversationMessageLinks =
+	{ [key: string]: unknown } | null;

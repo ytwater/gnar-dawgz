@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ReplayEnumPatchstatus = typeof ReplayEnumPatchstatus[keyof typeof ReplayEnumPatchstatus];
-
+export type ReplayEnumPatchstatus =
+	(typeof ReplayEnumPatchstatus)[keyof typeof ReplayEnumPatchstatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ReplayEnumPatchstatus = {
-  cancelling: 'cancelling',
+	cancelling: "cancelling",
 } as const;

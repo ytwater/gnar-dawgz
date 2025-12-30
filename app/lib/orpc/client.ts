@@ -8,4 +8,3 @@ const link = new RPCLink({
 });
 
 export const orpcClient: RouterClient<AppRouter> = createORPCClient(link);
-

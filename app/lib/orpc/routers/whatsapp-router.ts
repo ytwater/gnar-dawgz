@@ -10,7 +10,7 @@ import {
 	fetchServiceConversation,
 	listServiceConversationParticipant,
 } from "~/app/lib/twilio/conversation-api";
-import { authedProcedure, publicProcedure } from "../server";
+import { authedProcedure } from "../server";
 
 function getTwilioAuthHeaders(env: CloudflareBindings): HeadersInit {
 	const envWithToken = env as { TWILIO_AUTH_TOKEN?: string };

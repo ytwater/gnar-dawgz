@@ -5,38 +5,38 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConfigurationWebhookEnumMethod } from './configurationWebhookEnumMethod';
-import type { ConfigurationWebhookEnumTarget } from './configurationWebhookEnumTarget';
+import type { ConfigurationWebhookEnumMethod } from "./configurationWebhookEnumMethod";
+import type { ConfigurationWebhookEnumTarget } from "./configurationWebhookEnumTarget";
 
 export interface ConversationsV1ConfigurationConfigurationWebhook {
-  /**
-   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this conversation.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  method?: ConfigurationWebhookEnumMethod;
-  /**
-   * The list of webhook event triggers that are enabled for this Service: `onMessageAdded`, `onMessageUpdated`, `onMessageRemoved`, `onMessageAdd`, `onMessageUpdate`, `onMessageRemove`, `onConversationUpdated`, `onConversationRemoved`, `onConversationAdd`, `onConversationAdded`, `onConversationRemove`, `onConversationUpdate`, `onConversationStateUpdated`, `onParticipantAdded`, `onParticipantUpdated`, `onParticipantRemoved`, `onParticipantAdd`, `onParticipantRemove`, `onParticipantUpdate`, `onDeliveryUpdated`, `onUserAdded`, `onUserUpdate`, `onUserUpdated`
-   * @nullable
-   */
-  filters?: string[] | null;
-  /**
-   * The absolute url the pre-event webhook request should be sent to.
-   * @nullable
-   */
-  pre_webhook_url?: string | null;
-  /**
-   * The absolute url the post-event webhook request should be sent to.
-   * @nullable
-   */
-  post_webhook_url?: string | null;
-  target?: ConfigurationWebhookEnumTarget;
-  /**
-   * An absolute API resource API resource URL for this webhook.
-   * @nullable
-   */
-  url?: string | null;
+	/**
+	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this conversation.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	method?: ConfigurationWebhookEnumMethod;
+	/**
+	 * The list of webhook event triggers that are enabled for this Service: `onMessageAdded`, `onMessageUpdated`, `onMessageRemoved`, `onMessageAdd`, `onMessageUpdate`, `onMessageRemove`, `onConversationUpdated`, `onConversationRemoved`, `onConversationAdd`, `onConversationAdded`, `onConversationRemove`, `onConversationUpdate`, `onConversationStateUpdated`, `onParticipantAdded`, `onParticipantUpdated`, `onParticipantRemoved`, `onParticipantAdd`, `onParticipantRemove`, `onParticipantUpdate`, `onDeliveryUpdated`, `onUserAdded`, `onUserUpdate`, `onUserUpdated`
+	 * @nullable
+	 */
+	filters?: string[] | null;
+	/**
+	 * The absolute url the pre-event webhook request should be sent to.
+	 * @nullable
+	 */
+	pre_webhook_url?: string | null;
+	/**
+	 * The absolute url the post-event webhook request should be sent to.
+	 * @nullable
+	 */
+	post_webhook_url?: string | null;
+	target?: ConfigurationWebhookEnumTarget;
+	/**
+	 * An absolute API resource API resource URL for this webhook.
+	 * @nullable
+	 */
+	url?: string | null;
 }

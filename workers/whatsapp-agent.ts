@@ -1,5 +1,3 @@
-import { getSchedulePrompt } from "agents/schedule";
-
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import {
 	type CoreMessage,
@@ -7,7 +5,6 @@ import {
 	generateId,
 	generateText,
 	stepCountIs,
-	streamText,
 } from "ai";
 import { getDb } from "app/lib/db";
 import { whatsappMessages } from "app/lib/schema";

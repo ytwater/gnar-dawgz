@@ -7,29 +7,29 @@
  */
 
 export interface OptOutConfig {
-  /**
-   * The unique SID identifier for the opt-out configuration
-   * @pattern ^OO[0-9a-fA-F]{32}$
-   */
-  opt_out_sid: string;
-  /**
-   * The SID of the account that owns this opt-out configuration
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid: string;
-  /**
-   * A human-readable name for the opt-out configuration
-   * @nullable
-   */
-  friendly_name?: string | null;
-  /**
-   * The date and time when the opt-out configuration was created
-   * @nullable
-   */
-  date_created?: string | null;
-  /**
-   * The date and time when the opt-out configuration was last updated
-   * @nullable
-   */
-  date_updated?: string | null;
+	/**
+	 * The unique SID identifier for the opt-out configuration
+	 * @pattern ^OO[0-9a-fA-F]{32}$
+	 */
+	opt_out_sid: string;
+	/**
+	 * The SID of the account that owns this opt-out configuration
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid: string;
+	/**
+	 * A human-readable name for the opt-out configuration
+	 * @nullable
+	 */
+	friendly_name?: string | null;
+	/**
+	 * The date and time when the opt-out configuration was created
+	 * @nullable
+	 */
+	date_created?: string | null;
+	/**
+	 * The date and time when the opt-out configuration was last updated
+	 * @nullable
+	 */
+	date_updated?: string | null;
 }

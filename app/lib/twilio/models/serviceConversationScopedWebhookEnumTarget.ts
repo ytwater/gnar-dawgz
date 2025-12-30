@@ -9,12 +9,12 @@
 /**
  * The target of this webhook: `webhook`, `studio`, `trigger`
  */
-export type ServiceConversationScopedWebhookEnumTarget = typeof ServiceConversationScopedWebhookEnumTarget[keyof typeof ServiceConversationScopedWebhookEnumTarget];
-
+export type ServiceConversationScopedWebhookEnumTarget =
+	(typeof ServiceConversationScopedWebhookEnumTarget)[keyof typeof ServiceConversationScopedWebhookEnumTarget];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceConversationScopedWebhookEnumTarget = {
-  webhook: 'webhook',
-  trigger: 'trigger',
-  studio: 'studio',
+	webhook: "webhook",
+	trigger: "trigger",
+	studio: "studio",
 } as const;

@@ -9,14 +9,14 @@
 /**
  * DEPRECATED. Feedback on how to improve brand score
  */
-export type BrandRegistrationsEnumBrandFeedback = typeof BrandRegistrationsEnumBrandFeedback[keyof typeof BrandRegistrationsEnumBrandFeedback];
-
+export type BrandRegistrationsEnumBrandFeedback =
+	(typeof BrandRegistrationsEnumBrandFeedback)[keyof typeof BrandRegistrationsEnumBrandFeedback];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const BrandRegistrationsEnumBrandFeedback = {
-  TAX_ID: 'TAX_ID',
-  STOCK_SYMBOL: 'STOCK_SYMBOL',
-  NONPROFIT: 'NONPROFIT',
-  GOVERNMENT_ENTITY: 'GOVERNMENT_ENTITY',
-  OTHERS: 'OTHERS',
+	TAX_ID: "TAX_ID",
+	STOCK_SYMBOL: "STOCK_SYMBOL",
+	NONPROFIT: "NONPROFIT",
+	GOVERNMENT_ENTITY: "GOVERNMENT_ENTITY",
+	OTHERS: "OTHERS",
 } as const;

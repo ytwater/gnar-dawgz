@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { defineConfig } from "drizzle-kit";
-import wranglerConfig from "./wrangler.json";
 import "@dotenvx/dotenvx/config";
 
 export function getLocalD1DB() {

@@ -7,9 +7,9 @@
  */
 
 export interface MessagingV1Deactivation {
-  /**
-   * Returns an authenticated url that redirects to a file containing the deactivated numbers for the requested day. This url is valid for up to two minutes.
-   * @nullable
-   */
-  redirect_to?: string | null;
+	/**
+	 * Returns an authenticated url that redirects to a file containing the deactivated numbers for the requested day. This url is valid for up to two minutes.
+	 * @nullable
+	 */
+	redirect_to?: string | null;
 }

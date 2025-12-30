@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessagingV1ServiceAlphaSender } from './messagingV1ServiceAlphaSender';
-import type { ListAlphaSender200Meta } from './listAlphaSender200Meta';
+import type { MessagingV1ServiceAlphaSender } from "./messagingV1ServiceAlphaSender";
+import type { ListAlphaSender200Meta } from "./listAlphaSender200Meta";
 
 export type ListAlphaSender200 = {
-  alpha_senders?: MessagingV1ServiceAlphaSender[];
-  meta?: ListAlphaSender200Meta;
+	alpha_senders?: MessagingV1ServiceAlphaSender[];
+	meta?: ListAlphaSender200Meta;
 };

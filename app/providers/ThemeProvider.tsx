@@ -33,7 +33,7 @@ export const ThemeProvider = ({
 
 	useEffect(() => {
 		const root = document.documentElement;
-		
+
 		const getResolvedTheme = (): "dark" | "light" => {
 			if (theme === "system") {
 				return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -91,8 +91,6 @@ export const ThemeProvider = ({
 
 export const useTheme = () => {
 	const context = useContext(ThemeContext);
-	if (!context)
-		throw new Error("useTheme must be used within ThemeProvider");
+	if (!context) throw new Error("useTheme must be used within ThemeProvider");
 	return context;
 };
-

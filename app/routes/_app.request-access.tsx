@@ -1,4 +1,4 @@
-import { Form, redirect, useActionData, useNavigation } from "react-router";
+import { Form, useActionData, useNavigation } from "react-router";
 import { accessRequests } from "~/app/lib/app-schema";
 import { getDb } from "~/app/lib/db";
 import type { Route } from "./+types/request-access";

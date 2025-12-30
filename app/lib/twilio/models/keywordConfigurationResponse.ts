@@ -5,9 +5,11 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { KeywordTypeConfig } from './keywordTypeConfig';
+import type { KeywordTypeConfig } from "./keywordTypeConfig";
 
 /**
  * Response containing keyword configurations organized by keyword type
  */
-export interface KeywordConfigurationResponse {[key: string]: KeywordTypeConfig}
+export interface KeywordConfigurationResponse {
+	[key: string]: KeywordTypeConfig;
+}

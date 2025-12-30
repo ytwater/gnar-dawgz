@@ -7,18 +7,18 @@
  */
 
 export type UpdateUsAppToPersonBody = {
-  /** Indicates that this SMS campaign will send messages that contain links. */
-  HasEmbeddedLinks: boolean;
-  /** Indicates that this SMS campaign will send messages that contain phone numbers. */
-  HasEmbeddedPhone: boolean;
-  /** An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars. */
-  MessageSamples: string[];
-  /** Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum. */
-  MessageFlow: string;
-  /** A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters. */
-  Description: string;
-  /** A boolean that specifies whether campaign requires age gate for federally legal content. */
-  AgeGated: boolean;
-  /** A boolean that specifies whether campaign allows direct lending or not. */
-  DirectLending: boolean;
+	/** Indicates that this SMS campaign will send messages that contain links. */
+	HasEmbeddedLinks: boolean;
+	/** Indicates that this SMS campaign will send messages that contain phone numbers. */
+	HasEmbeddedPhone: boolean;
+	/** An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars. */
+	MessageSamples: string[];
+	/** Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum. */
+	MessageFlow: string;
+	/** A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters. */
+	Description: string;
+	/** A boolean that specifies whether campaign requires age gate for federally legal content. */
+	AgeGated: boolean;
+	/** A boolean that specifies whether campaign allows direct lending or not. */
+	DirectLending: boolean;
 };

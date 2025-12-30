@@ -6,12 +6,12 @@
  */
 
 export type WmtsProxyV1WmtsProxyZXYGetParams = {
-/**
- * Layer identifier (VHM0_SW1, VHM0_SW2, VHM0)
- */
-layer?: string;
-/**
- * Time in ISO8601 format
- */
-time: string;
+	/**
+	 * Layer identifier (VHM0_SW1, VHM0_SW2, VHM0)
+	 */
+	layer?: string;
+	/**
+	 * Time in ISO8601 format
+	 */
+	time: string;
 };

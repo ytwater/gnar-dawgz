@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { AccountsV1CredentialCredentialAws } from './accountsV1CredentialCredentialAws';
-import type { ListCredentialAws200Meta } from './listCredentialAws200Meta';
+import type { AccountsV1CredentialCredentialAws } from "./accountsV1CredentialCredentialAws";
+import type { ListCredentialAws200Meta } from "./listCredentialAws200Meta";
 
 export type ListCredentialAws200 = {
-  credentials?: AccountsV1CredentialCredentialAws[];
-  meta?: ListCredentialAws200Meta;
+	credentials?: AccountsV1CredentialCredentialAws[];
+	meta?: ListCredentialAws200Meta;
 };

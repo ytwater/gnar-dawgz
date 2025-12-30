@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { BrandVettingEnumVettingProvider } from './brandVettingEnumVettingProvider';
+import type { BrandVettingEnumVettingProvider } from "./brandVettingEnumVettingProvider";
 
 export type CreateBrandVettingBody = {
-  VettingProvider: BrandVettingEnumVettingProvider;
-  /** The unique ID of the vetting */
-  VettingId?: string;
+	VettingProvider: BrandVettingEnumVettingProvider;
+	/** The unique ID of the vetting */
+	VettingId?: string;
 };

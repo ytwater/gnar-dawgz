@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessagingV1ServicePhoneNumber } from './messagingV1ServicePhoneNumber';
-import type { ListPhoneNumber200Meta } from './listPhoneNumber200Meta';
+import type { MessagingV1ServicePhoneNumber } from "./messagingV1ServicePhoneNumber";
+import type { ListPhoneNumber200Meta } from "./listPhoneNumber200Meta";
 
 export type ListPhoneNumber200 = {
-  phone_numbers?: MessagingV1ServicePhoneNumber[];
-  meta?: ListPhoneNumber200Meta;
+	phone_numbers?: MessagingV1ServicePhoneNumber[];
+	meta?: ListPhoneNumber200Meta;
 };

@@ -6,8 +6,8 @@
  */
 
 export type GetChartV1ChartsVariableForecastHourGetParams = {
-/**
- * Image format: png or svg
- */
-format?: string;
+	/**
+	 * Image format: png or svg
+	 */
+	format?: string;
 };

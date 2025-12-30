@@ -14,4 +14,3 @@ export const getLocalTime = tool({
 		return "10am";
 	},
 });
-

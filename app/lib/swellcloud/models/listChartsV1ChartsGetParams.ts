@@ -6,12 +6,12 @@
  */
 
 export type ListChartsV1ChartsGetParams = {
-/**
- * Filter by variable: hs or tp
- */
-variable?: string | null;
-/**
- * Image format: png or svg
- */
-format?: string | null;
+	/**
+	 * Filter by variable: hs or tp
+	 */
+	variable?: string | null;
+	/**
+	 * Image format: png or svg
+	 */
+	format?: string | null;
 };

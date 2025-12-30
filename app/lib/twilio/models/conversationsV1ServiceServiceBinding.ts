@@ -5,70 +5,70 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ServiceBindingEnumBindingType } from './serviceBindingEnumBindingType';
+import type { ServiceBindingEnumBindingType } from "./serviceBindingEnumBindingType";
 
 export interface ConversationsV1ServiceServiceBinding {
-  /**
-   * A 34 character string that uniquely identifies this resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^BS[0-9a-fA-F]{32}$
-   */
-  sid?: string | null;
-  /**
-   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this binding.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Binding resource is associated with.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^IS[0-9a-fA-F]{32}$
-   */
-  chat_service_sid?: string | null;
-  /**
-   * The SID of the [Credential](https://www.twilio.com/docs/conversations/api/credential-resource) for the binding. See [push notification configuration](https://www.twilio.com/docs/chat/push-notification-configuration) for more info.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^CR[0-9a-fA-F]{32}$
-   */
-  credential_sid?: string | null;
-  /**
-   * The date that this resource was created.
-   * @nullable
-   */
-  date_created?: string | null;
-  /**
-   * The date that this resource was last updated.
-   * @nullable
-   */
-  date_updated?: string | null;
-  /**
-   * The unique endpoint identifier for the Binding. The format of this value depends on the `binding_type`.
-   * @nullable
-   */
-  endpoint?: string | null;
-  /**
-   * The application-defined string that uniquely identifies the [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource) within the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource). See [access tokens](https://www.twilio.com/docs/conversations/create-tokens) for more info.
-   * @nullable
-   */
-  identity?: string | null;
-  binding_type?: ServiceBindingEnumBindingType;
-  /**
-   * The [Conversation message types](https://www.twilio.com/docs/chat/push-notification-configuration#push-types) the binding is subscribed to.
-   * @nullable
-   */
-  message_types?: string[] | null;
-  /**
-   * An absolute API resource URL for this binding.
-   * @nullable
-   */
-  url?: string | null;
+	/**
+	 * A 34 character string that uniquely identifies this resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^BS[0-9a-fA-F]{32}$
+	 */
+	sid?: string | null;
+	/**
+	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this binding.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Binding resource is associated with.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^IS[0-9a-fA-F]{32}$
+	 */
+	chat_service_sid?: string | null;
+	/**
+	 * The SID of the [Credential](https://www.twilio.com/docs/conversations/api/credential-resource) for the binding. See [push notification configuration](https://www.twilio.com/docs/chat/push-notification-configuration) for more info.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^CR[0-9a-fA-F]{32}$
+	 */
+	credential_sid?: string | null;
+	/**
+	 * The date that this resource was created.
+	 * @nullable
+	 */
+	date_created?: string | null;
+	/**
+	 * The date that this resource was last updated.
+	 * @nullable
+	 */
+	date_updated?: string | null;
+	/**
+	 * The unique endpoint identifier for the Binding. The format of this value depends on the `binding_type`.
+	 * @nullable
+	 */
+	endpoint?: string | null;
+	/**
+	 * The application-defined string that uniquely identifies the [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource) within the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource). See [access tokens](https://www.twilio.com/docs/conversations/create-tokens) for more info.
+	 * @nullable
+	 */
+	identity?: string | null;
+	binding_type?: ServiceBindingEnumBindingType;
+	/**
+	 * The [Conversation message types](https://www.twilio.com/docs/chat/push-notification-configuration#push-types) the binding is subscribed to.
+	 * @nullable
+	 */
+	message_types?: string[] | null;
+	/**
+	 * An absolute API resource URL for this binding.
+	 * @nullable
+	 */
+	url?: string | null;
 }

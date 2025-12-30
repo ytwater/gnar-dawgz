@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ConfigurationAddressEnumMethod = typeof ConfigurationAddressEnumMethod[keyof typeof ConfigurationAddressEnumMethod];
-
+export type ConfigurationAddressEnumMethod =
+	(typeof ConfigurationAddressEnumMethod)[keyof typeof ConfigurationAddressEnumMethod];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConfigurationAddressEnumMethod = {
-  get: 'get',
-  post: 'post',
+	get: "get",
+	post: "post",
 } as const;

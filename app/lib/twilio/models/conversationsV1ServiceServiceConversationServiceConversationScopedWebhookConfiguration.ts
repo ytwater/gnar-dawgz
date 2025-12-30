@@ -10,4 +10,6 @@
  * The configuration of this webhook. Is defined based on target.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration = unknown | null;
+export type ConversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration =
+	| unknown
+	| null;

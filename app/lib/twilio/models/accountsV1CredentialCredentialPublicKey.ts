@@ -7,40 +7,40 @@
  */
 
 export interface AccountsV1CredentialCredentialPublicKey {
-  /**
-   * The unique string that that we created to identify the PublicKey resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^CR[0-9a-fA-F]{32}$
-   */
-  sid?: string | null;
-  /**
-   * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Credential that the PublicKey resource belongs to.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * The string that you assigned to describe the resource.
-   * @nullable
-   */
-  friendly_name?: string | null;
-  /**
-   * The date and time in GMT when the resource was created specified in [RFC 2822](https://www.ietf.org/rfc/rfc2822.txt) format.
-   * @nullable
-   */
-  date_created?: string | null;
-  /**
-   * The date and time in GMT when the resource was last updated specified in [RFC 2822](https://www.ietf.org/rfc/rfc2822.txt) format.
-   * @nullable
-   */
-  date_updated?: string | null;
-  /**
-   * The URI for this resource, relative to `https://accounts.twilio.com`
-   * @nullable
-   */
-  url?: string | null;
+	/**
+	 * The unique string that that we created to identify the PublicKey resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^CR[0-9a-fA-F]{32}$
+	 */
+	sid?: string | null;
+	/**
+	 * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Credential that the PublicKey resource belongs to.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * The string that you assigned to describe the resource.
+	 * @nullable
+	 */
+	friendly_name?: string | null;
+	/**
+	 * The date and time in GMT when the resource was created specified in [RFC 2822](https://www.ietf.org/rfc/rfc2822.txt) format.
+	 * @nullable
+	 */
+	date_created?: string | null;
+	/**
+	 * The date and time in GMT when the resource was last updated specified in [RFC 2822](https://www.ietf.org/rfc/rfc2822.txt) format.
+	 * @nullable
+	 */
+	date_updated?: string | null;
+	/**
+	 * The URI for this resource, relative to `https://accounts.twilio.com`
+	 * @nullable
+	 */
+	url?: string | null;
 }

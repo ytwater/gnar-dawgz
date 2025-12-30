@@ -22,15 +22,7 @@ import { Textarea } from "~/app/components/ui/textarea";
 import { Toggle } from "~/app/components/ui/toggle";
 
 // Icon imports
-import {
-	Bug,
-	Moon,
-	PaperPlaneTilt,
-	Robot,
-	Stop,
-	Sun,
-	Trash,
-} from "@phosphor-icons/react";
+import { Bug, PaperPlaneTilt, Robot, Stop, Trash } from "@phosphor-icons/react";
 
 // List of tools that require human confirmation
 const toolsRequiringConfirmation = ["getWeatherInformation"];

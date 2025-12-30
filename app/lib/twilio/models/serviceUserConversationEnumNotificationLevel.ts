@@ -9,11 +9,11 @@
 /**
  * The Notification Level of this User Conversation. One of `default` or `muted`.
  */
-export type ServiceUserConversationEnumNotificationLevel = typeof ServiceUserConversationEnumNotificationLevel[keyof typeof ServiceUserConversationEnumNotificationLevel];
-
+export type ServiceUserConversationEnumNotificationLevel =
+	(typeof ServiceUserConversationEnumNotificationLevel)[keyof typeof ServiceUserConversationEnumNotificationLevel];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceUserConversationEnumNotificationLevel = {
-  default: 'default',
-  muted: 'muted',
+	default: "default",
+	muted: "muted",
 } as const;
