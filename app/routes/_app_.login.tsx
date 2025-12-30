@@ -1,6 +1,6 @@
 import { Phone } from "@phosphor-icons/react";
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import { PhoneNumberInput } from "~/app/components/phone-number-input";
 import { Alert, AlertDescription } from "~/app/components/ui/alert";
 import { Button } from "~/app/components/ui/button";
@@ -9,6 +9,7 @@ import { authClient } from "~/app/lib/auth-client";
 
 export default function Login() {
 	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [otpCode, setOtpCode] = useState("");
 	const [isSendingOtp, setIsSendingOtp] = useState(false);
@@ -16,6 +17,21 @@ export default function Login() {
 	const [otpSent, setOtpSent] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState<string | null>(null);
+
+	// Pre-populate from URL query parameters
+	useEffect(() => {
+		const phoneParam = searchParams.get("phone");
+		const codeParam = searchParams.get("code");
+
+		if (phoneParam) {
+			setPhoneNumber(phoneParam);
+		}
+
+		if (codeParam) {
+			setOtpCode(codeParam);
+			setOtpSent(true);
+		}
+	}, [searchParams]);
 
 	const handleSendOtp = async () => {
 		if (!phoneNumber.trim()) {

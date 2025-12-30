@@ -1,5 +1,5 @@
 import type { RouterClient } from "@orpc/server";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { orpcClient } from "../client";
 import type { AppRouter } from "../router";
 
@@ -84,5 +84,30 @@ export function useTaxonomyBreadcrumbs(parentId: string) {
 		queryKey: surfForecastKeys.taxonomyBreadcrumbs(parentId),
 		queryFn: () => orpcClient.surfForecast.getTaxonomyBreadcrumbs({ parentId }),
 		enabled: !!parentId,
+	});
+}
+
+export function useSyncSpot() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (spotId: string) => orpcClient.surfForecast.syncSpot({ spotId }),
+		onSuccess: (_, spotId) => {
+			// Invalidate and refetch relevant queries to refresh data including lastSyncedAt
+			queryClient.invalidateQueries({
+				queryKey: surfForecastKeys.activeSpots(),
+			});
+			queryClient.refetchQueries({
+				queryKey: surfForecastKeys.activeSpots(),
+			});
+			queryClient.invalidateQueries({
+				queryKey: surfForecastKeys.dashboardData(spotId),
+			});
+			queryClient.refetchQueries({
+				queryKey: surfForecastKeys.dashboardData(spotId),
+			});
+			queryClient.invalidateQueries({
+				queryKey: surfForecastKeys.forecasts(spotId),
+			});
+		},
 	});
 }

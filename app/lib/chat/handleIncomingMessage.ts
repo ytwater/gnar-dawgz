@@ -33,6 +33,7 @@ export async function handleIncomingMessage(
 	event: TwilioInboundMessageEvent,
 	env: CloudflareBindings,
 ): Promise<void> {
+	const isDev = env.ENVIRONMENT === "dev";
 	try {
 		if (
 			!event.data.to ||
@@ -68,7 +69,7 @@ export async function handleIncomingMessage(
 		const usersResult = await db
 			.select()
 			.from(users)
-			.where(eq(users.whatsappNumber, fromNumber));
+			.where(eq(users.phoneNumber, fromNumber));
 
 		if (usersResult.length === 0) {
 			console.log("User not found", fromNumber);
@@ -107,7 +108,7 @@ export async function handleIncomingMessage(
 		const payload: CreateMessageBody = {
 			From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
 			To: senderNumber,
-			Body: responseText,
+			Body: isDev ? `dev: ${responseText}` : responseText,
 		};
 
 		// console.log("🚀 ~ handleIncomingMessage ~ sending response:", payload);

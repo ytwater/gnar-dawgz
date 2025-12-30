@@ -33,10 +33,17 @@ export default function Home() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 
-	if (sessionLoading) {
+	if (sessionLoading || !session?.user) {
 		return (
 			<main className="flex items-center justify-center min-h-screen bg-slate-500">
-				<div className="text-white">Loading...</div>
+				<img
+					src="/gnar-dawgs-logo-transparent.webp"
+					alt="Gnar Dawgs Logo"
+					className="block w-full max-w-[700px] h-auto px-4"
+					loading="eager"
+					fetchPriority="high"
+					decoding="sync"
+				/>
 			</main>
 		);
 	}
@@ -76,17 +83,4 @@ export default function Home() {
 			</Layout>
 		);
 	}
-
-	return (
-		<main className="flex items-center justify-center min-h-screen bg-slate-500">
-			<img
-				src="/gnar-dawgs-logo-transparent.webp"
-				alt="Gnar Dawgs Logo"
-				className="block w-full max-w-[700px] h-auto px-4"
-				loading="eager"
-				fetchPriority="high"
-				decoding="sync"
-			/>
-		</main>
-	);
 }

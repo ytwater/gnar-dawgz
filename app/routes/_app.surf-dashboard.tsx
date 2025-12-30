@@ -1,4 +1,5 @@
 import { HydrationBoundary } from "@tanstack/react-query";
+import { RotateCw } from "lucide-react";
 import { useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useNavigate, useSearchParams } from "react-router";
@@ -16,6 +17,7 @@ import {
 } from "recharts";
 import useLocalStorageState from "use-local-storage-state";
 import { Layout } from "~/app/components/layout";
+import { Button } from "~/app/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -40,6 +42,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/app/components/ui/select";
+import { Spinner } from "~/app/components/ui/spinner";
 import {
 	getActiveSpots,
 	getDashboardData,
@@ -48,12 +51,17 @@ import {
 	surfForecastKeys,
 	useActiveSpots,
 	useDashboardData,
+	useSyncSpot,
 } from "~/app/lib/orpc/hooks/use-surf-forecast";
 import {
 	createQueryClient,
 	dehydrateQueryClient,
 } from "~/app/lib/orpc/query-client";
-import { SURFLINE_TORREY_PINES_SPOT_ID } from "../config/constants";
+import {
+	ADMIN_USER_IDS,
+	SURFLINE_TORREY_PINES_SPOT_ID,
+} from "../config/constants";
+import { authClient } from "../lib/auth-client";
 import { createORPCContext } from "../lib/orpc/server-helpers";
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
@@ -267,16 +275,29 @@ export function SurfDashboardContent({
 	initialDashboardData,
 }: {
 	selectedSpotId: string;
-	selectedSpot: { id: string; name: string } | null;
+	selectedSpot: { id: string; name: string; lastSyncedAt: Date | null } | null;
 	onSpotChange?: (value: string) => void;
 	initialAllSpots?: Awaited<ReturnType<typeof getActiveSpots>>;
 	initialDashboardData?: Awaited<ReturnType<typeof getDashboardData>>;
 }) {
+	const { data: session } = authClient.useSession();
 	const { data: allSpots } = useActiveSpots(initialAllSpots);
 	const { data: dashboardData } = useDashboardData(
 		selectedSpotId,
 		initialDashboardData,
 	);
+	const syncSpotMutation = useSyncSpot();
+
+	const currentUser = session?.user as
+		| { id: string; role?: string }
+		| undefined;
+	const isAdmin =
+		currentUser &&
+		(currentUser.role === "admin" || ADMIN_USER_IDS.includes(currentUser.id));
+
+	// Derive selectedSpot from allSpots so it updates when data refreshes
+	const currentSelectedSpot =
+		allSpots?.find((spot) => spot.id === selectedSpotId) || selectedSpot;
 
 	if (!allSpots || !dashboardData) {
 		return (
@@ -307,6 +328,15 @@ export function SurfDashboardContent({
 		}
 	};
 
+	const handleSyncSpot = async () => {
+		if (!selectedSpotId) return;
+		try {
+			await syncSpotMutation.mutateAsync(selectedSpotId);
+		} catch (error) {
+			console.error("Failed to sync spot:", error);
+		}
+	};
+
 	// Filter data based on checkboxes
 	const filteredData = combinedData.map((item) => ({
 		...item,
@@ -326,10 +356,22 @@ export function SurfDashboardContent({
 						Surf Forecast Dashboard
 					</h1>
 					<p className="text-muted-foreground">
-						{selectedSpot
-							? `Comparing Surfline and Swellcloud data for ${selectedSpot.name}`
+						{currentSelectedSpot
+							? `Comparing Surfline and Swellcloud data for ${currentSelectedSpot.name}`
 							: "Comparing Surfline and Swellcloud data"}
 					</p>
+					{currentSelectedSpot?.lastSyncedAt && (
+						<p className="text-sm text-muted-foreground">
+							Last updated at{" "}
+							{currentSelectedSpot.lastSyncedAt.toLocaleString([], {
+								month: "short",
+								day: "numeric",
+								year: "numeric",
+								hour: "numeric",
+								minute: "2-digit",
+							})}
+						</p>
+					)}
 				</div>
 				<div className="flex items-center gap-2">
 					<span className="text-sm font-medium">Select Spot:</span>
@@ -351,10 +393,25 @@ export function SurfDashboardContent({
 							No active spots
 						</span>
 					)}
+					{isAdmin && selectedSpotId && (
+						<Button
+							variant="outline"
+							size="icon"
+							onClick={handleSyncSpot}
+							disabled={syncSpotMutation.isPending}
+							title="Refresh spot data"
+						>
+							{syncSpotMutation.isPending ? (
+								<Spinner className="size-4" />
+							) : (
+								<RotateCw className="size-4" />
+							)}
+						</Button>
+					)}
 				</div>
 			</div>
 
-			{combinedData.length === 0 && selectedSpot ? (
+			{combinedData.length === 0 && currentSelectedSpot ? (
 				<Card>
 					<CardContent className="py-12">
 						<div className="text-center text-muted-foreground">
@@ -362,8 +419,8 @@ export function SurfDashboardContent({
 								No forecast data available
 							</p>
 							<p className="text-sm">
-								No forecast data found for {selectedSpot.name}. Try syncing the
-								spot from the admin panel.
+								No forecast data found for {currentSelectedSpot.name}. Try
+								syncing the spot from the admin panel.
 							</p>
 						</div>
 					</CardContent>

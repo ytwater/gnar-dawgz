@@ -18,14 +18,15 @@ import { sendTestNotification } from "./sendTestNotification";
  * Export all available tools
  * These will be provided to the AI model to describe available capabilities
  */
-export const tools = {
-	getWeatherInformation,
-	getLocalTime,
-	scheduleTask,
-	getScheduledTasks,
-	cancelScheduledTask,
-	sendTestNotification,
-} satisfies ToolSet;
+// export const tools = {
+// 	getWeatherInformation,
+// 	getLocalTime,
+// 	scheduleTask,
+// 	getScheduledTasks,
+// 	cancelScheduledTask,
+// 	sendTestNotification,
+// 	updateUserName,
+// } satisfies ToolSet;
 
 /**
  * Implementation of confirmation-required tools
@@ -34,4 +35,5 @@ export const tools = {
  */
 export const executions = {
 	getWeatherInformation: getWeatherInformationExecute,
+	// updateUserName: updateUserNameExecute,
 };

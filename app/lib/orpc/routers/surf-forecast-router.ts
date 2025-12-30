@@ -6,6 +6,7 @@ import {
 	surfTaxonomy,
 	tideForecasts,
 } from "~/app/lib/surf-forecast-schema";
+import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 import { adminProcedure, authedProcedure, publicProcedure } from "../server";
 
 export const surfForecastRouter = {
@@ -336,6 +337,19 @@ export const surfForecastRouter = {
 			}
 
 			return breadcrumbs;
+		}),
+
+	// Admin: Sync a spot
+	syncSpot: adminProcedure
+		.input(
+			z.object({
+				spotId: z.string(),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { spotId } = input;
+			await syncSurfForecasts(context.env, spotId);
+			return { success: true };
 		}),
 };
 

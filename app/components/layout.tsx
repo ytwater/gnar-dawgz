@@ -2,8 +2,9 @@ import { Shield, User } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router";
 import { ADMIN_USER_IDS } from "~/app/config/constants";
 import { authClient } from "~/app/lib/auth-client";
+import { Button } from "./ui/button";
 
-type User = {
+type SessionUser = {
 	id: string;
 	email: string;
 	name: string;
@@ -15,7 +16,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	const { data: session, isPending: sessionLoading } = authClient.useSession();
 	const navigate = useNavigate();
 
-	const currentUser = session?.user as unknown as User | undefined;
+	const currentUser = session?.user as unknown as SessionUser | undefined;
 	const isAdmin =
 		currentUser &&
 		(currentUser.role === "admin" || ADMIN_USER_IDS.includes(currentUser.id));
@@ -68,13 +69,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 											Admin
 										</Link>
 									)}
-									<Link
+									{/* <Link
 										to="/chat"
 										className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
 									>
 										Chat
-									</Link>
-									<button
+									</Link> */}
+									<Button
+										variant={"ghost"}
 										onClick={async () => {
 											await authClient.signOut();
 											navigate("/login");
@@ -82,7 +84,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 										className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
 									>
 										Sign Out
-									</button>
+									</Button>
 								</>
 							) : (
 								<Link

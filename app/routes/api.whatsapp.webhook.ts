@@ -1,8 +1,13 @@
+import { generateId } from "ai";
+import { eq } from "drizzle-orm";
 import { TWILIO_WHATSAPP_NUMBER } from "~/app/config/constants";
+import { getDb } from "~/app/lib/db";
+import { users, verifications } from "~/app/lib/schema";
 import {
 	type CreateMessageBody,
 	createMessage,
 } from "~/app/lib/twilio/classic-messages-api";
+import { createAuth } from "../lib/auth";
 import type { Route } from "./+types/api.whatsapp.webhook";
 
 /**
@@ -121,22 +126,109 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 		console.log("🚀 ~ api.whatsapp.webhook.ts:71 ~ action ~ params:", params);
 
+		const isDev = env.ENVIRONMENT === "dev";
+
 		// Handle array of events (CloudEvents format)
 		const events = Array.isArray(params) ? params : [params];
+		const db = getDb(env.DB);
 		const eventPromises = [];
+
 		for (const event of events) {
 			if (event?.type === "com.twilio.messaging.inbound-message.received") {
-				console.log(`processing message: ${event.data.body}`);
-				// Offload processing to Cloudflare Queue
-				const senderNumber = event.data.from;
+				const senderNumber = event.data.from; // e.g. "whatsapp:+1619..."
+				const fromNumber = senderNumber.replace("whatsapp:", "");
+				let messageText = (event.data.body || "").trim().toLowerCase();
+				let isOnboarding = false;
 
+				if (messageText.toLocaleLowerCase().startsWith("dev:")) {
+					if (!isDev) {
+						console.log(
+							`Ignoring message to dev user in ${env.ENVIRONMENT} environment`,
+							fromNumber,
+						);
+						continue;
+					}
+					messageText = messageText.substring(5).trim();
+					console.log(
+						"🚀 ~ api.whatsapp.webhook.ts:150 ~ action ~ messageText:",
+						messageText,
+					);
+				} else {
+					if (isDev) {
+						console.log(
+							`Ignoring message to non-dev user in ${env.ENVIRONMENT} environment`,
+							fromNumber,
+						);
+						continue;
+					}
+				}
+
+				// Check if user exists
+				const usersResult = await db
+					.select()
+					.from(users)
+					.where(eq(users.phoneNumber, fromNumber))
+					.limit(1);
+
+				const existingUser = usersResult[0];
+
+				if (!existingUser) {
+					// User does not exist, check for onboarding passphrase
+					if (messageText === "woof woof" || messageText === "ruff ruff") {
+						console.log(`Unlocking onboarding for ${fromNumber}`);
+						await db.insert(users).values({
+							id: generateId(),
+							name: "Guest",
+							email: `${fromNumber}@gnardawgs.surf`,
+							phoneNumber: fromNumber,
+							phoneNumberVerified: true,
+							createdAt: new Date(),
+							updatedAt: new Date(),
+						});
+						isOnboarding = true;
+					} else {
+						console.log(`Ignoring message from unknown user ${fromNumber}`);
+						continue;
+					}
+				}
+
+				console.log(`processing message: ${event.data.body}`);
+
+				if (messageText === "login") {
+					const code = Math.floor(100000 + Math.random() * 900000);
+					const verification = {
+						id: generateId(),
+						identifier: fromNumber,
+						type: "phone_number",
+						value: `${code}:0`,
+						expiresAt: new Date(Date.now() + 1000 * 60 * 5),
+						createdAt: new Date(),
+						updatedAt: new Date(),
+					};
+					await db.insert(verifications).values(verification);
+					const host = isDev
+						? "http://localhost:3000"
+						: "https://gnar-dawgs.surf";
+					const payload: CreateMessageBody = {
+						From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
+						To: senderNumber,
+						Body: `Login with this link ${host}/login?phone=${fromNumber}&code=${code}, or go to ${host}/login and enter the code: ${code}.`,
+					};
+
+					await createMessage(env, payload);
+					continue;
+				}
+
+				// Offload processing to Cloudflare Queue
+				const thinkingMessage = isOnboarding
+					? "Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾"
+					: "Thinking...";
 				const payload: CreateMessageBody = {
 					From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
 					To: senderNumber,
-					Body: "Thinking...",
+					Body: isDev ? `dev: ${thinkingMessage}` : thinkingMessage,
 				};
 
-				// console.log("🚀 ~ handleIncomingMessage ~ sending response:", payload);
 				eventPromises.push(createMessage(env, payload));
 				eventPromises.push(env.WHATSAPP_QUEUE.send(event));
 			}

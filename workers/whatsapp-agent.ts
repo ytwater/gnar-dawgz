@@ -3,6 +3,7 @@ import { getSchedulePrompt } from "agents/schedule";
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import {
 	type CoreMessage,
+	type ToolSet,
 	generateId,
 	generateText,
 	stepCountIs,
@@ -12,8 +13,11 @@ import { getDb } from "app/lib/db";
 import { whatsappMessages } from "app/lib/schema";
 import type { User } from "better-auth";
 import { and, eq, gte } from "drizzle-orm";
-import { executions, tools } from "./tools";
+import { SURFLINE_TORREY_PINES_SPOT_ID } from "~/app/config/constants";
+import { executions } from "./tools";
+import { createGetSurfSpotsTool } from "./tools/createGetSurfSpotsTool";
 import { createSurfForecastTool } from "./tools/createSurfForecastTool";
+import { createUserNameTool } from "./tools/createUserNameTool";
 
 /**
  * WhatsApp Agent implementation that handles WhatsApp messages via Twilio
@@ -91,11 +95,28 @@ export class WhatsAppAgent {
 		await this.saveMessage("user", text);
 
 		const getSurfForecast = createSurfForecastTool(this.env);
+		const getSurfSpots = createGetSurfSpotsTool(this.env);
+		const updateUserName = createUserNameTool(this.env, this.user.id);
 
-		// Collect all tools (MCP tools would need to be added here if needed)
-		const allTools = {
-			getSurfForecast,
-		};
+		const isOnboarding = this.user.name === "Guest";
+
+		// Collect all tools
+		const tools: ToolSet = isOnboarding
+			? {
+					updateUserName,
+				}
+			: {
+					getSurfForecast,
+					getSurfSpots,
+				};
+
+		const systemPrompt = isOnboarding
+			? "You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach. Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'"
+			: `You are a helpful assistant that can do various tasks via WhatsApp. Keep responses concise and friendly. You should default to telling the user what you can do. You can use the getSurfSpots tool to get the list of surf spots we have in the database, but we should always default to Torrey Pines beach which is the default surf spot and has spotId '${SURFLINE_TORREY_PINES_SPOT_ID}'. You can use the getSurfForecast tool to get the surf forecast. The tool will defaults to Torrey Pines beach, so no need to specify the location unless the user asks for a specific spot. It can take a start and end date to get the forecast for a specific period. If no start or end date is provided, it will default to tomorrow and the day after. If the user asks about this week, assume that it's midweek, Monday - Friday. Weekends should be the coming weekend.`;
+		console.log(
+			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",
+			systemPrompt,
+		);
 
 		const baseURL = `https://gateway.ai.cloudflare.com/v1/${this.env.ACCOUNT_ID}/${this.env.AI_GATEWAY_ID}/deepseek`;
 		console.log("DeepSeek baseURL:", baseURL);
@@ -107,16 +128,15 @@ export class WhatsAppAgent {
 				"cf-aig-authorization": this.env.CLOUDFLARE_API_TOKEN ?? "",
 			},
 		});
+
 		const model = deepseek.languageModel("deepseek-chat");
 
-		// Generate response using streamText (we'll collect the full text)
+		// Generate response using generateText
 		const result = await generateText({
-			system: `You are a helpful assistant that can do various tasks via WhatsApp. Keep responses concise and friendly.  You should default to telling the user what you can do.  You can use the getSurfForecast tool to get the surf forecast.  The defaults to Torrey Pines beach, no need to specify the location. It can take a start and end date to get the forecast for a specific period.  If no start or end date is provided, it will default to tomorrow and the day after.  If the user asks about this week, assume that it's midweek, Monday - Friday.  Weekends should be the coming weekend.
-`,
-
+			system: systemPrompt,
 			messages: this.messages,
 			model,
-			tools: allTools,
+			tools,
 			stopWhen: stepCountIs(10),
 		});
 
@@ -143,11 +163,18 @@ export class WhatsAppAgent {
 							const toolResult = await (
 								toolInstance as (
 									args: unknown,
-									context: { messages: CoreMessage[]; toolCallId: string },
+									context: {
+										messages: CoreMessage[];
+										toolCallId: string;
+										env: CloudflareBindings;
+										userId: string;
+									},
 								) => Promise<unknown>
 							)(toolCall.args, {
 								messages: this.messages,
 								toolCallId: toolCall.toolCallId,
+								env: this.env,
+								userId: this.user.id,
 							});
 							console.log(
 								"🚀 ~ whatsapp-agent.ts:82 ~ WhatsAppAgent ~ onMessage ~ toolResult:",
