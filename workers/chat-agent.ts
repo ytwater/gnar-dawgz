@@ -13,7 +13,13 @@ import {
 	stepCountIs,
 	streamText,
 } from "ai";
-import { executions, tools } from "./tools";
+import { executions } from "./tools";
+import { cancelScheduledTask } from "./tools/cancelScheduledTask";
+import { getLocalTime } from "./tools/getLocalTime";
+import { getScheduledTasks } from "./tools/getScheduledTasks";
+import { getWeatherInformation } from "./tools/getWeatherInformation";
+import { scheduleTask } from "./tools/scheduleTask";
+import { sendTestNotification } from "./tools/sendTestNotification";
 import { cleanupMessages, processToolCalls } from "./utils";
 
 /**
@@ -33,7 +39,13 @@ export class Chat extends AIChatAgent<CloudflareBindings> {
 
 		// Collect all tools, including MCP tools
 		const allTools = {
-			...tools,
+			getWeatherInformation,
+			getLocalTime,
+			scheduleTask,
+			getScheduledTasks,
+			cancelScheduledTask,
+			sendTestNotification,
+
 			...this.mcp.getAITools(),
 		};
 
