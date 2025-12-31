@@ -5,6 +5,7 @@ import {
 	surfSpots,
 	surfTaxonomy,
 	tideForecasts,
+	weatherForecasts,
 } from "~/app/lib/surf-forecast-schema";
 import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 import { adminProcedure, publicProcedure } from "../server";
@@ -94,6 +95,17 @@ export const surfForecastRouter = {
 				)
 				.orderBy(asc(tideForecasts.timestamp));
 
+			const allWeather = await db
+				.select()
+				.from(weatherForecasts)
+				.where(
+					and(
+						eq(weatherForecasts.spotId, spotId),
+						gte(weatherForecasts.timestamp, now),
+					),
+				)
+				.orderBy(asc(weatherForecasts.timestamp));
+
 			// Group waves by source
 			const surflineWaves = allWaves.filter((w) => w.source === "surfline");
 			const swellcloudWaves = allWaves.filter((w) => w.source === "swellcloud");
@@ -118,6 +130,12 @@ export const surfForecastRouter = {
 					heightAvg: number | null;
 					period: number | null;
 				};
+				weather: {
+					temperature: number | null;
+					precipitation: number | null;
+					cloudCover: number | null;
+					weatherCode: number | null;
+				};
 			}[] = [];
 
 			// Group by day
@@ -134,11 +152,26 @@ export const surfForecastRouter = {
 				}
 			}
 
+			// Group weather by day
+			const weatherDayGroups = new Map<string, typeof allWeather>();
+			for (const weather of allWeather) {
+				if (weather.timestamp > fiveDaysFromNow) break;
+				const dayKey = weather.timestamp.toISOString().split("T")[0];
+				if (!weatherDayGroups.has(dayKey)) {
+					weatherDayGroups.set(dayKey, []);
+				}
+				const weatherDayGroup = weatherDayGroups.get(dayKey);
+				if (weatherDayGroup) {
+					weatherDayGroup.push(weather);
+				}
+			}
+
 			// Process each day
 			for (const [dayKey, waves] of dayGroups.entries()) {
 				const dayDate = new Date(`${dayKey}T00:00:00`);
 				const daySurfline = waves.filter((w) => w.source === "surfline");
 				const daySwellcloud = waves.filter((w) => w.source === "swellcloud");
+				const dayWeather = weatherDayGroups.get(dayKey) || [];
 
 				const surflineHeights = daySurfline
 					.map((w) => {
@@ -160,6 +193,20 @@ export const surfForecastRouter = {
 				const swellcloudPeriods = daySwellcloud
 					.map((w) => w.wavePeriod)
 					.filter((p): p is number => p !== null);
+
+				// Calculate weather averages
+				const temperatures = dayWeather
+					.map((w) => w.temperature)
+					.filter((t): t is number => t !== null);
+				const precipitations = dayWeather
+					.map((w) => w.precipitation)
+					.filter((p): p is number => p !== null);
+				const cloudCovers = dayWeather
+					.map((w) => w.cloudCover)
+					.filter((c): c is number => c !== null);
+				const weatherCodes = dayWeather
+					.map((w) => w.weatherCode)
+					.filter((c): c is number => c !== null);
 
 				dailyForecasts.push({
 					date: dayKey,
@@ -211,6 +258,28 @@ export const surfForecastRouter = {
 							swellcloudPeriods.length > 0
 								? swellcloudPeriods.reduce((a, b) => a + b, 0) /
 									swellcloudPeriods.length
+								: null,
+					},
+					weather: {
+						temperature:
+							temperatures.length > 0
+								? temperatures.reduce((a, b) => a + b, 0) / temperatures.length
+								: null,
+						precipitation:
+							precipitations.length > 0
+								? precipitations.reduce((a, b) => a + b, 0) /
+									precipitations.length
+								: null,
+						cloudCover:
+							cloudCovers.length > 0
+								? cloudCovers.reduce((a, b) => a + b, 0) / cloudCovers.length
+								: null,
+						weatherCode:
+							weatherCodes.length > 0
+								? Math.round(
+										weatherCodes.reduce((a, b) => a + b, 0) /
+											weatherCodes.length,
+									)
 								: null,
 					},
 				});

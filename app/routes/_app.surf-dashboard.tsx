@@ -523,6 +523,39 @@ export function SurfDashboardContent({
 																</div>
 															)}
 														</div>
+
+														{/* Weather */}
+														<div className="pt-2 border-t border-border/50">
+															<div className="text-xs text-muted-foreground mb-1">
+																Weather
+															</div>
+															{forecast.weather.temperature !== null ? (
+																<div className="space-y-1">
+																	<div className="text-base font-semibold">
+																		{forecast.weather.temperature.toFixed(0)}°F
+																	</div>
+																	{forecast.weather.precipitation !== null &&
+																		forecast.weather.precipitation > 0 && (
+																			<div className="text-xs text-muted-foreground">
+																				{forecast.weather.precipitation.toFixed(
+																					2,
+																				)}
+																				" rain
+																			</div>
+																		)}
+																	{forecast.weather.cloudCover !== null && (
+																		<div className="text-xs text-muted-foreground">
+																			{forecast.weather.cloudCover.toFixed(0)}%
+																			clouds
+																		</div>
+																	)}
+																</div>
+															) : (
+																<div className="text-sm text-muted-foreground">
+																	No data
+																</div>
+															)}
+														</div>
 													</div>
 												</div>
 											);
