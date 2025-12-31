@@ -1,6 +1,6 @@
 import { generateId } from "ai";
 import { eq } from "drizzle-orm";
-import { TWILIO_WHATSAPP_NUMBER } from "~/app/config/constants";
+import { TWILIO_WHATSAPP_NUMBER, getAppUrl } from "~/app/config/constants";
 import { getDb } from "~/app/lib/db";
 import { users, verifications } from "~/app/lib/schema";
 import {
@@ -147,7 +147,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 						);
 						continue;
 					}
-					messageText = messageText.substring(5).trim();
+					messageText = messageText.replace(/^dev:/, "").trim();
 					console.log(
 						"🚀 ~ api.whatsapp.webhook.ts:150 ~ action ~ messageText:",
 						messageText,
@@ -205,13 +205,16 @@ export async function action({ request, context }: Route.ActionArgs) {
 						updatedAt: new Date(),
 					};
 					await db.insert(verifications).values(verification);
-					const host = isDev
-						? "http://localhost:3000"
-						: "https://gnar-dawgs.surf";
+					const host = getAppUrl(env);
+					console.log(
+						"🚀 ~ api.whatsapp.webhook.ts:209 ~ action ~ host:",
+						host,
+					);
+
 					const payload: CreateMessageBody = {
 						From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
 						To: senderNumber,
-						Body: `Login with this link ${host}/login?phone=${fromNumber}&code=${code}, or go to ${host}/login and enter the code: ${code}.`,
+						Body: `Login with this link ${host}/login?phone=${encodeURIComponent(fromNumber)}&code=${code}, or go to ${host}/login and enter the code: ${code}.`,
 					};
 
 					await createMessage(env, payload);

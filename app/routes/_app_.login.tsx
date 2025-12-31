@@ -23,8 +23,10 @@ export default function Login() {
 		const phoneParam = searchParams.get("phone");
 		const codeParam = searchParams.get("code");
 
+		console.log("🚀 ~ _app_.login.tsx:26 ~ Login ~ phoneParam:", phoneParam);
 		if (phoneParam) {
-			setPhoneNumber(phoneParam);
+			// Remove +1 prefix if present
+			setPhoneNumber(phoneParam.replace(/^\+1/, ""));
 		}
 
 		if (codeParam) {
@@ -38,6 +40,10 @@ export default function Login() {
 			setError("Please enter a phone number");
 			return;
 		}
+		console.log(
+			"🚀 ~ _app_.login.tsx:40 ~ handleSendOtp ~ phoneNumber:",
+			phoneNumber,
+		);
 
 		setIsSendingOtp(true);
 		setError(null);
@@ -47,7 +53,7 @@ export default function Login() {
 
 		try {
 			await authClient.phoneNumber.sendOtp({
-				phoneNumber: phoneNumber.trim(),
+				phoneNumber: `+1${phoneNumber.trim()}`,
 			});
 			setOtpSent(true);
 			setSuccess("OTP code sent to your phone number!");
@@ -75,7 +81,7 @@ export default function Login() {
 
 		try {
 			const result = await authClient.phoneNumber.verify({
-				phoneNumber: phoneNumber.trim(),
+				phoneNumber: `+1${phoneNumber.trim()}`,
 				code: otpCode.trim(),
 				disableSession: false,
 			});

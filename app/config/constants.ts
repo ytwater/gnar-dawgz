@@ -7,6 +7,12 @@ export const TWILIO_WHATSAPP_NUMBER = "+18589520996" as const;
 export const TWILIO_WHATSAPP_OTP_TEMPLATE_SID =
 	"HX9b5f7b983db5c8777ee84ea09fbd7de1" as const;
 
+export const APP_URL_PROD = "https://www.gnardawgs.surf" as const;
+export const APP_URL_DEV = "http://localhost:5173" as const;
+export const getAppUrl = (env: CloudflareBindings) => {
+	return env.ENVIRONMENT === "dev" ? APP_URL_DEV : APP_URL_PROD;
+};
+
 export const SURFLINE_TORREY_PINES_SPOT_ID =
 	"584204204e65fad6a7709994" as const;
 
