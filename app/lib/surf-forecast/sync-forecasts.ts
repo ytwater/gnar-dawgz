@@ -4,9 +4,11 @@ import {
 	surfForecasts,
 	surfSpots,
 	tideForecasts,
+	weatherForecasts,
 } from "~/app/lib/surf-forecast-schema";
 import { fetchSurflineForecast } from "./fetch-surfline";
 import { fetchSwellcloudForecast } from "./fetch-swellcloud";
+import { fetchOpenMeteoWeather } from "./fetch-weather";
 
 export type SurfForecastInsert = typeof surfForecasts.$inferInsert;
 export type TideForecastInsert = typeof tideForecasts.$inferInsert;
@@ -238,6 +240,46 @@ export async function syncSurfForecasts(
 			if (error instanceof Error) {
 				console.error(`Error details: ${error.message}`, error.stack);
 			}
+		}
+
+		// 3. Fetch from OpenMeteo (Weather)
+		try {
+			console.log(
+				`Fetching OpenMeteo weather for ${spot.name} at ${spot.lat}, ${spot.lng}`,
+			);
+			const weatherData = await fetchOpenMeteoWeather(spot.lat, spot.lng);
+
+			const weatherInserts = weatherData.map((w) => ({
+				...w,
+				id: `weather_${currentSpotId}_${w.timestamp.getTime()}`,
+				spotId: currentSpotId,
+			}));
+
+			if (weatherInserts.length > 0) {
+				for (const chunk of chunkArray(weatherInserts, 10)) {
+					await db
+						.insert(weatherForecasts)
+						.values(chunk)
+						.onConflictDoUpdate({
+							target: [weatherForecasts.spotId, weatherForecasts.timestamp],
+							set: {
+								temperature: sql`excluded.temperature`,
+								precipitation: sql`excluded.precipitation`,
+								cloudCover: sql`excluded.cloud_cover`,
+								windSpeed: sql`excluded.wind_speed`,
+								windDirection: sql`excluded.wind_direction`,
+								weatherCode: sql`excluded.weather_code`,
+								fetchedAt: new Date(),
+							},
+						});
+				}
+				console.log(
+					`Successfully synced ${weatherInserts.length} weather forecasts for ${spot.name}`,
+				);
+			}
+			syncSuccess = true;
+		} catch (error) {
+			console.error(`Error syncing weather forecast for ${spot.name}:`, error);
 		}
 
 		// Update lastSyncedAt if sync was successful

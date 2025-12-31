@@ -106,3 +106,35 @@ export const tideForecasts = sqliteTable(
 		timestampIdx: index("tide_forecasts_timestamp_idx").on(table.timestamp),
 	}),
 );
+
+export const weatherForecasts = sqliteTable(
+	"weather_forecasts",
+	{
+		id: text("id").primaryKey(),
+		spotId: text("spot_id")
+			.notNull()
+			.references(() => surfSpots.id, { onDelete: "cascade" }),
+		timestamp: integer("timestamp", { mode: "timestamp_ms" }).notNull(),
+
+		temperature: real("temperature"),
+		precipitation: real("precipitation"),
+		cloudCover: real("cloud_cover"),
+		windSpeed: real("wind_speed"),
+		windDirection: real("wind_direction"),
+		weatherCode: integer("weather_code"),
+
+		fetchedAt: integer("fetched_at", { mode: "timestamp_ms" })
+			.default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+			.notNull(),
+		createdAt: integer("created_at", { mode: "timestamp_ms" })
+			.default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+			.notNull(),
+	},
+	(table) => ({
+		spotTimestampIdx: uniqueIndex("weather_forecasts_spot_timestamp_idx").on(
+			table.spotId,
+			table.timestamp,
+		),
+		timestampIdx: index("weather_forecasts_timestamp_idx").on(table.timestamp),
+	}),
+);
