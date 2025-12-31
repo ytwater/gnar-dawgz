@@ -8,7 +8,7 @@ export default defineConfig({
 	out: "./drizzle",
 	driver: "d1-http",
 	dbCredentials: {
-		accountId: process.env.CLOUDFLARE_D1_ACCOUNT_ID ?? "",
+		accountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? "",
 		databaseId: wranglerConfig.d1_databases[0].database_id,
 		token: process.env.CLOUDFLARE_D1_API_TOKEN ?? "",
 	},

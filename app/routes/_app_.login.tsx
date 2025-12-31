@@ -53,7 +53,7 @@ export default function Login() {
 
 		try {
 			await authClient.phoneNumber.sendOtp({
-				phoneNumber: `+1${phoneNumber.trim()}`,
+				phoneNumber,
 			});
 			setOtpSent(true);
 			setSuccess("OTP code sent to your phone number!");
@@ -81,7 +81,7 @@ export default function Login() {
 
 		try {
 			const result = await authClient.phoneNumber.verify({
-				phoneNumber: `+1${phoneNumber.trim()}`,
+				phoneNumber,
 				code: otpCode.trim(),
 				disableSession: false,
 			});
