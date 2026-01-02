@@ -52,8 +52,11 @@ export default function Login() {
 		setOtpCode("");
 
 		try {
+			const fullPhone = phoneNumber.startsWith("+1")
+				? phoneNumber
+				: `+1${phoneNumber}`;
 			await authClient.phoneNumber.sendOtp({
-				phoneNumber,
+				phoneNumber: fullPhone,
 			});
 			setOtpSent(true);
 			setSuccess("OTP code sent to your phone number!");
@@ -80,8 +83,11 @@ export default function Login() {
 		setSuccess(null);
 
 		try {
+			const fullPhone = phoneNumber.startsWith("+1")
+				? phoneNumber
+				: `+1${phoneNumber}`;
 			const result = await authClient.phoneNumber.verify({
-				phoneNumber,
+				phoneNumber: fullPhone,
 				code: otpCode.trim(),
 				disableSession: false,
 			});
