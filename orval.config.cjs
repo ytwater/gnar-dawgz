@@ -122,33 +122,33 @@ module.exports = {
 				"https://raw.githubusercontent.com/twilio/twilio-oai/refs/heads/main/spec/json/twilio_messaging_v1.json",
 		},
 	},
-	swellcloudApi: {
-		output: {
-			mode: "single", //  "tags",
-			target: "app/lib/swellcloud/swellcloud-api.ts",
-			schemas: "app/lib/swellcloud/models",
-			client: "react-query",
-			baseUrl: "https://api.swellcloud.net",
-			httpClient: "fetch",
-			indexFiles: true,
-			override: {
-				operations: {
-					// Orval treats POST operations as mutations by default, so we need to override it to useQuery
-					// PostApiPublicGetAgencyList: {
-					//   query: {
-					//     useQuery: true,
-					//   },
-					// },
-					// PostApiPublicGetPickLists: {
-					//   query: {
-					//     useQuery: true,
-					//   },
-					// },
-				},
-			},
-		},
-		input: {
-			target: "https://api.swellcloud.net/openapi.json",
-		},
-	},
+	// swellcloudApi: {
+	// 	output: {
+	// 		mode: "single", //  "tags",
+	// 		target: "app/lib/swellcloud/swellcloud-api.ts",
+	// 		schemas: "app/lib/swellcloud/models",
+	// 		client: "react-query",
+	// 		baseUrl: "https://api.swellcloud.net",
+	// 		httpClient: "fetch",
+	// 		indexFiles: true,
+	// 		override: {
+	// 			operations: {
+	// 				// Orval treats POST operations as mutations by default, so we need to override it to useQuery
+	// 				// PostApiPublicGetAgencyList: {
+	// 				//   query: {
+	// 				//     useQuery: true,
+	// 				//   },
+	// 				// },
+	// 				// PostApiPublicGetPickLists: {
+	// 				//   query: {
+	// 				//     useQuery: true,
+	// 				//   },
+	// 				// },
+	// 			},
+	// 		},
+	// 	},
+	// 	input: {
+	// 		target: "https://api.swellcloud.net/openapi.json",
+	// 	},
+	// },
 };

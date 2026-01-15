@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@uiw/react-md-editor/markdown-editor.css";
 
 @theme {
 	/* This tells Tailwind to look for the .dark class on a parent element */

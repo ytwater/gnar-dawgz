@@ -1,9 +1,8 @@
-import { ArrowLeft, FloppyDisk, Scales } from "@phosphor-icons/react";
+import { ArrowLeft, FloppyDisk } from "@phosphor-icons/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import MDEditor from "@uiw/react-md-editor";
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import { Link, useNavigate } from "react-router";
-import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 import { Button } from "~/app/components/ui/button";
 import {
@@ -13,7 +12,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/app/components/ui/card";
-import { Textarea } from "~/app/components/ui/textarea";
 import { orpcClient } from "~/app/lib/orpc/client";
 import { useCharter } from "~/app/lib/orpc/hooks/use-demerit";
 import type { Route } from "./+types/admin.charter";
@@ -96,34 +94,16 @@ export default function AdminCharterPage() {
 							Changes are not saved until you click Save.
 						</CardDescription>
 					</CardHeader>
-					<CardContent className="flex-1 p-0">
-						<Textarea
-							value={content}
-							onChange={(e) => setContent(e.target.value)}
-							placeholder="Write the charter here... Use # for headers, - for lists, etc."
-							className="h-full w-full min-h-[500px] resize-none border-none focus-visible:ring-0 p-8 font-mono text-sm leading-relaxed bg-transparent"
-						/>
-					</CardContent>
-				</Card>
-
-				{/* Preview */}
-				<Card className="min-h-[600px] flex flex-col shadow-xl border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
-					<CardHeader className="border-b bg-slate-50 dark:bg-slate-900/50">
-						<CardTitle className="text-xs uppercase tracking-widest font-black text-slate-500 dark:text-slate-400 flex items-center gap-2">
-							<Scales className="w-4 h-4" />
-							Live Preview
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="flex-1 overflow-auto p-8 prose prose-slate dark:prose-invert max-w-none">
-						{content ? (
-							<ReactMarkdown remarkPlugins={[remarkGfm]}>
-								{content}
-							</ReactMarkdown>
-						) : (
-							<p className="text-muted-foreground italic text-center py-20">
-								Start typing to see the preview...
-							</p>
-						)}
+					<CardContent className="flex-1 p-0 overflow-hidden">
+						<div className="h-full min-h-[500px] [&_.w-md-editor]:h-full [&_.w-md-editor-text]:min-h-[500px] [&_.w-md-editor]:border-none [&_.w-md-editor-text-textarea]:bg-transparent [&_.w-md-editor-text-textarea]:text-foreground [&_.w-md-editor-text-textarea]:font-mono [&_.w-md-editor-text-textarea]:text-sm [&_.w-md-editor-text-textarea]:leading-relaxed [&_.w-md-editor-text-textarea]:p-8 [&_.w-md-editor-text-textarea]:focus:outline-none [&_.w-md-editor-toolbar]:bg-slate-50 [&_.w-md-editor-toolbar]:dark:bg-slate-900/50 [&_.w-md-editor-toolbar]:border-b [&_.w-md-editor-toolbar]:border-border">
+							<MDEditor
+								value={content}
+								onChange={(value) => setContent(value || "")}
+								preview="edit"
+								hideToolbar={false}
+								visibleDragbar={false}
+							/>
+						</div>
 					</CardContent>
 				</Card>
 			</div>
