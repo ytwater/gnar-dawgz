@@ -1,6 +1,7 @@
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import {
 	type CoreMessage,
+	type Tool,
 	type ToolSet,
 	generateId,
 	generateText,
@@ -14,6 +15,7 @@ import { executions } from "./tools";
 import { createAssignDemeritTool } from "./tools/createAssignDemeritTool";
 import { createClearDemeritsTool } from "./tools/createClearDemeritsTool";
 import { createGetCharterTool } from "./tools/createGetCharterTool";
+import { createGetDemeritLeaderboardTool } from "./tools/createGetDemeritLeaderboardTool";
 import { createGetSurfSpotsTool } from "./tools/createGetSurfSpotsTool";
 import { createSurfForecastTool } from "./tools/createSurfForecastTool";
 import { createUserNameTool } from "./tools/createUserNameTool";
@@ -93,10 +95,10 @@ export class WhatsAppAgent {
 		// Save user message to database
 		await this.saveMessage("user", text);
 
-		const useSwellCloud = this.env.ENABLE_SWELL_CLOUD !== "false";
-		const useSurfline = this.env.ENABLE_SURFLINE !== "false";
+		const useSwellCloud = (this.env.ENABLE_SWELL_CLOUD as string) !== "false";
+		const useSurfline = (this.env.ENABLE_SURFLINE as string) !== "false";
 
-		let getSurfForecast;
+		let getSurfForecast: Tool | undefined;
 		if (useSwellCloud) {
 			getSurfForecast = createSurfForecastTool(this.env, "swellcloud");
 		} else if (useSurfline) {
@@ -108,6 +110,7 @@ export class WhatsAppAgent {
 		const assignDemerit = createAssignDemeritTool(this.env, this.user.id);
 		const clearDemerits = createClearDemeritsTool(this.env);
 		const getCharter = createGetCharterTool(this.env);
+		const getDemeritLeaderboard = createGetDemeritLeaderboardTool(this.env);
 
 		const isOnboarding = this.user.name === "Guest";
 
@@ -122,6 +125,7 @@ export class WhatsAppAgent {
 					assignDemerit,
 					clearDemerits,
 					getCharter,
+					getDemeritLeaderboard,
 				};
 
 		const systemPrompt = isOnboarding
@@ -131,9 +135,9 @@ You manage the Gnar Dawgs demerit tracker:
 - If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.
 - If a member buys a beer for someone, their active demerits can be cleared using the 'clearDemerits' tool.
 - You can use the 'getCharter' tool to see the current rules if anyone asks.
+- You can use the 'getDemeritLeaderboard' tool to show who has the most demerits when asked.
 - You can also provide surf forecasts using 'getSurfForecast' (default is Torrey Pines) and 'getSurfSpots'.
-Be concise. If someone asks "Who has the most demerits?", tell them to check the /charter page on the website.
-Search for users by name when assigning or clearing demerits.`;
+Be concise. Search for users by name when assigning or clearing demerits.`;
 		console.log(
 			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",
 			systemPrompt,
