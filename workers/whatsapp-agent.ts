@@ -93,7 +93,16 @@ export class WhatsAppAgent {
 		// Save user message to database
 		await this.saveMessage("user", text);
 
-		const getSurfForecast = createSurfForecastTool(this.env);
+		const useSwellCloud = this.env.ENABLE_SWELL_CLOUD !== "false";
+		const useSurfline = this.env.ENABLE_SURFLINE !== "false";
+
+		let getSurfForecast;
+		if (useSwellCloud) {
+			getSurfForecast = createSurfForecastTool(this.env, "swellcloud");
+		} else if (useSurfline) {
+			getSurfForecast = createSurfForecastTool(this.env, "surfline");
+		}
+
 		const getSurfSpots = createGetSurfSpotsTool(this.env);
 		const updateUserName = createUserNameTool(this.env, this.user.id);
 		const assignDemerit = createAssignDemeritTool(this.env, this.user.id);
@@ -108,7 +117,7 @@ export class WhatsAppAgent {
 					updateUserName,
 				}
 			: {
-					getSurfForecast,
+					...(getSurfForecast ? { getSurfForecast } : {}),
 					getSurfSpots,
 					assignDemerit,
 					clearDemerits,

@@ -118,6 +118,8 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 		selectedSpot: selectedSpot || null,
 		allSpots,
 		dashboardData,
+		enableSurfline: context.cloudflare.env.ENABLE_SURFLINE !== "false",
+		enableSwellCloud: context.cloudflare.env.ENABLE_SWELL_CLOUD !== "false",
 	};
 };
 
@@ -270,12 +272,16 @@ export function SurfDashboardContent({
 	onSpotChange,
 	initialAllSpots,
 	initialDashboardData,
+	enableSurfline,
+	enableSwellCloud,
 }: {
 	selectedSpotId: string;
 	selectedSpot: { id: string; name: string; lastSyncedAt: Date | null } | null;
 	onSpotChange?: (value: string) => void;
 	initialAllSpots?: Awaited<ReturnType<typeof getActiveSpots>>;
 	initialDashboardData?: Awaited<ReturnType<typeof getDashboardData>>;
+	enableSurfline: boolean;
+	enableSwellCloud: boolean;
 }) {
 	const { data: session } = authClient.useSession();
 	const { data: allSpots } = useActiveSpots(initialAllSpots);
@@ -337,12 +343,18 @@ export function SurfDashboardContent({
 	// Filter data based on checkboxes
 	const filteredData = combinedData.map((item) => ({
 		...item,
-		surflineHeight: showSurfline ? item.surflineHeight : null,
-		surflinePeriod: showSurfline ? item.surflinePeriod : null,
-		surflineWindSpeed: showSurfline ? item.surflineWindSpeed : null,
-		swellcloudHeight: showSwellcloud ? item.swellcloudHeight : null,
-		swellcloudPeriod: showSwellcloud ? item.swellcloudPeriod : null,
-		swellcloudWindSpeed: showSwellcloud ? item.swellcloudWindSpeed : null,
+		surflineHeight:
+			enableSurfline && showSurfline ? item.surflineHeight : null,
+		surflinePeriod:
+			enableSurfline && showSurfline ? item.surflinePeriod : null,
+		surflineWindSpeed:
+			enableSurfline && showSurfline ? item.surflineWindSpeed : null,
+		swellcloudHeight:
+			enableSwellCloud && showSwellcloud ? item.swellcloudHeight : null,
+		swellcloudPeriod:
+			enableSwellCloud && showSwellcloud ? item.swellcloudPeriod : null,
+		swellcloudWindSpeed:
+			enableSwellCloud && showSwellcloud ? item.swellcloudWindSpeed : null,
 	}));
 
 	return (
@@ -353,9 +365,7 @@ export function SurfDashboardContent({
 						Surf Forecast Dashboard
 					</h1>
 					<p className="text-muted-foreground">
-						{currentSelectedSpot
-							? `Comparing Surfline and Swellcloud data for ${currentSelectedSpot.name}`
-							: "Comparing Surfline and Swellcloud data"}
+						{`Comparing Surfline and Swellcloud data for ${currentSelectedSpot?.name}`}
 					</p>
 					{currentSelectedSpot?.lastSyncedAt && (
 						<p className="text-sm text-muted-foreground">
@@ -466,63 +476,73 @@ export function SurfDashboardContent({
 													</div>
 													<div className="space-y-3">
 														{/* Surfline */}
-														<div>
-															<div className="text-xs text-muted-foreground mb-1">
-																Surfline
-															</div>
-															{forecast.surfline.heightAvg !== null ? (
-																<div className="space-y-1">
-																	<div className="text-lg font-bold">
-																		{forecast.surfline.heightMin !== null &&
-																		forecast.surfline.heightMax !== null
-																			? `${forecast.surfline.heightMin.toFixed(1)}-${forecast.surfline.heightMax.toFixed(1)} ft`
-																			: `${forecast.surfline.heightAvg.toFixed(1)} ft`}
+														{enableSurfline && (
+															<div>
+																<div className="text-xs text-muted-foreground mb-1">
+																	Surfline
+																</div>
+																{forecast.surfline.heightAvg !== null ? (
+																	<div className="space-y-1">
+																		<div className="text-lg font-bold">
+																			{forecast.surfline.heightMin !== null &&
+																			forecast.surfline.heightMax !== null
+																				? `${forecast.surfline.heightMin.toFixed(1)}-${forecast.surfline.heightMax.toFixed(1)} ft`
+																				: `${forecast.surfline.heightAvg.toFixed(1)} ft`}
+																		</div>
+																		{forecast.surfline.period !== null && (
+																			<div className="text-xs text-muted-foreground">
+																				{forecast.surfline.period.toFixed(
+																					0,
+																				)}
+																				s period
+																			</div>
+																		)}
+																		{forecast.surfline.rating && (
+																			<div className="text-xs font-medium capitalize">
+																				{forecast.surfline.rating.toLowerCase()}
+																			</div>
+																		)}
 																	</div>
-																	{forecast.surfline.period !== null && (
-																		<div className="text-xs text-muted-foreground">
-																			{forecast.surfline.period.toFixed(0)}s
-																			period
-																		</div>
-																	)}
-																	{forecast.surfline.rating && (
-																		<div className="text-xs font-medium capitalize">
-																			{forecast.surfline.rating.toLowerCase()}
-																		</div>
-																	)}
-																</div>
-															) : (
-																<div className="text-sm text-muted-foreground">
-																	No data
-																</div>
-															)}
-														</div>
+																) : (
+																	<div className="text-sm text-muted-foreground">
+																		No data
+																	</div>
+																)}
+															</div>
+														)}
 
 														{/* Swellcloud */}
-														<div>
-															<div className="text-xs text-muted-foreground mb-1">
-																Swellcloud
-															</div>
-															{forecast.swellcloud.heightAvg !== null ? (
-																<div className="space-y-1">
-																	<div className="text-lg font-bold">
-																		{forecast.swellcloud.heightMin !== null &&
-																		forecast.swellcloud.heightMax !== null
-																			? `${forecast.swellcloud.heightMin.toFixed(1)}-${forecast.swellcloud.heightMax.toFixed(1)} ft`
-																			: `${forecast.swellcloud.heightAvg.toFixed(1)} ft`}
-																	</div>
-																	{forecast.swellcloud.period !== null && (
-																		<div className="text-xs text-muted-foreground">
-																			{forecast.swellcloud.period.toFixed(0)}s
-																			period
+														{enableSwellCloud && (
+															<div>
+																<div className="text-xs text-muted-foreground mb-1">
+																	Swellcloud
+																</div>
+																{forecast.swellcloud.heightAvg !== null ? (
+																	<div className="space-y-1">
+																		<div className="text-lg font-bold">
+																			{forecast.swellcloud.heightMin !==
+																				null &&
+																			forecast.swellcloud.heightMax !==
+																				null
+																				? `${forecast.swellcloud.heightMin.toFixed(1)}-${forecast.swellcloud.heightMax.toFixed(1)} ft`
+																				: `${forecast.swellcloud.heightAvg.toFixed(1)} ft`}
 																		</div>
-																	)}
-																</div>
-															) : (
-																<div className="text-sm text-muted-foreground">
-																	No data
-																</div>
-															)}
-														</div>
+																		{forecast.swellcloud.period !== null && (
+																			<div className="text-xs text-muted-foreground">
+																				{forecast.swellcloud.period.toFixed(
+																					0,
+																				)}
+																				s period
+																			</div>
+																		)}
+																	</div>
+																) : (
+																	<div className="text-sm text-muted-foreground">
+																		No data
+																	</div>
+																)}
+															</div>
+														)}
 
 														{/* Weather */}
 														<div className="pt-2 border-t border-border/50">
@@ -578,36 +598,40 @@ export function SurfDashboardContent({
 										</CardDescription>
 									</div>
 									<div className="flex items-center gap-6">
-										<div className="flex items-center gap-2">
-											<Checkbox
-												id="show-surfline"
-												checked={showSurfline}
-												onCheckedChange={(checked) =>
-													setShowSurfline(checked === true)
-												}
-											/>
-											<Label
-												htmlFor="show-surfline"
-												className="text-sm font-medium cursor-pointer"
-											>
-												Surfline
-											</Label>
-										</div>
-										<div className="flex items-center gap-2">
-											<Checkbox
-												id="show-swellcloud"
-												checked={showSwellcloud}
-												onCheckedChange={(checked) =>
-													setShowSwellcloud(checked === true)
-												}
-											/>
-											<Label
-												htmlFor="show-swellcloud"
-												className="text-sm font-medium cursor-pointer"
-											>
-												Swellcloud
-											</Label>
-										</div>
+										{enableSurfline && (
+											<div className="flex items-center gap-2">
+												<Checkbox
+													id="show-surfline"
+													checked={showSurfline}
+													onCheckedChange={(checked) =>
+														setShowSurfline(checked === true)
+													}
+												/>
+												<Label
+													htmlFor="show-surfline"
+													className="text-sm font-medium cursor-pointer"
+												>
+													Surfline
+												</Label>
+											</div>
+										)}
+										{enableSwellCloud && (
+											<div className="flex items-center gap-2">
+												<Checkbox
+													id="show-swellcloud"
+													checked={showSwellcloud}
+													onCheckedChange={(checked) =>
+														setShowSwellcloud(checked === true)
+													}
+												/>
+												<Label
+													htmlFor="show-swellcloud"
+													className="text-sm font-medium cursor-pointer"
+												>
+													Swellcloud
+												</Label>
+											</div>
+										)}
 									</div>
 								</div>
 							</CardHeader>
@@ -908,6 +932,8 @@ export default function SurfDashboard() {
 				onSpotChange={handleSpotChange}
 				initialAllSpots={loaderData.allSpots}
 				initialDashboardData={loaderData.dashboardData}
+				enableSurfline={loaderData.enableSurfline}
+				enableSwellCloud={loaderData.enableSwellCloud}
 			/>
 		</HydrationBoundary>
 	);
