@@ -105,7 +105,7 @@ export const createAlphaSender = async (
 	options?: RequestInit,
 ): Promise<createAlphaSenderResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`AlphaSender`, createAlphaSenderBody.AlphaSender);
+	formUrlEncoded.append("AlphaSender", createAlphaSenderBody.AlphaSender);
 
 	const res = await fetch(getCreateAlphaSenderUrl(serviceSid), {
 		...options,
@@ -611,7 +611,7 @@ export function useFetchAlphaSender<
 }
 
 export type deleteAlphaSenderResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -1149,7 +1149,7 @@ export const getListBrandRegistrationsUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://messaging.twilio.com/v1/a2p/BrandRegistrations?${stringifiedParams}`
-		: `https://messaging.twilio.com/v1/a2p/BrandRegistrations`;
+		: "https://messaging.twilio.com/v1/a2p/BrandRegistrations";
 };
 
 export const listBrandRegistrations = async (
@@ -1177,7 +1177,7 @@ export const getListBrandRegistrationsQueryKey = (
 	params?: ListBrandRegistrationsParams,
 ) => {
 	return [
-		`https://messaging.twilio.com/v1/a2p/BrandRegistrations`,
+		"https://messaging.twilio.com/v1/a2p/BrandRegistrations",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -1339,7 +1339,7 @@ export type createBrandRegistrationsResponse =
 	createBrandRegistrationsResponseSuccess;
 
 export const getCreateBrandRegistrationsUrl = () => {
-	return `https://messaging.twilio.com/v1/a2p/BrandRegistrations`;
+	return "https://messaging.twilio.com/v1/a2p/BrandRegistrations";
 };
 
 export const createBrandRegistrations = async (
@@ -1348,22 +1348,22 @@ export const createBrandRegistrations = async (
 ): Promise<createBrandRegistrationsResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	formUrlEncoded.append(
-		`CustomerProfileBundleSid`,
+		"CustomerProfileBundleSid",
 		createBrandRegistrationsBody.CustomerProfileBundleSid,
 	);
 	formUrlEncoded.append(
-		`A2PProfileBundleSid`,
+		"A2PProfileBundleSid",
 		createBrandRegistrationsBody.A2PProfileBundleSid,
 	);
 	if (createBrandRegistrationsBody.BrandType !== undefined) {
-		formUrlEncoded.append(`BrandType`, createBrandRegistrationsBody.BrandType);
+		formUrlEncoded.append("BrandType", createBrandRegistrationsBody.BrandType);
 	}
 	if (createBrandRegistrationsBody.Mock !== undefined) {
-		formUrlEncoded.append(`Mock`, createBrandRegistrationsBody.Mock.toString());
+		formUrlEncoded.append("Mock", createBrandRegistrationsBody.Mock.toString());
 	}
 	if (createBrandRegistrationsBody.SkipAutomaticSecVet !== undefined) {
 		formUrlEncoded.append(
-			`SkipAutomaticSecVet`,
+			"SkipAutomaticSecVet",
 			createBrandRegistrationsBody.SkipAutomaticSecVet.toString(),
 		);
 	}
@@ -1489,11 +1489,11 @@ export const createBrandVetting = async (
 ): Promise<createBrandVettingResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	formUrlEncoded.append(
-		`VettingProvider`,
+		"VettingProvider",
 		createBrandVettingBody.VettingProvider,
 	);
 	if (createBrandVettingBody.VettingId !== undefined) {
-		formUrlEncoded.append(`VettingId`, createBrandVettingBody.VettingId);
+		formUrlEncoded.append("VettingId", createBrandVettingBody.VettingId);
 	}
 
 	const res = await fetch(getCreateBrandVettingUrl(brandSid), {
@@ -2247,7 +2247,7 @@ export const createChannelSender = async (
 	options?: RequestInit,
 ): Promise<createChannelSenderResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Sid`, createChannelSenderBody.Sid);
+	formUrlEncoded.append("Sid", createChannelSenderBody.Sid);
 
 	const res = await fetch(getCreateChannelSenderUrl(messagingServiceSid), {
 		...options,
@@ -2544,7 +2544,7 @@ export function useFetchChannelSender<
 }
 
 export type deleteChannelSenderResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -2677,7 +2677,7 @@ export const getFetchDeactivationUrl = (params?: FetchDeactivationParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://messaging.twilio.com/v1/Deactivations?${stringifiedParams}`
-		: `https://messaging.twilio.com/v1/Deactivations`;
+		: "https://messaging.twilio.com/v1/Deactivations";
 };
 
 export const fetchDeactivation = async (
@@ -2703,7 +2703,7 @@ export const getFetchDeactivationQueryKey = (
 	params?: FetchDeactivationParams,
 ) => {
 	return [
-		`https://messaging.twilio.com/v1/Deactivations`,
+		"https://messaging.twilio.com/v1/Deactivations",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -2877,12 +2877,12 @@ export const createDestinationAlphaSender = async (
 ): Promise<createDestinationAlphaSenderResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	formUrlEncoded.append(
-		`AlphaSender`,
+		"AlphaSender",
 		createDestinationAlphaSenderBody.AlphaSender,
 	);
 	if (createDestinationAlphaSenderBody.IsoCountryCode !== undefined) {
 		formUrlEncoded.append(
-			`IsoCountryCode`,
+			"IsoCountryCode",
 			createDestinationAlphaSenderBody.IsoCountryCode,
 		);
 	}
@@ -3415,7 +3415,7 @@ export function useFetchDestinationAlphaSender<
 }
 
 export type deleteDestinationAlphaSenderResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -3555,7 +3555,7 @@ export const updateDomainCertV4 = async (
 	options?: RequestInit,
 ): Promise<updateDomainCertV4Response> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`TlsCert`, updateDomainCertV4Body.TlsCert);
+	formUrlEncoded.append("TlsCert", updateDomainCertV4Body.TlsCert);
 
 	const res = await fetch(getUpdateDomainCertV4Url(domainSid), {
 		...options,
@@ -3831,7 +3831,7 @@ export function useFetchDomainCertV4<
 }
 
 export type deleteDomainCertV4Response204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -3961,20 +3961,20 @@ export const updateDomainConfig = async (
 ): Promise<updateDomainConfigResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateDomainConfigBody.FallbackUrl !== undefined) {
-		formUrlEncoded.append(`FallbackUrl`, updateDomainConfigBody.FallbackUrl);
+		formUrlEncoded.append("FallbackUrl", updateDomainConfigBody.FallbackUrl);
 	}
 	if (updateDomainConfigBody.CallbackUrl !== undefined) {
-		formUrlEncoded.append(`CallbackUrl`, updateDomainConfigBody.CallbackUrl);
+		formUrlEncoded.append("CallbackUrl", updateDomainConfigBody.CallbackUrl);
 	}
 	if (updateDomainConfigBody.ContinueOnFailure !== undefined) {
 		formUrlEncoded.append(
-			`ContinueOnFailure`,
+			"ContinueOnFailure",
 			updateDomainConfigBody.ContinueOnFailure.toString(),
 		);
 	}
 	if (updateDomainConfigBody.DisableHttps !== undefined) {
 		formUrlEncoded.append(
-			`DisableHttps`,
+			"DisableHttps",
 			updateDomainConfigBody.DisableHttps.toString(),
 		);
 	}
@@ -4667,7 +4667,7 @@ export type createExternalCampaignResponse =
 	createExternalCampaignResponseSuccess;
 
 export const getCreateExternalCampaignUrl = () => {
-	return `https://messaging.twilio.com/v1/Services/PreregisteredUsa2p`;
+	return "https://messaging.twilio.com/v1/Services/PreregisteredUsa2p";
 };
 
 export const createExternalCampaign = async (
@@ -4675,14 +4675,14 @@ export const createExternalCampaign = async (
 	options?: RequestInit,
 ): Promise<createExternalCampaignResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`CampaignId`, createExternalCampaignBody.CampaignId);
+	formUrlEncoded.append("CampaignId", createExternalCampaignBody.CampaignId);
 	formUrlEncoded.append(
-		`MessagingServiceSid`,
+		"MessagingServiceSid",
 		createExternalCampaignBody.MessagingServiceSid,
 	);
 	if (createExternalCampaignBody.CnpMigration !== undefined) {
 		formUrlEncoded.append(
-			`CnpMigration`,
+			"CnpMigration",
 			createExternalCampaignBody.CnpMigration.toString(),
 		);
 	}
@@ -4895,7 +4895,7 @@ export const useCreateLinkshorteningMessagingService = <
 };
 
 export type deleteLinkshorteningMessagingServiceResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -5307,7 +5307,7 @@ export const createPhoneNumber = async (
 	options?: RequestInit,
 ): Promise<createPhoneNumberResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`PhoneNumberSid`, createPhoneNumberBody.PhoneNumberSid);
+	formUrlEncoded.append("PhoneNumberSid", createPhoneNumberBody.PhoneNumberSid);
 
 	const res = await fetch(getCreatePhoneNumberUrl(serviceSid), {
 		...options,
@@ -5612,7 +5612,7 @@ export function useListPhoneNumber<
 }
 
 export type deletePhoneNumberResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -6039,7 +6039,7 @@ export type createServiceResponseSuccess = createServiceResponse201 & {
 export type createServiceResponse = createServiceResponseSuccess;
 
 export const getCreateServiceUrl = () => {
-	return `https://messaging.twilio.com/v1/Services`;
+	return "https://messaging.twilio.com/v1/Services";
 };
 
 export const createService = async (
@@ -6047,79 +6047,79 @@ export const createService = async (
 	options?: RequestInit,
 ): Promise<createServiceResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`FriendlyName`, createServiceBody.FriendlyName);
+	formUrlEncoded.append("FriendlyName", createServiceBody.FriendlyName);
 	if (createServiceBody.InboundRequestUrl !== undefined) {
 		formUrlEncoded.append(
-			`InboundRequestUrl`,
+			"InboundRequestUrl",
 			createServiceBody.InboundRequestUrl,
 		);
 	}
 	if (createServiceBody.InboundMethod !== undefined) {
-		formUrlEncoded.append(`InboundMethod`, createServiceBody.InboundMethod);
+		formUrlEncoded.append("InboundMethod", createServiceBody.InboundMethod);
 	}
 	if (createServiceBody.FallbackUrl !== undefined) {
-		formUrlEncoded.append(`FallbackUrl`, createServiceBody.FallbackUrl);
+		formUrlEncoded.append("FallbackUrl", createServiceBody.FallbackUrl);
 	}
 	if (createServiceBody.FallbackMethod !== undefined) {
-		formUrlEncoded.append(`FallbackMethod`, createServiceBody.FallbackMethod);
+		formUrlEncoded.append("FallbackMethod", createServiceBody.FallbackMethod);
 	}
 	if (createServiceBody.StatusCallback !== undefined) {
-		formUrlEncoded.append(`StatusCallback`, createServiceBody.StatusCallback);
+		formUrlEncoded.append("StatusCallback", createServiceBody.StatusCallback);
 	}
 	if (createServiceBody.StickySender !== undefined) {
 		formUrlEncoded.append(
-			`StickySender`,
+			"StickySender",
 			createServiceBody.StickySender.toString(),
 		);
 	}
 	if (createServiceBody.MmsConverter !== undefined) {
 		formUrlEncoded.append(
-			`MmsConverter`,
+			"MmsConverter",
 			createServiceBody.MmsConverter.toString(),
 		);
 	}
 	if (createServiceBody.SmartEncoding !== undefined) {
 		formUrlEncoded.append(
-			`SmartEncoding`,
+			"SmartEncoding",
 			createServiceBody.SmartEncoding.toString(),
 		);
 	}
 	if (createServiceBody.ScanMessageContent !== undefined) {
 		formUrlEncoded.append(
-			`ScanMessageContent`,
+			"ScanMessageContent",
 			createServiceBody.ScanMessageContent,
 		);
 	}
 	if (createServiceBody.FallbackToLongCode !== undefined) {
 		formUrlEncoded.append(
-			`FallbackToLongCode`,
+			"FallbackToLongCode",
 			createServiceBody.FallbackToLongCode.toString(),
 		);
 	}
 	if (createServiceBody.AreaCodeGeomatch !== undefined) {
 		formUrlEncoded.append(
-			`AreaCodeGeomatch`,
+			"AreaCodeGeomatch",
 			createServiceBody.AreaCodeGeomatch.toString(),
 		);
 	}
 	if (createServiceBody.ValidityPeriod !== undefined) {
 		formUrlEncoded.append(
-			`ValidityPeriod`,
+			"ValidityPeriod",
 			createServiceBody.ValidityPeriod.toString(),
 		);
 	}
 	if (createServiceBody.SynchronousValidation !== undefined) {
 		formUrlEncoded.append(
-			`SynchronousValidation`,
+			"SynchronousValidation",
 			createServiceBody.SynchronousValidation.toString(),
 		);
 	}
 	if (createServiceBody.Usecase !== undefined) {
-		formUrlEncoded.append(`Usecase`, createServiceBody.Usecase);
+		formUrlEncoded.append("Usecase", createServiceBody.Usecase);
 	}
 	if (createServiceBody.UseInboundWebhookOnNumber !== undefined) {
 		formUrlEncoded.append(
-			`UseInboundWebhookOnNumber`,
+			"UseInboundWebhookOnNumber",
 			createServiceBody.UseInboundWebhookOnNumber.toString(),
 		);
 	}
@@ -6234,7 +6234,7 @@ export const getListServiceUrl = (params?: ListServiceParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://messaging.twilio.com/v1/Services?${stringifiedParams}`
-		: `https://messaging.twilio.com/v1/Services`;
+		: "https://messaging.twilio.com/v1/Services";
 };
 
 export const listService = async (
@@ -6258,7 +6258,7 @@ export const listService = async (
 
 export const getListServiceQueryKey = (params?: ListServiceParams) => {
 	return [
-		`https://messaging.twilio.com/v1/Services`,
+		"https://messaging.twilio.com/v1/Services",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -6406,80 +6406,80 @@ export const updateService = async (
 ): Promise<updateServiceResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, updateServiceBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", updateServiceBody.FriendlyName);
 	}
 	if (updateServiceBody.InboundRequestUrl !== undefined) {
 		formUrlEncoded.append(
-			`InboundRequestUrl`,
+			"InboundRequestUrl",
 			updateServiceBody.InboundRequestUrl,
 		);
 	}
 	if (updateServiceBody.InboundMethod !== undefined) {
-		formUrlEncoded.append(`InboundMethod`, updateServiceBody.InboundMethod);
+		formUrlEncoded.append("InboundMethod", updateServiceBody.InboundMethod);
 	}
 	if (updateServiceBody.FallbackUrl !== undefined) {
-		formUrlEncoded.append(`FallbackUrl`, updateServiceBody.FallbackUrl);
+		formUrlEncoded.append("FallbackUrl", updateServiceBody.FallbackUrl);
 	}
 	if (updateServiceBody.FallbackMethod !== undefined) {
-		formUrlEncoded.append(`FallbackMethod`, updateServiceBody.FallbackMethod);
+		formUrlEncoded.append("FallbackMethod", updateServiceBody.FallbackMethod);
 	}
 	if (updateServiceBody.StatusCallback !== undefined) {
-		formUrlEncoded.append(`StatusCallback`, updateServiceBody.StatusCallback);
+		formUrlEncoded.append("StatusCallback", updateServiceBody.StatusCallback);
 	}
 	if (updateServiceBody.StickySender !== undefined) {
 		formUrlEncoded.append(
-			`StickySender`,
+			"StickySender",
 			updateServiceBody.StickySender.toString(),
 		);
 	}
 	if (updateServiceBody.MmsConverter !== undefined) {
 		formUrlEncoded.append(
-			`MmsConverter`,
+			"MmsConverter",
 			updateServiceBody.MmsConverter.toString(),
 		);
 	}
 	if (updateServiceBody.SmartEncoding !== undefined) {
 		formUrlEncoded.append(
-			`SmartEncoding`,
+			"SmartEncoding",
 			updateServiceBody.SmartEncoding.toString(),
 		);
 	}
 	if (updateServiceBody.ScanMessageContent !== undefined) {
 		formUrlEncoded.append(
-			`ScanMessageContent`,
+			"ScanMessageContent",
 			updateServiceBody.ScanMessageContent,
 		);
 	}
 	if (updateServiceBody.FallbackToLongCode !== undefined) {
 		formUrlEncoded.append(
-			`FallbackToLongCode`,
+			"FallbackToLongCode",
 			updateServiceBody.FallbackToLongCode.toString(),
 		);
 	}
 	if (updateServiceBody.AreaCodeGeomatch !== undefined) {
 		formUrlEncoded.append(
-			`AreaCodeGeomatch`,
+			"AreaCodeGeomatch",
 			updateServiceBody.AreaCodeGeomatch.toString(),
 		);
 	}
 	if (updateServiceBody.ValidityPeriod !== undefined) {
 		formUrlEncoded.append(
-			`ValidityPeriod`,
+			"ValidityPeriod",
 			updateServiceBody.ValidityPeriod.toString(),
 		);
 	}
 	if (updateServiceBody.SynchronousValidation !== undefined) {
 		formUrlEncoded.append(
-			`SynchronousValidation`,
+			"SynchronousValidation",
 			updateServiceBody.SynchronousValidation.toString(),
 		);
 	}
 	if (updateServiceBody.Usecase !== undefined) {
-		formUrlEncoded.append(`Usecase`, updateServiceBody.Usecase);
+		formUrlEncoded.append("Usecase", updateServiceBody.Usecase);
 	}
 	if (updateServiceBody.UseInboundWebhookOnNumber !== undefined) {
 		formUrlEncoded.append(
-			`UseInboundWebhookOnNumber`,
+			"UseInboundWebhookOnNumber",
 			updateServiceBody.UseInboundWebhookOnNumber.toString(),
 		);
 	}
@@ -6735,7 +6735,7 @@ export function useFetchService<
 }
 
 export type deleteServiceResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -6863,7 +6863,7 @@ export const createShortCode = async (
 	options?: RequestInit,
 ): Promise<createShortCodeResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`ShortCodeSid`, createShortCodeBody.ShortCodeSid);
+	formUrlEncoded.append("ShortCodeSid", createShortCodeBody.ShortCodeSid);
 
 	const res = await fetch(getCreateShortCodeUrl(serviceSid), {
 		...options,
@@ -7148,7 +7148,7 @@ export function useListShortCode<
 }
 
 export type deleteShortCodeResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -7652,71 +7652,71 @@ export const updateTollfreeVerification = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateTollfreeVerificationBody.BusinessName !== undefined) {
 		formUrlEncoded.append(
-			`BusinessName`,
+			"BusinessName",
 			updateTollfreeVerificationBody.BusinessName,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessWebsite !== undefined) {
 		formUrlEncoded.append(
-			`BusinessWebsite`,
+			"BusinessWebsite",
 			updateTollfreeVerificationBody.BusinessWebsite,
 		);
 	}
 	if (updateTollfreeVerificationBody.NotificationEmail !== undefined) {
 		formUrlEncoded.append(
-			`NotificationEmail`,
+			"NotificationEmail",
 			updateTollfreeVerificationBody.NotificationEmail,
 		);
 	}
 	if (updateTollfreeVerificationBody.UseCaseCategories !== undefined) {
 		updateTollfreeVerificationBody.UseCaseCategories.forEach((value) =>
-			formUrlEncoded.append(`UseCaseCategories`, value),
+			formUrlEncoded.append("UseCaseCategories", value),
 		);
 	}
 	if (updateTollfreeVerificationBody.UseCaseSummary !== undefined) {
 		formUrlEncoded.append(
-			`UseCaseSummary`,
+			"UseCaseSummary",
 			updateTollfreeVerificationBody.UseCaseSummary,
 		);
 	}
 	if (updateTollfreeVerificationBody.ProductionMessageSample !== undefined) {
 		formUrlEncoded.append(
-			`ProductionMessageSample`,
+			"ProductionMessageSample",
 			updateTollfreeVerificationBody.ProductionMessageSample,
 		);
 	}
 	if (updateTollfreeVerificationBody.OptInImageUrls !== undefined) {
 		updateTollfreeVerificationBody.OptInImageUrls.forEach((value) =>
-			formUrlEncoded.append(`OptInImageUrls`, value),
+			formUrlEncoded.append("OptInImageUrls", value),
 		);
 	}
 	if (updateTollfreeVerificationBody.OptInType !== undefined) {
 		formUrlEncoded.append(
-			`OptInType`,
+			"OptInType",
 			updateTollfreeVerificationBody.OptInType,
 		);
 	}
 	if (updateTollfreeVerificationBody.MessageVolume !== undefined) {
 		formUrlEncoded.append(
-			`MessageVolume`,
+			"MessageVolume",
 			updateTollfreeVerificationBody.MessageVolume,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessStreetAddress !== undefined) {
 		formUrlEncoded.append(
-			`BusinessStreetAddress`,
+			"BusinessStreetAddress",
 			updateTollfreeVerificationBody.BusinessStreetAddress,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessStreetAddress2 !== undefined) {
 		formUrlEncoded.append(
-			`BusinessStreetAddress2`,
+			"BusinessStreetAddress2",
 			updateTollfreeVerificationBody.BusinessStreetAddress2,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessCity !== undefined) {
 		formUrlEncoded.append(
-			`BusinessCity`,
+			"BusinessCity",
 			updateTollfreeVerificationBody.BusinessCity,
 		);
 	}
@@ -7724,61 +7724,61 @@ export const updateTollfreeVerification = async (
 		updateTollfreeVerificationBody.BusinessStateProvinceRegion !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessStateProvinceRegion`,
+			"BusinessStateProvinceRegion",
 			updateTollfreeVerificationBody.BusinessStateProvinceRegion,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessPostalCode !== undefined) {
 		formUrlEncoded.append(
-			`BusinessPostalCode`,
+			"BusinessPostalCode",
 			updateTollfreeVerificationBody.BusinessPostalCode,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessCountry !== undefined) {
 		formUrlEncoded.append(
-			`BusinessCountry`,
+			"BusinessCountry",
 			updateTollfreeVerificationBody.BusinessCountry,
 		);
 	}
 	if (updateTollfreeVerificationBody.AdditionalInformation !== undefined) {
 		formUrlEncoded.append(
-			`AdditionalInformation`,
+			"AdditionalInformation",
 			updateTollfreeVerificationBody.AdditionalInformation,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessContactFirstName !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactFirstName`,
+			"BusinessContactFirstName",
 			updateTollfreeVerificationBody.BusinessContactFirstName,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessContactLastName !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactLastName`,
+			"BusinessContactLastName",
 			updateTollfreeVerificationBody.BusinessContactLastName,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessContactEmail !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactEmail`,
+			"BusinessContactEmail",
 			updateTollfreeVerificationBody.BusinessContactEmail,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessContactPhone !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactPhone`,
+			"BusinessContactPhone",
 			updateTollfreeVerificationBody.BusinessContactPhone,
 		);
 	}
 	if (updateTollfreeVerificationBody.EditReason !== undefined) {
 		formUrlEncoded.append(
-			`EditReason`,
+			"EditReason",
 			updateTollfreeVerificationBody.EditReason,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessRegistrationNumber !== undefined) {
 		formUrlEncoded.append(
-			`BusinessRegistrationNumber`,
+			"BusinessRegistrationNumber",
 			updateTollfreeVerificationBody.BusinessRegistrationNumber,
 		);
 	}
@@ -7786,7 +7786,7 @@ export const updateTollfreeVerification = async (
 		updateTollfreeVerificationBody.BusinessRegistrationAuthority !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessRegistrationAuthority`,
+			"BusinessRegistrationAuthority",
 			updateTollfreeVerificationBody.BusinessRegistrationAuthority,
 		);
 	}
@@ -7794,13 +7794,13 @@ export const updateTollfreeVerification = async (
 		updateTollfreeVerificationBody.BusinessRegistrationCountry !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessRegistrationCountry`,
+			"BusinessRegistrationCountry",
 			updateTollfreeVerificationBody.BusinessRegistrationCountry,
 		);
 	}
 	if (updateTollfreeVerificationBody.BusinessType !== undefined) {
 		formUrlEncoded.append(
-			`BusinessType`,
+			"BusinessType",
 			updateTollfreeVerificationBody.BusinessType,
 		);
 	}
@@ -7808,49 +7808,49 @@ export const updateTollfreeVerification = async (
 		updateTollfreeVerificationBody.BusinessRegistrationPhoneNumber !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessRegistrationPhoneNumber`,
+			"BusinessRegistrationPhoneNumber",
 			updateTollfreeVerificationBody.BusinessRegistrationPhoneNumber,
 		);
 	}
 	if (updateTollfreeVerificationBody.DoingBusinessAs !== undefined) {
 		formUrlEncoded.append(
-			`DoingBusinessAs`,
+			"DoingBusinessAs",
 			updateTollfreeVerificationBody.DoingBusinessAs,
 		);
 	}
 	if (updateTollfreeVerificationBody.OptInConfirmationMessage !== undefined) {
 		formUrlEncoded.append(
-			`OptInConfirmationMessage`,
+			"OptInConfirmationMessage",
 			updateTollfreeVerificationBody.OptInConfirmationMessage,
 		);
 	}
 	if (updateTollfreeVerificationBody.HelpMessageSample !== undefined) {
 		formUrlEncoded.append(
-			`HelpMessageSample`,
+			"HelpMessageSample",
 			updateTollfreeVerificationBody.HelpMessageSample,
 		);
 	}
 	if (updateTollfreeVerificationBody.PrivacyPolicyUrl !== undefined) {
 		formUrlEncoded.append(
-			`PrivacyPolicyUrl`,
+			"PrivacyPolicyUrl",
 			updateTollfreeVerificationBody.PrivacyPolicyUrl,
 		);
 	}
 	if (updateTollfreeVerificationBody.TermsAndConditionsUrl !== undefined) {
 		formUrlEncoded.append(
-			`TermsAndConditionsUrl`,
+			"TermsAndConditionsUrl",
 			updateTollfreeVerificationBody.TermsAndConditionsUrl,
 		);
 	}
 	if (updateTollfreeVerificationBody.AgeGatedContent !== undefined) {
 		formUrlEncoded.append(
-			`AgeGatedContent`,
+			"AgeGatedContent",
 			updateTollfreeVerificationBody.AgeGatedContent.toString(),
 		);
 	}
 	if (updateTollfreeVerificationBody.OptInKeywords !== undefined) {
 		updateTollfreeVerificationBody.OptInKeywords.forEach((value) =>
-			formUrlEncoded.append(`OptInKeywords`, value),
+			formUrlEncoded.append("OptInKeywords", value),
 		);
 	}
 
@@ -7954,7 +7954,7 @@ export const useUpdateTollfreeVerification = <
  * @summary Delete a tollfree verification
  */
 export type deleteTollfreeVerificationResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -8104,7 +8104,7 @@ export const getListTollfreeVerificationUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://messaging.twilio.com/v1/Tollfree/Verifications?${stringifiedParams}`
-		: `https://messaging.twilio.com/v1/Tollfree/Verifications`;
+		: "https://messaging.twilio.com/v1/Tollfree/Verifications";
 };
 
 export const listTollfreeVerification = async (
@@ -8132,7 +8132,7 @@ export const getListTollfreeVerificationQueryKey = (
 	params?: ListTollfreeVerificationParams,
 ) => {
 	return [
-		`https://messaging.twilio.com/v1/Tollfree/Verifications`,
+		"https://messaging.twilio.com/v1/Tollfree/Verifications",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -8301,7 +8301,7 @@ export type createTollfreeVerificationResponse =
 	createTollfreeVerificationResponseSuccess;
 
 export const getCreateTollfreeVerificationUrl = () => {
-	return `https://messaging.twilio.com/v1/Tollfree/Verifications`;
+	return "https://messaging.twilio.com/v1/Tollfree/Verifications";
 };
 
 export const createTollfreeVerification = async (
@@ -8310,61 +8310,61 @@ export const createTollfreeVerification = async (
 ): Promise<createTollfreeVerificationResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	formUrlEncoded.append(
-		`BusinessName`,
+		"BusinessName",
 		createTollfreeVerificationBody.BusinessName,
 	);
 	formUrlEncoded.append(
-		`BusinessWebsite`,
+		"BusinessWebsite",
 		createTollfreeVerificationBody.BusinessWebsite,
 	);
 	formUrlEncoded.append(
-		`NotificationEmail`,
+		"NotificationEmail",
 		createTollfreeVerificationBody.NotificationEmail,
 	);
 	createTollfreeVerificationBody.UseCaseCategories.forEach((value) =>
-		formUrlEncoded.append(`UseCaseCategories`, value),
+		formUrlEncoded.append("UseCaseCategories", value),
 	);
 	formUrlEncoded.append(
-		`UseCaseSummary`,
+		"UseCaseSummary",
 		createTollfreeVerificationBody.UseCaseSummary,
 	);
 	formUrlEncoded.append(
-		`ProductionMessageSample`,
+		"ProductionMessageSample",
 		createTollfreeVerificationBody.ProductionMessageSample,
 	);
 	createTollfreeVerificationBody.OptInImageUrls.forEach((value) =>
-		formUrlEncoded.append(`OptInImageUrls`, value),
+		formUrlEncoded.append("OptInImageUrls", value),
 	);
-	formUrlEncoded.append(`OptInType`, createTollfreeVerificationBody.OptInType);
+	formUrlEncoded.append("OptInType", createTollfreeVerificationBody.OptInType);
 	formUrlEncoded.append(
-		`MessageVolume`,
+		"MessageVolume",
 		createTollfreeVerificationBody.MessageVolume,
 	);
 	formUrlEncoded.append(
-		`TollfreePhoneNumberSid`,
+		"TollfreePhoneNumberSid",
 		createTollfreeVerificationBody.TollfreePhoneNumberSid,
 	);
 	if (createTollfreeVerificationBody.CustomerProfileSid !== undefined) {
 		formUrlEncoded.append(
-			`CustomerProfileSid`,
+			"CustomerProfileSid",
 			createTollfreeVerificationBody.CustomerProfileSid,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessStreetAddress !== undefined) {
 		formUrlEncoded.append(
-			`BusinessStreetAddress`,
+			"BusinessStreetAddress",
 			createTollfreeVerificationBody.BusinessStreetAddress,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessStreetAddress2 !== undefined) {
 		formUrlEncoded.append(
-			`BusinessStreetAddress2`,
+			"BusinessStreetAddress2",
 			createTollfreeVerificationBody.BusinessStreetAddress2,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessCity !== undefined) {
 		formUrlEncoded.append(
-			`BusinessCity`,
+			"BusinessCity",
 			createTollfreeVerificationBody.BusinessCity,
 		);
 	}
@@ -8372,61 +8372,61 @@ export const createTollfreeVerification = async (
 		createTollfreeVerificationBody.BusinessStateProvinceRegion !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessStateProvinceRegion`,
+			"BusinessStateProvinceRegion",
 			createTollfreeVerificationBody.BusinessStateProvinceRegion,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessPostalCode !== undefined) {
 		formUrlEncoded.append(
-			`BusinessPostalCode`,
+			"BusinessPostalCode",
 			createTollfreeVerificationBody.BusinessPostalCode,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessCountry !== undefined) {
 		formUrlEncoded.append(
-			`BusinessCountry`,
+			"BusinessCountry",
 			createTollfreeVerificationBody.BusinessCountry,
 		);
 	}
 	if (createTollfreeVerificationBody.AdditionalInformation !== undefined) {
 		formUrlEncoded.append(
-			`AdditionalInformation`,
+			"AdditionalInformation",
 			createTollfreeVerificationBody.AdditionalInformation,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessContactFirstName !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactFirstName`,
+			"BusinessContactFirstName",
 			createTollfreeVerificationBody.BusinessContactFirstName,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessContactLastName !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactLastName`,
+			"BusinessContactLastName",
 			createTollfreeVerificationBody.BusinessContactLastName,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessContactEmail !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactEmail`,
+			"BusinessContactEmail",
 			createTollfreeVerificationBody.BusinessContactEmail,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessContactPhone !== undefined) {
 		formUrlEncoded.append(
-			`BusinessContactPhone`,
+			"BusinessContactPhone",
 			createTollfreeVerificationBody.BusinessContactPhone,
 		);
 	}
 	if (createTollfreeVerificationBody.ExternalReferenceId !== undefined) {
 		formUrlEncoded.append(
-			`ExternalReferenceId`,
+			"ExternalReferenceId",
 			createTollfreeVerificationBody.ExternalReferenceId,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessRegistrationNumber !== undefined) {
 		formUrlEncoded.append(
-			`BusinessRegistrationNumber`,
+			"BusinessRegistrationNumber",
 			createTollfreeVerificationBody.BusinessRegistrationNumber,
 		);
 	}
@@ -8434,7 +8434,7 @@ export const createTollfreeVerification = async (
 		createTollfreeVerificationBody.BusinessRegistrationAuthority !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessRegistrationAuthority`,
+			"BusinessRegistrationAuthority",
 			createTollfreeVerificationBody.BusinessRegistrationAuthority,
 		);
 	}
@@ -8442,13 +8442,13 @@ export const createTollfreeVerification = async (
 		createTollfreeVerificationBody.BusinessRegistrationCountry !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessRegistrationCountry`,
+			"BusinessRegistrationCountry",
 			createTollfreeVerificationBody.BusinessRegistrationCountry,
 		);
 	}
 	if (createTollfreeVerificationBody.BusinessType !== undefined) {
 		formUrlEncoded.append(
-			`BusinessType`,
+			"BusinessType",
 			createTollfreeVerificationBody.BusinessType,
 		);
 	}
@@ -8456,49 +8456,49 @@ export const createTollfreeVerification = async (
 		createTollfreeVerificationBody.BusinessRegistrationPhoneNumber !== undefined
 	) {
 		formUrlEncoded.append(
-			`BusinessRegistrationPhoneNumber`,
+			"BusinessRegistrationPhoneNumber",
 			createTollfreeVerificationBody.BusinessRegistrationPhoneNumber,
 		);
 	}
 	if (createTollfreeVerificationBody.DoingBusinessAs !== undefined) {
 		formUrlEncoded.append(
-			`DoingBusinessAs`,
+			"DoingBusinessAs",
 			createTollfreeVerificationBody.DoingBusinessAs,
 		);
 	}
 	if (createTollfreeVerificationBody.OptInConfirmationMessage !== undefined) {
 		formUrlEncoded.append(
-			`OptInConfirmationMessage`,
+			"OptInConfirmationMessage",
 			createTollfreeVerificationBody.OptInConfirmationMessage,
 		);
 	}
 	if (createTollfreeVerificationBody.HelpMessageSample !== undefined) {
 		formUrlEncoded.append(
-			`HelpMessageSample`,
+			"HelpMessageSample",
 			createTollfreeVerificationBody.HelpMessageSample,
 		);
 	}
 	if (createTollfreeVerificationBody.PrivacyPolicyUrl !== undefined) {
 		formUrlEncoded.append(
-			`PrivacyPolicyUrl`,
+			"PrivacyPolicyUrl",
 			createTollfreeVerificationBody.PrivacyPolicyUrl,
 		);
 	}
 	if (createTollfreeVerificationBody.TermsAndConditionsUrl !== undefined) {
 		formUrlEncoded.append(
-			`TermsAndConditionsUrl`,
+			"TermsAndConditionsUrl",
 			createTollfreeVerificationBody.TermsAndConditionsUrl,
 		);
 	}
 	if (createTollfreeVerificationBody.AgeGatedContent !== undefined) {
 		formUrlEncoded.append(
-			`AgeGatedContent`,
+			"AgeGatedContent",
 			createTollfreeVerificationBody.AgeGatedContent.toString(),
 		);
 	}
 	if (createTollfreeVerificationBody.OptInKeywords !== undefined) {
 		createTollfreeVerificationBody.OptInKeywords.forEach((value) =>
-			formUrlEncoded.append(`OptInKeywords`, value),
+			formUrlEncoded.append("OptInKeywords", value),
 		);
 	}
 
@@ -8620,68 +8620,68 @@ export const createUsAppToPerson = async (
 ): Promise<createUsAppToPersonResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	formUrlEncoded.append(
-		`BrandRegistrationSid`,
+		"BrandRegistrationSid",
 		createUsAppToPersonBody.BrandRegistrationSid,
 	);
-	formUrlEncoded.append(`Description`, createUsAppToPersonBody.Description);
-	formUrlEncoded.append(`MessageFlow`, createUsAppToPersonBody.MessageFlow);
+	formUrlEncoded.append("Description", createUsAppToPersonBody.Description);
+	formUrlEncoded.append("MessageFlow", createUsAppToPersonBody.MessageFlow);
 	createUsAppToPersonBody.MessageSamples.forEach((value) =>
-		formUrlEncoded.append(`MessageSamples`, value),
+		formUrlEncoded.append("MessageSamples", value),
 	);
 	formUrlEncoded.append(
-		`UsAppToPersonUsecase`,
+		"UsAppToPersonUsecase",
 		createUsAppToPersonBody.UsAppToPersonUsecase,
 	);
 	formUrlEncoded.append(
-		`HasEmbeddedLinks`,
+		"HasEmbeddedLinks",
 		createUsAppToPersonBody.HasEmbeddedLinks.toString(),
 	);
 	formUrlEncoded.append(
-		`HasEmbeddedPhone`,
+		"HasEmbeddedPhone",
 		createUsAppToPersonBody.HasEmbeddedPhone.toString(),
 	);
 	if (createUsAppToPersonBody.OptInMessage !== undefined) {
-		formUrlEncoded.append(`OptInMessage`, createUsAppToPersonBody.OptInMessage);
+		formUrlEncoded.append("OptInMessage", createUsAppToPersonBody.OptInMessage);
 	}
 	if (createUsAppToPersonBody.OptOutMessage !== undefined) {
 		formUrlEncoded.append(
-			`OptOutMessage`,
+			"OptOutMessage",
 			createUsAppToPersonBody.OptOutMessage,
 		);
 	}
 	if (createUsAppToPersonBody.HelpMessage !== undefined) {
-		formUrlEncoded.append(`HelpMessage`, createUsAppToPersonBody.HelpMessage);
+		formUrlEncoded.append("HelpMessage", createUsAppToPersonBody.HelpMessage);
 	}
 	if (createUsAppToPersonBody.OptInKeywords !== undefined) {
 		createUsAppToPersonBody.OptInKeywords.forEach((value) =>
-			formUrlEncoded.append(`OptInKeywords`, value),
+			formUrlEncoded.append("OptInKeywords", value),
 		);
 	}
 	if (createUsAppToPersonBody.OptOutKeywords !== undefined) {
 		createUsAppToPersonBody.OptOutKeywords.forEach((value) =>
-			formUrlEncoded.append(`OptOutKeywords`, value),
+			formUrlEncoded.append("OptOutKeywords", value),
 		);
 	}
 	if (createUsAppToPersonBody.HelpKeywords !== undefined) {
 		createUsAppToPersonBody.HelpKeywords.forEach((value) =>
-			formUrlEncoded.append(`HelpKeywords`, value),
+			formUrlEncoded.append("HelpKeywords", value),
 		);
 	}
 	if (createUsAppToPersonBody.SubscriberOptIn !== undefined) {
 		formUrlEncoded.append(
-			`SubscriberOptIn`,
+			"SubscriberOptIn",
 			createUsAppToPersonBody.SubscriberOptIn.toString(),
 		);
 	}
 	if (createUsAppToPersonBody.AgeGated !== undefined) {
 		formUrlEncoded.append(
-			`AgeGated`,
+			"AgeGated",
 			createUsAppToPersonBody.AgeGated.toString(),
 		);
 	}
 	if (createUsAppToPersonBody.DirectLending !== undefined) {
 		formUrlEncoded.append(
-			`DirectLending`,
+			"DirectLending",
 			createUsAppToPersonBody.DirectLending.toString(),
 		);
 	}
@@ -8996,7 +8996,7 @@ export function useListUsAppToPerson<
 }
 
 export type deleteUsAppToPersonResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -9335,24 +9335,24 @@ export const updateUsAppToPerson = async (
 ): Promise<updateUsAppToPersonResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	formUrlEncoded.append(
-		`HasEmbeddedLinks`,
+		"HasEmbeddedLinks",
 		updateUsAppToPersonBody.HasEmbeddedLinks.toString(),
 	);
 	formUrlEncoded.append(
-		`HasEmbeddedPhone`,
+		"HasEmbeddedPhone",
 		updateUsAppToPersonBody.HasEmbeddedPhone.toString(),
 	);
 	updateUsAppToPersonBody.MessageSamples.forEach((value) =>
-		formUrlEncoded.append(`MessageSamples`, value),
+		formUrlEncoded.append("MessageSamples", value),
 	);
-	formUrlEncoded.append(`MessageFlow`, updateUsAppToPersonBody.MessageFlow);
-	formUrlEncoded.append(`Description`, updateUsAppToPersonBody.Description);
+	formUrlEncoded.append("MessageFlow", updateUsAppToPersonBody.MessageFlow);
+	formUrlEncoded.append("Description", updateUsAppToPersonBody.Description);
 	formUrlEncoded.append(
-		`AgeGated`,
+		"AgeGated",
 		updateUsAppToPersonBody.AgeGated.toString(),
 	);
 	formUrlEncoded.append(
-		`DirectLending`,
+		"DirectLending",
 		updateUsAppToPersonBody.DirectLending.toString(),
 	);
 
@@ -9688,7 +9688,7 @@ export type fetchUsecaseResponseSuccess = fetchUsecaseResponse200 & {
 export type fetchUsecaseResponse = fetchUsecaseResponseSuccess;
 
 export const getFetchUsecaseUrl = () => {
-	return `https://messaging.twilio.com/v1/Services/Usecases`;
+	return "https://messaging.twilio.com/v1/Services/Usecases";
 };
 
 export const fetchUsecase = async (
@@ -9710,7 +9710,7 @@ export const fetchUsecase = async (
 };
 
 export const getFetchUsecaseQueryKey = () => {
-	return [`https://messaging.twilio.com/v1/Services/Usecases`] as const;
+	return ["https://messaging.twilio.com/v1/Services/Usecases"] as const;
 };
 
 export const getFetchUsecaseQueryOptions = <

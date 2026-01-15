@@ -1,10 +1,10 @@
 // via https://github.com/vercel/ai/blob/main/examples/next-openai/app/api/use-chat-human-in-the-loop/utils.ts
 
 import type {
+	CoreMessage,
+	ToolSet,
 	UIMessage,
 	UIMessageStreamWriter,
-	ToolSet,
-	CoreMessage,
 } from "ai";
 import { convertToModelMessages, isToolUIPart } from "ai";
 import { APPROVAL } from "./shared";

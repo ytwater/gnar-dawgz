@@ -1,6 +1,6 @@
-import { tool } from "ai";
-import { scheduleSchema } from "agents/schedule";
 import { getCurrentAgent } from "agents";
+import { scheduleSchema } from "agents/schedule";
+import { tool } from "ai";
 import type { Chat } from "../chat-agent";
 
 export const scheduleTask = tool({

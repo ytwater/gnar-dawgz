@@ -25,11 +25,11 @@ function formatPhoneDisplay(value: string): string {
 	// Format: 555-555-5555
 	if (limited.length <= 3) {
 		return limited;
-	} else if (limited.length <= 6) {
-		return `${limited.slice(0, 3)}-${limited.slice(3)}`;
-	} else {
-		return `${limited.slice(0, 3)}-${limited.slice(3, 6)}-${limited.slice(6)}`;
 	}
+	if (limited.length <= 6) {
+		return `${limited.slice(0, 3)}-${limited.slice(3)}`;
+	}
+	return `${limited.slice(0, 3)}-${limited.slice(3, 6)}-${limited.slice(6)}`;
 }
 
 /**
