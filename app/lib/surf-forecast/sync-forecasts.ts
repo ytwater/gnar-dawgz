@@ -36,7 +36,7 @@ export async function syncSurfForecasts(
 		let syncSuccess = false;
 
 		// 1. Fetch from Surfline
-		if (spot.surflineId) {
+		if (env.ENABLE_SURFLINE !== "false" && spot.surflineId) {
 			try {
 				const surflineData = await fetchSurflineForecast(spot.surflineId);
 
@@ -146,10 +146,13 @@ export async function syncSurfForecasts(
 		}
 
 		// 2. Fetch from Swellcloud
-		try {
-			const swellCloudApiKey = env.SWELL_CLOUD_API_KEY;
-			if (!swellCloudApiKey) {
-				console.error(`SWELL_CLOUD_API_KEY is not set for spot ${spot.name}`);
+		if (env.ENABLE_SWELL_CLOUD !== "false") {
+			try {
+				const swellCloudApiKey = env.SWELL_CLOUD_API_KEY;
+				if (!swellCloudApiKey) {
+					console.error(
+						`SWELL_CLOUD_API_KEY is not set for spot ${spot.name}`,
+					);
 				throw new Error("SWELL_CLOUD_API_KEY is not set");
 			}
 
@@ -241,6 +244,7 @@ export async function syncSurfForecasts(
 				console.error(`Error details: ${error.message}`, error.stack);
 			}
 		}
+	}
 
 		// 3. Fetch from OpenMeteo (Weather)
 		try {
