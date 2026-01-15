@@ -376,7 +376,7 @@ async function dropRemoteDatabase(environment: "staging" | "production") {
 		);
 		const finalDropOrder = [...orderedTables, ...remainingTables];
 
-		console.log(`📋 Dropping tables in dependency order:`);
+		console.log("📋 Dropping tables in dependency order:");
 		finalDropOrder.forEach((tableName, index) => {
 			console.log(`   ${index + 1}. ${tableName}`);
 		});

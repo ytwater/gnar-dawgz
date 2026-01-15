@@ -1,10 +1,10 @@
+import { getCurrentAgent } from "agents";
 /**
  * Tool to list all scheduled tasks
  * This executes automatically without requiring human confirmation
  */
 import { tool } from "ai";
 import { z } from "zod";
-import { getCurrentAgent } from "agents";
 import type { Chat } from "../chat-agent";
 
 export const getScheduledTasks = tool({

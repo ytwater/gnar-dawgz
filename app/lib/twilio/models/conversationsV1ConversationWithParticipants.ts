@@ -6,9 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { ConversationWithParticipantsEnumState } from "./conversationWithParticipantsEnumState";
-import type { ConversationsV1ConversationWithParticipantsTimers } from "./conversationsV1ConversationWithParticipantsTimers";
-import type { ConversationsV1ConversationWithParticipantsLinks } from "./conversationsV1ConversationWithParticipantsLinks";
 import type { ConversationsV1ConversationWithParticipantsBindings } from "./conversationsV1ConversationWithParticipantsBindings";
+import type { ConversationsV1ConversationWithParticipantsLinks } from "./conversationsV1ConversationWithParticipantsLinks";
+import type { ConversationsV1ConversationWithParticipantsTimers } from "./conversationsV1ConversationWithParticipantsTimers";
 
 export interface ConversationsV1ConversationWithParticipants {
 	/**

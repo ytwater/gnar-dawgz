@@ -1,8 +1,8 @@
 {
 	"version": "6",
 	"dialect": "sqlite",
-	"id": "f0f7268b-75f2-4434-a136-645a8eba343f",
-	"prevId": "772541f7-dc43-46da-9237-483e2704e829",
+	"id": "adfd3244-2414-408d-bc07-dc8b9bdf0f48",
+	"prevId": "f0f7268b-75f2-4434-a136-645a8eba343f",
 	"tables": {
 		"access_requests": {
 			"name": "access_requests",
@@ -53,6 +53,146 @@
 				}
 			},
 			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"charter": {
+			"name": "charter",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"content": {
+					"name": "content",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "(cast(unixepoch('subsecond') * 1000 as integer))"
+				},
+				"updated_by": {
+					"name": "updated_by",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"charter_updated_by_users_id_fk": {
+					"name": "charter_updated_by_users_id_fk",
+					"tableFrom": "charter",
+					"tableTo": "users",
+					"columnsFrom": ["updated_by"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"demerits": {
+			"name": "demerits",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"from_user_id": {
+					"name": "from_user_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"to_user_id": {
+					"name": "to_user_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"reason": {
+					"name": "reason",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'active'"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "(cast(unixepoch('subsecond') * 1000 as integer))"
+				},
+				"cleared_at": {
+					"name": "cleared_at",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"demerits_from_user_id_idx": {
+					"name": "demerits_from_user_id_idx",
+					"columns": ["from_user_id"],
+					"isUnique": false
+				},
+				"demerits_to_user_id_idx": {
+					"name": "demerits_to_user_id_idx",
+					"columns": ["to_user_id"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {
+				"demerits_from_user_id_users_id_fk": {
+					"name": "demerits_from_user_id_users_id_fk",
+					"tableFrom": "demerits",
+					"tableTo": "users",
+					"columnsFrom": ["from_user_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"demerits_to_user_id_users_id_fk": {
+					"name": "demerits_to_user_id_users_id_fk",
+					"tableFrom": "demerits",
+					"tableTo": "users",
+					"columnsFrom": ["to_user_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {},
 			"checkConstraints": {}

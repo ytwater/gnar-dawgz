@@ -1,4 +1,10 @@
-import { Broadcast, CaretRight, Key, Users } from "@phosphor-icons/react";
+import {
+	Broadcast,
+	CaretRight,
+	Key,
+	Scales,
+	Users,
+} from "@phosphor-icons/react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import {
@@ -50,6 +56,14 @@ const menuItems = [
 		href: "/admin/surf-spots",
 		color: "text-primary",
 		bgColor: "bg-primary/10",
+	},
+	{
+		title: "Global Charter",
+		description: "Edit the rules members must live by and manage demerits.",
+		icon: Scales,
+		href: "/admin/charter",
+		color: "text-red-600",
+		bgColor: "bg-red-50",
 	},
 ];
 

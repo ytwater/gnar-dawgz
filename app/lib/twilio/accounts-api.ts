@@ -65,7 +65,7 @@ export type updateAuthTokenPromotionResponse =
 	updateAuthTokenPromotionResponseSuccess;
 
 export const getUpdateAuthTokenPromotionUrl = () => {
-	return `https://api.twilio.com/v1/AuthTokens/Promote`;
+	return "https://api.twilio.com/v1/AuthTokens/Promote";
 };
 
 export const updateAuthTokenPromotion = async (
@@ -171,7 +171,7 @@ export type createBulkConsentsResponseSuccess =
 export type createBulkConsentsResponse = createBulkConsentsResponseSuccess;
 
 export const getCreateBulkConsentsUrl = () => {
-	return `https://api.twilio.com/v1/Consents/Bulk`;
+	return "https://api.twilio.com/v1/Consents/Bulk";
 };
 
 export const createBulkConsents = async (
@@ -180,7 +180,7 @@ export const createBulkConsents = async (
 ): Promise<createBulkConsentsResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	createBulkConsentsBody.Items.forEach((value) =>
-		formUrlEncoded.append(`Items`, value),
+		formUrlEncoded.append("Items", value),
 	);
 
 	const res = await fetch(getCreateBulkConsentsUrl(), {
@@ -282,7 +282,7 @@ export type createBulkContactsResponseSuccess =
 export type createBulkContactsResponse = createBulkContactsResponseSuccess;
 
 export const getCreateBulkContactsUrl = () => {
-	return `https://api.twilio.com/v1/Contacts/Bulk`;
+	return "https://api.twilio.com/v1/Contacts/Bulk";
 };
 
 export const createBulkContacts = async (
@@ -291,7 +291,7 @@ export const createBulkContacts = async (
 ): Promise<createBulkContactsResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	createBulkContactsBody.Items.forEach((value) =>
-		formUrlEncoded.append(`Items`, value),
+		formUrlEncoded.append("Items", value),
 	);
 
 	const res = await fetch(getCreateBulkContactsUrl(), {
@@ -408,7 +408,7 @@ export const getListCredentialAwsUrl = (params?: ListCredentialAwsParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://api.twilio.com/v1/Credentials/AWS?${stringifiedParams}`
-		: `https://api.twilio.com/v1/Credentials/AWS`;
+		: "https://api.twilio.com/v1/Credentials/AWS";
 };
 
 export const listCredentialAws = async (
@@ -434,7 +434,7 @@ export const getListCredentialAwsQueryKey = (
 	params?: ListCredentialAwsParams,
 ) => {
 	return [
-		`https://api.twilio.com/v1/Credentials/AWS`,
+		"https://api.twilio.com/v1/Credentials/AWS",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -601,7 +601,7 @@ export type createCredentialAwsResponseSuccess =
 export type createCredentialAwsResponse = createCredentialAwsResponseSuccess;
 
 export const getCreateCredentialAwsUrl = () => {
-	return `https://api.twilio.com/v1/Credentials/AWS`;
+	return "https://api.twilio.com/v1/Credentials/AWS";
 };
 
 export const createCredentialAws = async (
@@ -609,12 +609,12 @@ export const createCredentialAws = async (
 	options?: RequestInit,
 ): Promise<createCredentialAwsResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Credentials`, createCredentialAwsBody.Credentials);
+	formUrlEncoded.append("Credentials", createCredentialAwsBody.Credentials);
 	if (createCredentialAwsBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, createCredentialAwsBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", createCredentialAwsBody.FriendlyName);
 	}
 	if (createCredentialAwsBody.AccountSid !== undefined) {
-		formUrlEncoded.append(`AccountSid`, createCredentialAwsBody.AccountSid);
+		formUrlEncoded.append("AccountSid", createCredentialAwsBody.AccountSid);
 	}
 
 	const res = await fetch(getCreateCredentialAwsUrl(), {
@@ -927,7 +927,7 @@ export const updateCredentialAws = async (
 ): Promise<updateCredentialAwsResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateCredentialAwsBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, updateCredentialAwsBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", updateCredentialAwsBody.FriendlyName);
 	}
 
 	const res = await fetch(getUpdateCredentialAwsUrl(sid), {
@@ -1026,7 +1026,7 @@ export const useUpdateCredentialAws = <TError = unknown, TContext = unknown>(
  * @summary Delete a Credential from your account
  */
 export type deleteCredentialAwsResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -1163,7 +1163,7 @@ export const getListCredentialPublicKeyUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://api.twilio.com/v1/Credentials/PublicKeys?${stringifiedParams}`
-		: `https://api.twilio.com/v1/Credentials/PublicKeys`;
+		: "https://api.twilio.com/v1/Credentials/PublicKeys";
 };
 
 export const listCredentialPublicKey = async (
@@ -1191,7 +1191,7 @@ export const getListCredentialPublicKeyQueryKey = (
 	params?: ListCredentialPublicKeyParams,
 ) => {
 	return [
-		`https://api.twilio.com/v1/Credentials/PublicKeys`,
+		"https://api.twilio.com/v1/Credentials/PublicKeys",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -1360,7 +1360,7 @@ export type createCredentialPublicKeyResponse =
 	createCredentialPublicKeyResponseSuccess;
 
 export const getCreateCredentialPublicKeyUrl = () => {
-	return `https://api.twilio.com/v1/Credentials/PublicKeys`;
+	return "https://api.twilio.com/v1/Credentials/PublicKeys";
 };
 
 export const createCredentialPublicKey = async (
@@ -1368,16 +1368,16 @@ export const createCredentialPublicKey = async (
 	options?: RequestInit,
 ): Promise<createCredentialPublicKeyResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`PublicKey`, createCredentialPublicKeyBody.PublicKey);
+	formUrlEncoded.append("PublicKey", createCredentialPublicKeyBody.PublicKey);
 	if (createCredentialPublicKeyBody.FriendlyName !== undefined) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			createCredentialPublicKeyBody.FriendlyName,
 		);
 	}
 	if (createCredentialPublicKeyBody.AccountSid !== undefined) {
 		formUrlEncoded.append(
-			`AccountSid`,
+			"AccountSid",
 			createCredentialPublicKeyBody.AccountSid,
 		);
 	}
@@ -1703,7 +1703,7 @@ export const updateCredentialPublicKey = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateCredentialPublicKeyBody.FriendlyName !== undefined) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			updateCredentialPublicKeyBody.FriendlyName,
 		);
 	}
@@ -1808,7 +1808,7 @@ export const useUpdateCredentialPublicKey = <
  * @summary Delete a Credential from your account
  */
 export type deleteCredentialPublicKeyResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -1931,7 +1931,7 @@ export type updateMessagingGeopermissionsResponse =
 	updateMessagingGeopermissionsResponseSuccess;
 
 export const getUpdateMessagingGeopermissionsUrl = () => {
-	return `https://api.twilio.com/v1/Messaging/GeoPermissions`;
+	return "https://api.twilio.com/v1/Messaging/GeoPermissions";
 };
 
 export const updateMessagingGeopermissions = async (
@@ -1940,7 +1940,7 @@ export const updateMessagingGeopermissions = async (
 ): Promise<updateMessagingGeopermissionsResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	updateMessagingGeopermissionsBody.Permissions.forEach((value) =>
-		formUrlEncoded.append(`Permissions`, value),
+		formUrlEncoded.append("Permissions", value),
 	);
 
 	const res = await fetch(getUpdateMessagingGeopermissionsUrl(), {
@@ -2064,7 +2064,7 @@ export const getFetchMessagingGeopermissionsUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://api.twilio.com/v1/Messaging/GeoPermissions?${stringifiedParams}`
-		: `https://api.twilio.com/v1/Messaging/GeoPermissions`;
+		: "https://api.twilio.com/v1/Messaging/GeoPermissions";
 };
 
 export const fetchMessagingGeopermissions = async (
@@ -2092,7 +2092,7 @@ export const getFetchMessagingGeopermissionsQueryKey = (
 	params?: FetchMessagingGeopermissionsParams,
 ) => {
 	return [
-		`https://api.twilio.com/v1/Messaging/GeoPermissions`,
+		"https://api.twilio.com/v1/Messaging/GeoPermissions",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -2259,7 +2259,7 @@ export type createSafelistResponseSuccess = createSafelistResponse201 & {
 export type createSafelistResponse = createSafelistResponseSuccess;
 
 export const getCreateSafelistUrl = () => {
-	return `https://api.twilio.com/v1/SafeList/Numbers`;
+	return "https://api.twilio.com/v1/SafeList/Numbers";
 };
 
 export const createSafelist = async (
@@ -2267,7 +2267,7 @@ export const createSafelist = async (
 	options?: RequestInit,
 ): Promise<createSafelistResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`PhoneNumber`, createSafelistBody.PhoneNumber);
+	formUrlEncoded.append("PhoneNumber", createSafelistBody.PhoneNumber);
 
 	const res = await fetch(getCreateSafelistUrl(), {
 		...options,
@@ -2386,7 +2386,7 @@ export const getFetchSafelistUrl = (params?: FetchSafelistParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://api.twilio.com/v1/SafeList/Numbers?${stringifiedParams}`
-		: `https://api.twilio.com/v1/SafeList/Numbers`;
+		: "https://api.twilio.com/v1/SafeList/Numbers";
 };
 
 export const fetchSafelist = async (
@@ -2410,7 +2410,7 @@ export const fetchSafelist = async (
 
 export const getFetchSafelistQueryKey = (params?: FetchSafelistParams) => {
 	return [
-		`https://api.twilio.com/v1/SafeList/Numbers`,
+		"https://api.twilio.com/v1/SafeList/Numbers",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -2544,7 +2544,7 @@ export function useFetchSafelist<
  * @summary Remove a phone number or phone number 1k prefix from SafeList.
  */
 export type deleteSafelistResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -2567,7 +2567,7 @@ export const getDeleteSafelistUrl = (params?: DeleteSafelistParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://api.twilio.com/v1/SafeList/Numbers?${stringifiedParams}`
-		: `https://api.twilio.com/v1/SafeList/Numbers`;
+		: "https://api.twilio.com/v1/SafeList/Numbers";
 };
 
 export const deleteSafelist = async (
@@ -2676,7 +2676,7 @@ export type createSecondaryAuthTokenResponse =
 	createSecondaryAuthTokenResponseSuccess;
 
 export const getCreateSecondaryAuthTokenUrl = () => {
-	return `https://api.twilio.com/v1/AuthTokens/Secondary`;
+	return "https://api.twilio.com/v1/AuthTokens/Secondary";
 };
 
 export const createSecondaryAuthToken = async (
@@ -2774,7 +2774,7 @@ export const useCreateSecondaryAuthToken = <
  * @summary Delete the secondary Auth Token from your account
  */
 export type deleteSecondaryAuthTokenResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -2787,7 +2787,7 @@ export type deleteSecondaryAuthTokenResponse =
 	deleteSecondaryAuthTokenResponseSuccess;
 
 export const getDeleteSecondaryAuthTokenUrl = () => {
-	return `https://api.twilio.com/v1/AuthTokens/Secondary`;
+	return "https://api.twilio.com/v1/AuthTokens/Secondary";
 };
 
 export const deleteSecondaryAuthToken = async (

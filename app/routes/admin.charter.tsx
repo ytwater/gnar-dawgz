@@ -1,0 +1,132 @@
+import { ArrowLeft, FloppyDisk, Scales } from "@phosphor-icons/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Link, useNavigate } from "react-router";
+import remarkGfm from "remark-gfm";
+import { toast } from "sonner";
+import { Button } from "~/app/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "~/app/components/ui/card";
+import { Textarea } from "~/app/components/ui/textarea";
+import { orpcClient } from "~/app/lib/orpc/client";
+import { useCharter } from "~/app/lib/orpc/hooks/use-demerit";
+import type { Route } from "./+types/admin.charter";
+
+export function meta(_: Route.MetaArgs) {
+	return [{ title: "Edit Charter - Gnar Dawgs Admin" }];
+}
+
+export default function AdminCharterPage() {
+	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+	const { data: charterData, isLoading } = useCharter();
+	const [content, setContent] = useState("");
+
+	useEffect(() => {
+		if (charterData?.content) {
+			setContent(charterData.content);
+		}
+	}, [charterData]);
+
+	const updateMutation = useMutation({
+		mutationFn: (newContent: string) =>
+			orpcClient.demerit.updateCharter({ content: newContent }),
+		onSuccess: () => {
+			toast.success("Charter updated successfully! 🐾");
+			queryClient.invalidateQueries({ queryKey: ["demerit", "charter"] });
+		},
+		onError: (error) => {
+			toast.error(
+				`Failed to update charter: ${error instanceof Error ? error.message : "Unknown error"}`,
+			);
+		},
+	});
+
+	const handleSave = () => {
+		updateMutation.mutate(content);
+	};
+
+	return (
+		<div className="container mx-auto py-8 px-4 space-y-8 animate-in fade-in duration-500">
+			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+				<div className="flex flex-col gap-1">
+					<div className="flex items-center gap-2">
+						<Link
+							to="/admin"
+							className="text-muted-foreground hover:text-primary transition-colors"
+						>
+							<ArrowLeft className="w-5 h-5" />
+						</Link>
+						<h1 className="text-3xl font-black tracking-tight uppercase italic text-slate-900 dark:text-white">
+							Manage Charter
+						</h1>
+					</div>
+					<p className="text-muted-foreground font-medium">
+						Edit the Global Charter content using Markdown.
+					</p>
+				</div>
+				<Button
+					onClick={handleSave}
+					disabled={updateMutation.isPending || isLoading}
+					className="bg-red-600 hover:bg-red-700 font-bold shadow-lg shadow-red-600/20"
+				>
+					{updateMutation.isPending ? (
+						<div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+					) : (
+						<FloppyDisk className="w-5 h-5 mr-2" />
+					)}
+					{updateMutation.isPending ? "Saving..." : "Save Charter"}
+				</Button>
+			</div>
+
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+				{/* Editor */}
+				<Card className="min-h-[600px] flex flex-col shadow-xl border-2 border-slate-200 dark:border-slate-800">
+					<CardHeader className="border-b bg-slate-50 dark:bg-slate-900/50">
+						<CardTitle className="text-xs uppercase tracking-widest font-black text-slate-500 dark:text-slate-400">
+							Markdown Editor
+						</CardTitle>
+						<CardDescription>
+							Changes are not saved until you click Save.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="flex-1 p-0">
+						<Textarea
+							value={content}
+							onChange={(e) => setContent(e.target.value)}
+							placeholder="Write the charter here... Use # for headers, - for lists, etc."
+							className="h-full w-full min-h-[500px] resize-none border-none focus-visible:ring-0 p-8 font-mono text-sm leading-relaxed bg-transparent"
+						/>
+					</CardContent>
+				</Card>
+
+				{/* Preview */}
+				<Card className="min-h-[600px] flex flex-col shadow-xl border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
+					<CardHeader className="border-b bg-slate-50 dark:bg-slate-900/50">
+						<CardTitle className="text-xs uppercase tracking-widest font-black text-slate-500 dark:text-slate-400 flex items-center gap-2">
+							<Scales className="w-4 h-4" />
+							Live Preview
+						</CardTitle>
+					</CardHeader>
+					<CardContent className="flex-1 overflow-auto p-8 prose prose-slate dark:prose-invert max-w-none">
+						{content ? (
+							<ReactMarkdown remarkPlugins={[remarkGfm]}>
+								{content}
+							</ReactMarkdown>
+						) : (
+							<p className="text-muted-foreground italic text-center py-20">
+								Start typing to see the preview...
+							</p>
+						)}
+					</CardContent>
+				</Card>
+			</div>
+		</div>
+	);
+}

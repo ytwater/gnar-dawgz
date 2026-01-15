@@ -5,4 +5,7 @@ export default {
 	future: {
 		v8_viteEnvironmentApi: true,
 	},
+	cloudflareDevProxyBindingsWorkerOptions: {
+		persistTo: "../../.wrangler/state",
+	},
 } satisfies Config;
