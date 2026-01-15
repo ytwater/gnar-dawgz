@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ConversationScopedWebhookEnumMethod = typeof ConversationScopedWebhookEnumMethod[keyof typeof ConversationScopedWebhookEnumMethod];
-
+export type ConversationScopedWebhookEnumMethod =
+	(typeof ConversationScopedWebhookEnumMethod)[keyof typeof ConversationScopedWebhookEnumMethod];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConversationScopedWebhookEnumMethod = {
-  get: 'get',
-  post: 'post',
+	get: "get",
+	post: "post",
 } as const;

@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1ConfigurationAddress } from './conversationsV1ConfigurationAddress';
-import type { ListConfigurationAddress200Meta } from './listConfigurationAddress200Meta';
+import type { ConversationsV1ConfigurationAddress } from "./conversationsV1ConfigurationAddress";
+import type { ListConfigurationAddress200Meta } from "./listConfigurationAddress200Meta";
 
 export type ListConfigurationAddress200 = {
-  address_configurations?: ConversationsV1ConfigurationAddress[];
-  meta?: ListConfigurationAddress200Meta;
+	address_configurations?: ConversationsV1ConfigurationAddress[];
+	meta?: ListConfigurationAddress200Meta;
 };

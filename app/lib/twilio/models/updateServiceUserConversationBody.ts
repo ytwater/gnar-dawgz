@@ -5,15 +5,15 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ServiceUserConversationEnumNotificationLevel } from './serviceUserConversationEnumNotificationLevel';
+import type { ServiceUserConversationEnumNotificationLevel } from "./serviceUserConversationEnumNotificationLevel";
 
 export type UpdateServiceUserConversationBody = {
-  NotificationLevel?: ServiceUserConversationEnumNotificationLevel;
-  /** The date of the last message read in conversation by the user, given in ISO 8601 format. */
-  LastReadTimestamp?: string;
-  /**
-   * The index of the last Message in the Conversation that the Participant has read.
-   * @nullable
-   */
-  LastReadMessageIndex?: number | null;
+	NotificationLevel?: ServiceUserConversationEnumNotificationLevel;
+	/** The date of the last message read in conversation by the user, given in ISO 8601 format. */
+	LastReadTimestamp?: string;
+	/**
+	 * The index of the last Message in the Conversation that the Participant has read.
+	 * @nullable
+	 */
+	LastReadMessageIndex?: number | null;
 };

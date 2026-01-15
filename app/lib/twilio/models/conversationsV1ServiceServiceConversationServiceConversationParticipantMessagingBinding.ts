@@ -10,4 +10,6 @@
  * Information about how this participant exchanges messages with the conversation. A JSON parameter consisting of type and address fields of the participant.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding = unknown | null;
+export type ConversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding =
+	| unknown
+	| null;

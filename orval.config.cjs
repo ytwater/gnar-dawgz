@@ -29,7 +29,7 @@ module.exports = {
 				"https://raw.githubusercontent.com/twilio/twilio-oai/refs/heads/main/spec/json/twilio_conversations_v1.json",
 		},
 		hooks: {
-			afterAllFilesWrite: "npx biome format",
+			afterAllFilesWrite: "npx biome format --write",
 		},
 	},
 	eventsApi: {

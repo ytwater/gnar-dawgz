@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1ServiceServiceBinding } from './conversationsV1ServiceServiceBinding';
-import type { ListServiceBinding200Meta } from './listServiceBinding200Meta';
+import type { ConversationsV1ServiceServiceBinding } from "./conversationsV1ServiceServiceBinding";
+import type { ListServiceBinding200Meta } from "./listServiceBinding200Meta";
 
 export type ListServiceBinding200 = {
-  bindings?: ConversationsV1ServiceServiceBinding[];
-  meta?: ListServiceBinding200Meta;
+	bindings?: ConversationsV1ServiceServiceBinding[];
+	meta?: ListServiceBinding200Meta;
 };

@@ -5,26 +5,26 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationMessageEnumOrderType } from './conversationMessageEnumOrderType';
+import type { ConversationMessageEnumOrderType } from "./conversationMessageEnumOrderType";
 
 export type ListConversationMessageParams = {
-/**
- * The sort order of the returned messages. Can be: `asc` (ascending) or `desc` (descending), with `asc` as the default.
- */
-Order?: ConversationMessageEnumOrderType;
-/**
- * How many resources to return in each list page. The default is 50, and the maximum is 100.
- * @minimum 1
- * @maximum 100
- */
-PageSize?: number;
-/**
- * The page index. This value is simply for client state.
- * @minimum 0
- */
-Page?: number;
-/**
- * The page token. This is provided by the API.
- */
-PageToken?: string;
+	/**
+	 * The sort order of the returned messages. Can be: `asc` (ascending) or `desc` (descending), with `asc` as the default.
+	 */
+	Order?: ConversationMessageEnumOrderType;
+	/**
+	 * How many resources to return in each list page. The default is 50, and the maximum is 100.
+	 * @minimum 1
+	 * @maximum 100
+	 */
+	PageSize?: number;
+	/**
+	 * The page index. This value is simply for client state.
+	 * @minimum 0
+	 */
+	Page?: number;
+	/**
+	 * The page token. This is provided by the API.
+	 */
+	PageToken?: string;
 };

@@ -5,25 +5,25 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationScopedWebhookEnumTarget } from './conversationScopedWebhookEnumTarget';
-import type { ConversationScopedWebhookEnumMethod } from './conversationScopedWebhookEnumMethod';
+import type { ConversationScopedWebhookEnumTarget } from "./conversationScopedWebhookEnumTarget";
+import type { ConversationScopedWebhookEnumMethod } from "./conversationScopedWebhookEnumMethod";
 
 export type CreateConversationScopedWebhookBody = {
-  Target: ConversationScopedWebhookEnumTarget;
-  /** The absolute url the webhook request should be sent to. */
-  'Configuration.Url'?: string;
-  'Configuration.Method'?: ConversationScopedWebhookEnumMethod;
-  /** The list of events, firing webhook event for this Conversation. */
-  'Configuration.Filters'?: string[];
-  /** The list of keywords, firing webhook event for this Conversation. */
-  'Configuration.Triggers'?: string[];
-  /**
-   * The studio flow SID, where the webhook should be sent to.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^FW[0-9a-fA-F]{32}$
-   */
-  'Configuration.FlowSid'?: string;
-  /** The message index for which and it's successors the webhook will be replayed. Not set by default */
-  'Configuration.ReplayAfter'?: number;
+	Target: ConversationScopedWebhookEnumTarget;
+	/** The absolute url the webhook request should be sent to. */
+	"Configuration.Url"?: string;
+	"Configuration.Method"?: ConversationScopedWebhookEnumMethod;
+	/** The list of events, firing webhook event for this Conversation. */
+	"Configuration.Filters"?: string[];
+	/** The list of keywords, firing webhook event for this Conversation. */
+	"Configuration.Triggers"?: string[];
+	/**
+	 * The studio flow SID, where the webhook should be sent to.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^FW[0-9a-fA-F]{32}$
+	 */
+	"Configuration.FlowSid"?: string;
+	/** The message index for which and it's successors the webhook will be replayed. Not set by default */
+	"Configuration.ReplayAfter"?: number;
 };

@@ -7,27 +7,27 @@
  */
 
 export type UpdateServiceConfigurationBody = {
-  /**
-   * The conversation-level role assigned to a conversation creator when they join a new conversation. See [Conversation Role](https://www.twilio.com/docs/conversations/api/role-resource) for more info about roles.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^RL[0-9a-fA-F]{32}$
-   */
-  DefaultConversationCreatorRoleSid?: string;
-  /**
-   * The conversation-level role assigned to users when they are added to a conversation. See [Conversation Role](https://www.twilio.com/docs/conversations/api/role-resource) for more info about roles.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^RL[0-9a-fA-F]{32}$
-   */
-  DefaultConversationRoleSid?: string;
-  /**
-   * The service-level role assigned to users when they are added to the service. See [Conversation Role](https://www.twilio.com/docs/conversations/api/role-resource) for more info about roles.
-   * @minLength 34
-   * @maxLength 34
-   * @pattern ^RL[0-9a-fA-F]{32}$
-   */
-  DefaultChatServiceRoleSid?: string;
-  /** Whether the [Reachability Indicator](https://www.twilio.com/docs/conversations/reachability) is enabled for this Conversations Service. The default is `false`. */
-  ReachabilityEnabled?: boolean;
+	/**
+	 * The conversation-level role assigned to a conversation creator when they join a new conversation. See [Conversation Role](https://www.twilio.com/docs/conversations/api/role-resource) for more info about roles.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^RL[0-9a-fA-F]{32}$
+	 */
+	DefaultConversationCreatorRoleSid?: string;
+	/**
+	 * The conversation-level role assigned to users when they are added to a conversation. See [Conversation Role](https://www.twilio.com/docs/conversations/api/role-resource) for more info about roles.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^RL[0-9a-fA-F]{32}$
+	 */
+	DefaultConversationRoleSid?: string;
+	/**
+	 * The service-level role assigned to users when they are added to the service. See [Conversation Role](https://www.twilio.com/docs/conversations/api/role-resource) for more info about roles.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @pattern ^RL[0-9a-fA-F]{32}$
+	 */
+	DefaultChatServiceRoleSid?: string;
+	/** Whether the [Reachability Indicator](https://www.twilio.com/docs/conversations/reachability) is enabled for this Conversations Service. The default is `false`. */
+	ReachabilityEnabled?: boolean;
 };

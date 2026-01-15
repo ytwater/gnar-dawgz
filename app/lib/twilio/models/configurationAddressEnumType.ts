@@ -9,17 +9,17 @@
 /**
  * Type of Address, value can be `whatsapp` or `sms`.
  */
-export type ConfigurationAddressEnumType = typeof ConfigurationAddressEnumType[keyof typeof ConfigurationAddressEnumType];
-
+export type ConfigurationAddressEnumType =
+	(typeof ConfigurationAddressEnumType)[keyof typeof ConfigurationAddressEnumType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConfigurationAddressEnumType = {
-  sms: 'sms',
-  whatsapp: 'whatsapp',
-  messenger: 'messenger',
-  gbm: 'gbm',
-  email: 'email',
-  rcs: 'rcs',
-  apple: 'apple',
-  chat: 'chat',
+	sms: "sms",
+	whatsapp: "whatsapp",
+	messenger: "messenger",
+	gbm: "gbm",
+	email: "email",
+	rcs: "rcs",
+	apple: "apple",
+	chat: "chat",
 } as const;

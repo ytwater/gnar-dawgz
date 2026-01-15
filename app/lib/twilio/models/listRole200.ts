@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1Role } from './conversationsV1Role';
-import type { ListRole200Meta } from './listRole200Meta';
+import type { ConversationsV1Role } from "./conversationsV1Role";
+import type { ListRole200Meta } from "./listRole200Meta";
 
 export type ListRole200 = {
-  roles?: ConversationsV1Role[];
-  meta?: ListRole200Meta;
+	roles?: ConversationsV1Role[];
+	meta?: ListRole200Meta;
 };

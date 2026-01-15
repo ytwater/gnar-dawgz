@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ServiceConversationMessageEnumOrderType = typeof ServiceConversationMessageEnumOrderType[keyof typeof ServiceConversationMessageEnumOrderType];
-
+export type ServiceConversationMessageEnumOrderType =
+	(typeof ServiceConversationMessageEnumOrderType)[keyof typeof ServiceConversationMessageEnumOrderType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceConversationMessageEnumOrderType = {
-  asc: 'asc',
-  desc: 'desc',
+	asc: "asc",
+	desc: "desc",
 } as const;

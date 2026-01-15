@@ -9,13 +9,13 @@
 /**
  * Current state of this conversation. Can be either `initializing`, `active`, `inactive` or `closed` and defaults to `active`
  */
-export type ServiceConversationEnumState = typeof ServiceConversationEnumState[keyof typeof ServiceConversationEnumState];
-
+export type ServiceConversationEnumState =
+	(typeof ServiceConversationEnumState)[keyof typeof ServiceConversationEnumState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceConversationEnumState = {
-  inactive: 'inactive',
-  active: 'active',
-  closed: 'closed',
-  initializing: 'initializing',
+	inactive: "inactive",
+	active: "active",
+	closed: "closed",
+	initializing: "initializing",
 } as const;

@@ -5,48 +5,48 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1ServiceLinks } from './conversationsV1ServiceLinks';
+import type { ConversationsV1ServiceLinks } from "./conversationsV1ServiceLinks";
 
 export interface ConversationsV1Service {
-  /**
-   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this service.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * A 34 character string that uniquely identifies this resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^IS[0-9a-fA-F]{32}$
-   */
-  sid?: string | null;
-  /**
-   * The human-readable name of this service, limited to 256 characters. Optional.
-   * @nullable
-   */
-  friendly_name?: string | null;
-  /**
-   * The date that this resource was created.
-   * @nullable
-   */
-  date_created?: string | null;
-  /**
-   * The date that this resource was last updated.
-   * @nullable
-   */
-  date_updated?: string | null;
-  /**
-   * An absolute API resource URL for this service.
-   * @nullable
-   */
-  url?: string | null;
-  /**
-   * Contains absolute API resource URLs to access conversations, users, roles, bindings and configuration of this service.
-   * @nullable
-   */
-  links?: ConversationsV1ServiceLinks;
+	/**
+	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this service.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * A 34 character string that uniquely identifies this resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^IS[0-9a-fA-F]{32}$
+	 */
+	sid?: string | null;
+	/**
+	 * The human-readable name of this service, limited to 256 characters. Optional.
+	 * @nullable
+	 */
+	friendly_name?: string | null;
+	/**
+	 * The date that this resource was created.
+	 * @nullable
+	 */
+	date_created?: string | null;
+	/**
+	 * The date that this resource was last updated.
+	 * @nullable
+	 */
+	date_updated?: string | null;
+	/**
+	 * An absolute API resource URL for this service.
+	 * @nullable
+	 */
+	url?: string | null;
+	/**
+	 * Contains absolute API resource URLs to access conversations, users, roles, bindings and configuration of this service.
+	 * @nullable
+	 */
+	links?: ConversationsV1ServiceLinks;
 }

@@ -5,85 +5,85 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ServiceConversationWithParticipantsEnumState } from './serviceConversationWithParticipantsEnumState';
-import type { ConversationsV1ServiceServiceConversationWithParticipantsTimers } from './conversationsV1ServiceServiceConversationWithParticipantsTimers';
-import type { ConversationsV1ServiceServiceConversationWithParticipantsLinks } from './conversationsV1ServiceServiceConversationWithParticipantsLinks';
-import type { ConversationsV1ServiceServiceConversationWithParticipantsBindings } from './conversationsV1ServiceServiceConversationWithParticipantsBindings';
+import type { ServiceConversationWithParticipantsEnumState } from "./serviceConversationWithParticipantsEnumState";
+import type { ConversationsV1ServiceServiceConversationWithParticipantsTimers } from "./conversationsV1ServiceServiceConversationWithParticipantsTimers";
+import type { ConversationsV1ServiceServiceConversationWithParticipantsLinks } from "./conversationsV1ServiceServiceConversationWithParticipantsLinks";
+import type { ConversationsV1ServiceServiceConversationWithParticipantsBindings } from "./conversationsV1ServiceServiceConversationWithParticipantsBindings";
 
 export interface ConversationsV1ServiceServiceConversationWithParticipants {
-  /**
-   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this conversation.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^AC[0-9a-fA-F]{32}$
-   */
-  account_sid?: string | null;
-  /**
-   * The unique ID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) this conversation belongs to.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^IS[0-9a-fA-F]{32}$
-   */
-  chat_service_sid?: string | null;
-  /**
-   * The unique ID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) this conversation belongs to.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^MG[0-9a-fA-F]{32}$
-   */
-  messaging_service_sid?: string | null;
-  /**
-   * A 34 character string that uniquely identifies this resource.
-   * @minLength 34
-   * @maxLength 34
-   * @nullable
-   * @pattern ^CH[0-9a-fA-F]{32}$
-   */
-  sid?: string | null;
-  /**
-   * The human-readable name of this conversation, limited to 256 characters. Optional.
-   * @nullable
-   */
-  friendly_name?: string | null;
-  /**
-   * An application-defined string that uniquely identifies the resource. It can be used to address the resource in place of the resource's `sid` in the URL.
-   * @nullable
-   */
-  unique_name?: string | null;
-  /**
-   * An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned.
-   * @nullable
-   */
-  attributes?: string | null;
-  state?: ServiceConversationWithParticipantsEnumState;
-  /**
-   * The date that this resource was created.
-   * @nullable
-   */
-  date_created?: string | null;
-  /**
-   * The date that this resource was last updated.
-   * @nullable
-   */
-  date_updated?: string | null;
-  /**
-   * Timer date values representing state update for this conversation.
-   * @nullable
-   */
-  timers?: ConversationsV1ServiceServiceConversationWithParticipantsTimers;
-  /**
-   * Contains absolute URLs to access the [participants](https://www.twilio.com/docs/conversations/api/conversation-participant-resource), [messages](https://www.twilio.com/docs/conversations/api/conversation-message-resource) and [webhooks](https://www.twilio.com/docs/conversations/api/conversation-scoped-webhook-resource) of this conversation.
-   * @nullable
-   */
-  links?: ConversationsV1ServiceServiceConversationWithParticipantsLinks;
-  /** @nullable */
-  bindings?: ConversationsV1ServiceServiceConversationWithParticipantsBindings;
-  /**
-   * An absolute API resource URL for this conversation.
-   * @nullable
-   */
-  url?: string | null;
+	/**
+	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this conversation.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^AC[0-9a-fA-F]{32}$
+	 */
+	account_sid?: string | null;
+	/**
+	 * The unique ID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) this conversation belongs to.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^IS[0-9a-fA-F]{32}$
+	 */
+	chat_service_sid?: string | null;
+	/**
+	 * The unique ID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) this conversation belongs to.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^MG[0-9a-fA-F]{32}$
+	 */
+	messaging_service_sid?: string | null;
+	/**
+	 * A 34 character string that uniquely identifies this resource.
+	 * @minLength 34
+	 * @maxLength 34
+	 * @nullable
+	 * @pattern ^CH[0-9a-fA-F]{32}$
+	 */
+	sid?: string | null;
+	/**
+	 * The human-readable name of this conversation, limited to 256 characters. Optional.
+	 * @nullable
+	 */
+	friendly_name?: string | null;
+	/**
+	 * An application-defined string that uniquely identifies the resource. It can be used to address the resource in place of the resource's `sid` in the URL.
+	 * @nullable
+	 */
+	unique_name?: string | null;
+	/**
+	 * An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned.
+	 * @nullable
+	 */
+	attributes?: string | null;
+	state?: ServiceConversationWithParticipantsEnumState;
+	/**
+	 * The date that this resource was created.
+	 * @nullable
+	 */
+	date_created?: string | null;
+	/**
+	 * The date that this resource was last updated.
+	 * @nullable
+	 */
+	date_updated?: string | null;
+	/**
+	 * Timer date values representing state update for this conversation.
+	 * @nullable
+	 */
+	timers?: ConversationsV1ServiceServiceConversationWithParticipantsTimers;
+	/**
+	 * Contains absolute URLs to access the [participants](https://www.twilio.com/docs/conversations/api/conversation-participant-resource), [messages](https://www.twilio.com/docs/conversations/api/conversation-message-resource) and [webhooks](https://www.twilio.com/docs/conversations/api/conversation-scoped-webhook-resource) of this conversation.
+	 * @nullable
+	 */
+	links?: ConversationsV1ServiceServiceConversationWithParticipantsLinks;
+	/** @nullable */
+	bindings?: ConversationsV1ServiceServiceConversationWithParticipantsBindings;
+	/**
+	 * An absolute API resource URL for this conversation.
+	 * @nullable
+	 */
+	url?: string | null;
 }
