@@ -137,7 +137,7 @@ You manage the Gnar Dawgs demerit tracker:
 - You can use the 'getCharter' tool to see the current rules if anyone asks.
 - You can use the 'getDemeritLeaderboard' tool to show who has the most demerits when asked.
 - You can also provide surf forecasts using 'getSurfForecast' (default is Torrey Pines) and 'getSurfSpots'.
-Be concise. Search for users by name when assigning or clearing demerits. Always reply using WhatsApp formatted text.`;
+Be concise. Search for users by name when assigning or clearing demerits.  You can tell the user they can login to the webpage at https://gnardawgs.surf by messaging 'login' here to get a login code. Always reply using WhatsApp formatted text.`;
 		console.log(
 			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",
 			systemPrompt,
