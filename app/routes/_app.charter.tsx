@@ -1,4 +1,5 @@
-import { Scales, Trophy } from "@phosphor-icons/react";
+import { CaretDown, Scales, Trophy } from "@phosphor-icons/react";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -14,8 +15,17 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/app/components/ui/card";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "~/app/components/ui/collapsible";
 import { Skeleton } from "~/app/components/ui/skeleton";
-import { useCharter, useLeaderboard } from "~/app/lib/orpc/hooks/use-demerit";
+import {
+	useCharter,
+	useDemeritsByUserId,
+	useLeaderboard,
+} from "~/app/lib/orpc/hooks/use-demerit";
 import type { Route } from "./+types/_app.charter";
 
 export function meta(_: Route.MetaArgs) {
@@ -27,6 +37,95 @@ export function meta(_: Route.MetaArgs) {
 				"The rules of the Gnar Dawgs collective and the demerit leaderboard.",
 		},
 	];
+}
+
+function LeaderboardEntry({
+	entry,
+	index,
+}: {
+	entry: {
+		userId: string;
+		name: string | null;
+		image: string | null;
+		count: number;
+	};
+	index: number;
+}) {
+	const [isOpen, setIsOpen] = React.useState(false);
+	const { data: demerits, isLoading: isLoadingDemerits } = useDemeritsByUserId(
+		isOpen ? entry.userId : undefined,
+	);
+
+	return (
+		<Collapsible open={isOpen} onOpenChange={setIsOpen}>
+			<CollapsibleTrigger asChild>
+				<div className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors group cursor-pointer w-full">
+					<div className="flex items-center gap-3">
+						<div className="relative">
+							<Avatar className="h-10 w-10 border-2 border-white dark:border-slate-800 shadow-sm">
+								<AvatarImage src={entry.image || ""} />
+								<AvatarFallback className="bg-slate-200 text-slate-700 font-bold uppercase">
+									{entry.name?.[0]}
+								</AvatarFallback>
+							</Avatar>
+							{index < 3 && (
+								<span className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow-sm">
+									{index + 1}
+								</span>
+							)}
+						</div>
+						<span className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+							{entry.name}
+						</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<Badge
+							variant="destructive"
+							className="h-7 min-w-8 flex justify-center font-black text-sm bg-red-600 hover:bg-red-700 border-none shadow-sm"
+						>
+							{entry.count}
+						</Badge>
+						<CaretDown
+							className={`w-4 h-4 text-slate-400 transition-transform ${
+								isOpen ? "rotate-180" : ""
+							}`}
+						/>
+					</div>
+				</div>
+			</CollapsibleTrigger>
+			<CollapsibleContent>
+				<div className="px-4 pb-4 border-t border-red-100 dark:border-red-950/30 bg-slate-50/50 dark:bg-slate-900/20">
+					{isLoadingDemerits ? (
+						<div className="pt-4 space-y-2">
+							<Skeleton className="h-4 w-full" />
+							<Skeleton className="h-4 w-5/6" />
+							<Skeleton className="h-4 w-4/6" />
+						</div>
+					) : !demerits || demerits.length === 0 ? (
+						<p className="pt-4 text-sm text-muted-foreground italic">
+							No active demerits found.
+						</p>
+					) : (
+						<ul className="pt-4 space-y-2 list-disc list-inside">
+							{(demerits || []).map((demerit) => (
+								<li
+									key={demerit.id}
+									className="text-sm text-slate-700 dark:text-slate-300"
+								>
+									<span className="font-medium">{demerit.reason}</span>
+									{demerit.fromUserName && (
+										<span className="text-muted-foreground text-xs ml-2">
+											— {demerit.fromUserName}
+										</span>
+									)}
+								</li>
+							))}
+						</ul>
+					)}
+				</div>
+			</CollapsibleContent>
+		</Collapsible>
+	);
 }
 
 export default function CharterPage() {
@@ -112,35 +211,11 @@ export default function CharterPage() {
 									</div>
 								) : (
 									leaderboardData.map((entry, index) => (
-										<div
+										<LeaderboardEntry
 											key={entry.userId}
-											className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors group"
-										>
-											<div className="flex items-center gap-3">
-												<div className="relative">
-													<Avatar className="h-10 w-10 border-2 border-white dark:border-slate-800 shadow-sm">
-														<AvatarImage src={entry.image || ""} />
-														<AvatarFallback className="bg-slate-200 text-slate-700 font-bold uppercase">
-															{entry.name?.[0]}
-														</AvatarFallback>
-													</Avatar>
-													{index < 3 && (
-														<span className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow-sm">
-															{index + 1}
-														</span>
-													)}
-												</div>
-												<span className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-													{entry.name}
-												</span>
-											</div>
-											<Badge
-												variant="destructive"
-												className="h-7 min-w-8 flex justify-center font-black text-sm bg-red-600 hover:bg-red-700 border-none shadow-sm"
-											>
-												{entry.count}
-											</Badge>
-										</div>
+											entry={entry}
+											index={index}
+										/>
 									))
 								)}
 							</div>

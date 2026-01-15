@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { charter, demerits, users } from "../../schema";
 import { adminProcedure, authedProcedure } from "../server";
@@ -78,4 +78,29 @@ export const demeritRouter = {
 			.where(eq(demerits.toUserId, userId))
 			.orderBy(desc(demerits.createdAt));
 	}),
+
+	getDemeritsByUserId: authedProcedure
+		.input(z.object({ userId: z.string() }))
+		.handler(async ({ input, context }) => {
+			const db = context.db;
+			const { userId } = input;
+
+			return await db
+				.select({
+					id: demerits.id,
+					reason: demerits.reason,
+					status: demerits.status,
+					createdAt: demerits.createdAt,
+					fromUserName: users.name,
+				})
+				.from(demerits)
+				.leftJoin(users, eq(demerits.fromUserId, users.id))
+				.where(
+					and(
+						eq(demerits.toUserId, userId),
+						eq(demerits.status, "active"),
+					),
+				)
+				.orderBy(desc(demerits.createdAt));
+		}),
 };

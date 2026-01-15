@@ -27,3 +27,14 @@ export function useUserDemerits() {
 		queryFn: () => orpcClient.demerit.getUserDemerits(),
 	});
 }
+
+export function useDemeritsByUserId(userId: string | undefined) {
+	return useQuery({
+		queryKey: [...demeritKeys.all, "user", userId],
+		queryFn: () => {
+			if (!userId) throw new Error("userId is required");
+			return orpcClient.demerit.getDemeritsByUserId({ userId });
+		},
+		enabled: !!userId,
+	});
+}
