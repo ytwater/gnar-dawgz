@@ -17,6 +17,7 @@ export async function syncSurfForecasts(
 	env: CloudflareBindings,
 	spotId?: string,
 ) {
+	console.log("syncSurfForecasts spotId", spotId);
 	const db = getDb(env.DB);
 	const now = new Date();
 
@@ -30,14 +31,20 @@ export async function syncSurfForecasts(
 	const spots = spotId
 		? await baseQuery
 		: await baseQuery.orderBy(asc(surfSpots.lastSyncedAt)).limit(1);
+	console.log("🚀 ~ sync-forecasts.ts:34 ~ syncSurfForecasts ~ spots:", spots);
 
+	const ENABLE_SURFLINE = (env.ENABLE_SURFLINE as string) !== "false";
+	const ENABLE_SWELL_CLOUD = (env.ENABLE_SWELL_CLOUD as string) !== "false";
+	console.log("ENABLE_SURFLINE", ENABLE_SURFLINE);
+	console.log("ENABLE_SWELL_CLOUD", ENABLE_SWELL_CLOUD);
 	for (const spot of spots) {
 		const currentSpotId = spot.id;
 		let syncSuccess = false;
 
 		// 1. Fetch from Surfline
-		if (env.ENABLE_SURFLINE !== "false" && spot.surflineId) {
+		if (ENABLE_SURFLINE && spot.surflineId) {
 			try {
+				console.log("Fetching Surfline forecast for", spot.name);
 				const surflineData = await fetchSurflineForecast(spot.surflineId);
 
 				// Wave forecasts
@@ -146,105 +153,103 @@ export async function syncSurfForecasts(
 		}
 
 		// 2. Fetch from Swellcloud
-		if (env.ENABLE_SWELL_CLOUD !== "false") {
+		if (ENABLE_SWELL_CLOUD) {
 			try {
 				const swellCloudApiKey = env.SWELL_CLOUD_API_KEY;
 				if (!swellCloudApiKey) {
-					console.error(
-						`SWELL_CLOUD_API_KEY is not set for spot ${spot.name}`,
-					);
-				throw new Error("SWELL_CLOUD_API_KEY is not set");
-			}
-
-			console.log(
-				`Fetching Swellcloud forecast for ${spot.name} at ${spot.lat}, ${spot.lng}`,
-			);
-			const swellcloudData = await fetchSwellcloudForecast({
-				lat: spot.lat,
-				lon: spot.lng,
-				apiKey: swellCloudApiKey,
-			});
-
-			console.log(
-				`Swellcloud returned ${swellcloudData.waves.length} wave data points for ${spot.name}`,
-			);
-
-			const swellcloudWaves: SurfForecastInsert[] = swellcloudData.waves
-				.filter((w: { timestamp: Date }) => w.timestamp >= now)
-				.map(
-					(w: {
-						timestamp: Date;
-						waveHeightMin: number;
-						waveHeightMax: number;
-						wavePeriod: number;
-						waveDirection: number;
-						swells: string;
-						windSpeed?: number;
-						windDirection?: number;
-						temperature?: number;
-					}) => ({
-						id: `swellcloud_${currentSpotId}_${w.timestamp.getTime()}`,
-						source: "swellcloud",
-						spotId: currentSpotId,
-						timestamp: w.timestamp,
-						waveHeightMin: w.waveHeightMin,
-						waveHeightMax: w.waveHeightMax,
-						wavePeriod: w.wavePeriod,
-						waveDirection: w.waveDirection,
-						windSpeed: w.windSpeed,
-						windDirection: w.windDirection,
-						temperature: w.temperature,
-						swells: w.swells,
-					}),
-				);
-
-			console.log(
-				`Filtered to ${swellcloudWaves.length} future wave forecasts for ${spot.name}`,
-			);
-
-			if (swellcloudWaves.length > 0) {
-				for (const chunk of chunkArray(swellcloudWaves, 5)) {
-					await db
-						.insert(surfForecasts)
-						.values(chunk)
-						.onConflictDoUpdate({
-							target: [
-								surfForecasts.source,
-								surfForecasts.spotId,
-								surfForecasts.timestamp,
-							],
-							set: {
-								waveHeightMin: sql`excluded.wave_height_min`,
-								waveHeightMax: sql`excluded.wave_height_max`,
-								wavePeriod: sql`excluded.wave_period`,
-								waveDirection: sql`excluded.wave_direction`,
-								windSpeed: sql`excluded.wind_speed`,
-								windDirection: sql`excluded.wind_direction`,
-								temperature: sql`excluded.temperature`,
-								swells: sql`excluded.swells`,
-								fetchedAt: new Date(),
-							},
-						});
+					console.error(`SWELL_CLOUD_API_KEY is not set for spot ${spot.name}`);
+					throw new Error("SWELL_CLOUD_API_KEY is not set");
 				}
+
 				console.log(
-					`Successfully inserted ${swellcloudWaves.length} Swellcloud forecasts for ${spot.name}`,
+					`Fetching Swellcloud forecast for ${spot.name} at ${spot.lat}, ${spot.lng}`,
 				);
-			} else {
-				console.warn(
-					`No Swellcloud wave forecasts to insert for ${spot.name} (all in past or empty)`,
+				const swellcloudData = await fetchSwellcloudForecast({
+					lat: spot.lat,
+					lon: spot.lng,
+					apiKey: swellCloudApiKey,
+				});
+
+				console.log(
+					`Swellcloud returned ${swellcloudData.waves.length} wave data points for ${spot.name}`,
 				);
-			}
-			syncSuccess = true;
-		} catch (error) {
-			console.error(
-				`Error syncing Swellcloud forecast for ${spot.name}:`,
-				error,
-			);
-			if (error instanceof Error) {
-				console.error(`Error details: ${error.message}`, error.stack);
+
+				const swellcloudWaves: SurfForecastInsert[] = swellcloudData.waves
+					.filter((w: { timestamp: Date }) => w.timestamp >= now)
+					.map(
+						(w: {
+							timestamp: Date;
+							waveHeightMin: number;
+							waveHeightMax: number;
+							wavePeriod: number;
+							waveDirection: number;
+							swells: string;
+							windSpeed?: number;
+							windDirection?: number;
+							temperature?: number;
+						}) => ({
+							id: `swellcloud_${currentSpotId}_${w.timestamp.getTime()}`,
+							source: "swellcloud",
+							spotId: currentSpotId,
+							timestamp: w.timestamp,
+							waveHeightMin: w.waveHeightMin,
+							waveHeightMax: w.waveHeightMax,
+							wavePeriod: w.wavePeriod,
+							waveDirection: w.waveDirection,
+							windSpeed: w.windSpeed,
+							windDirection: w.windDirection,
+							temperature: w.temperature,
+							swells: w.swells,
+						}),
+					);
+
+				console.log(
+					`Filtered to ${swellcloudWaves.length} future wave forecasts for ${spot.name}`,
+				);
+
+				if (swellcloudWaves.length > 0) {
+					for (const chunk of chunkArray(swellcloudWaves, 5)) {
+						await db
+							.insert(surfForecasts)
+							.values(chunk)
+							.onConflictDoUpdate({
+								target: [
+									surfForecasts.source,
+									surfForecasts.spotId,
+									surfForecasts.timestamp,
+								],
+								set: {
+									waveHeightMin: sql`excluded.wave_height_min`,
+									waveHeightMax: sql`excluded.wave_height_max`,
+									wavePeriod: sql`excluded.wave_period`,
+									waveDirection: sql`excluded.wave_direction`,
+									windSpeed: sql`excluded.wind_speed`,
+									windDirection: sql`excluded.wind_direction`,
+									temperature: sql`excluded.temperature`,
+									swells: sql`excluded.swells`,
+									fetchedAt: new Date(),
+								},
+							});
+					}
+					console.log(
+						`Successfully inserted ${swellcloudWaves.length} Swellcloud forecasts for ${spot.name}`,
+					);
+				} else {
+					console.warn(
+						`No Swellcloud wave forecasts to insert for ${spot.name} (all in past or empty)`,
+					);
+				}
+				syncSuccess = true;
+			} catch (error) {
+				console.error(
+					`Error syncing Swellcloud forecast for ${spot.name}:`,
+					error,
+				);
+				if (error instanceof Error) {
+					console.error(`Error details: ${error.message}`, error.stack);
+				}
 			}
 		}
-	}
 
 		// 3. Fetch from OpenMeteo (Weather)
 		try {

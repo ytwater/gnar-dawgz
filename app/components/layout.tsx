@@ -56,6 +56,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 										{currentUser.email}
 									</div>
 									<Link
+										to="/charter"
+										className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+									>
+										Charter
+									</Link>
+									<Link
 										to="/profile"
 										className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
 									>

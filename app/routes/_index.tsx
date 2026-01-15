@@ -24,7 +24,11 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
 			typeof surfDashboardLoader
 		>[0]);
 	}
-	return { isLoggedIn: false };
+	const enableSurfline =
+		(context.cloudflare.env.ENABLE_SURFLINE as string) !== "false";
+	const enableSwellCloud =
+		(context.cloudflare.env.ENABLE_SWELL_CLOUD as string) !== "false";
+	return { isLoggedIn: false, enableSurfline, enableSwellCloud };
 };
 
 export default function Home() {
@@ -76,6 +80,8 @@ export default function Home() {
 								onSpotChange={handleSpotChange}
 								initialAllSpots={loaderData.allSpots}
 								initialDashboardData={loaderData.dashboardData}
+								enableSurfline={loaderData.enableSurfline}
+								enableSwellCloud={loaderData.enableSwellCloud}
 							/>
 						</HydrationBoundary>
 					</div>

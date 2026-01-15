@@ -1,4 +1,5 @@
 import { and, asc, eq, gte, like } from "drizzle-orm";
+import { fetchSpotInfo, fetchTaxonomy } from "surfline";
 import { z } from "zod";
 import {
 	surfForecasts,
@@ -360,7 +361,7 @@ export const surfForecastRouter = {
 			const { db } = context;
 			const { parentId, search } = input;
 
-			let taxonomyItems = [];
+			let taxonomyItems: (typeof surfTaxonomy.$inferSelect)[] = [];
 			if (search) {
 				taxonomyItems = await db
 					.select()
@@ -373,8 +374,6 @@ export const surfForecastRouter = {
 					.from(surfTaxonomy)
 					.where(eq(surfTaxonomy.parentId, parentId))
 					.orderBy(surfTaxonomy.type, surfTaxonomy.name);
-			} else {
-				taxonomyItems = [];
 			}
 
 			return taxonomyItems;
@@ -419,7 +418,386 @@ export const surfForecastRouter = {
 		)
 		.handler(async ({ input, context }) => {
 			const { spotId } = input;
+			console.log("syncSpot spotId", spotId);
 			await syncSurfForecasts(context.env, spotId);
+			return { success: true };
+		}),
+
+	// Admin: Sync taxonomy from Surfline
+	syncTaxonomy: adminProcedure
+		.input(
+			z.object({
+				targetId: z.string().optional(),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { db, env } = context;
+			const SOCAL_REGION_ID = "58581a836630e24c44878fd0";
+			const SANDIEGO_SUBREGION_ID = "58f7ed65dadb30820bb39f6a";
+			const CALIFORNIA_ID = "58581a836630e24c44878fcf";
+			const UNITED_STATES_ID = "58581a836630e24c44878fce";
+			const TORREY_PINES_PARENT_IDS = [
+				"58f7ed51dadb30820bb38782",
+				"58f7ed51dadb30820bb38791",
+				"58f7ed51dadb30820bb3879c",
+				"58f7ed51dadb30820bb387a6",
+				"5908c46bdadb30820b23c1f3",
+				"58f7ed65dadb30820bb39f6a",
+				"58f7ed68dadb30820bb3a1a7",
+				"58f7ed68dadb30820bb3a18e",
+			];
+
+			const targetId = input.targetId || SOCAL_REGION_ID;
+
+			try {
+				// Try to fetch the target node directly
+				let res: Awaited<ReturnType<typeof fetchTaxonomy>>;
+				try {
+					res = await fetchTaxonomy({ id: targetId, maxDepth: 1 });
+				} catch (directError) {
+					// If direct fetch fails, try fetching from parent first (for San Diego, parent is SoCal)
+					if (targetId === SANDIEGO_SUBREGION_ID) {
+						// Try to find San Diego by searching up the hierarchy
+						const parentIdsToTry = [
+							...TORREY_PINES_PARENT_IDS.map((id) => ({
+								id,
+								name: `Torrey Pines Parent (${id.slice(-6)})`,
+							})),
+							{ id: SOCAL_REGION_ID, name: "SoCal" },
+							{ id: CALIFORNIA_ID, name: "California" },
+							{ id: UNITED_STATES_ID, name: "United States" },
+						];
+
+						let parentRes: Awaited<ReturnType<typeof fetchTaxonomy>> | null =
+							null;
+						let triedParent = "";
+
+						for (const parent of parentIdsToTry) {
+							try {
+								parentRes = await fetchTaxonomy({
+									id: parent.id,
+									maxDepth: 3,
+								});
+								triedParent = parent.name;
+								break;
+							} catch (err) {
+								// Continue to next parent
+							}
+						}
+
+						if (!parentRes) {
+							return {
+								error:
+									"Could not fetch any parent taxonomy (tried SoCal, California, United States). The taxonomy IDs may be incorrect or the API structure has changed.",
+							};
+						}
+
+						try {
+							// Save parent
+							await db
+								.insert(surfTaxonomy)
+								.values({
+									id: parentRes._id,
+									parentId: parentRes.liesIn[0] || null,
+									name: parentRes.name,
+									type: parentRes.type,
+									spotId:
+										parentRes.type === "spot"
+											? (parentRes as unknown as { spot: string }).spot
+											: null,
+									lat: parentRes.location.coordinates[1],
+									lng: parentRes.location.coordinates[0],
+								})
+								.onConflictDoUpdate({
+									target: surfTaxonomy.id,
+									set: { name: parentRes.name, updatedAt: new Date() },
+								});
+
+							// Find San Diego in children (recursively search through all levels)
+							let sanDiegoFound: (typeof parentRes.contains)[0] | null = null;
+
+							const searchForSanDiego = (
+								items: NonNullable<typeof parentRes.contains>,
+								depth = 0,
+							): NonNullable<typeof parentRes.contains>[0] | null => {
+								if (!items || !Array.isArray(items)) return null;
+								if (depth > 5) return null;
+
+								for (const item of items) {
+									const nameMatch = item.name
+										.toLowerCase()
+										.includes("san diego");
+									const idMatch =
+										item._id === targetId || item._id === SANDIEGO_SUBREGION_ID;
+
+									if (nameMatch || idMatch) {
+										return item;
+									}
+
+									if (
+										"contains" in item &&
+										item.contains &&
+										Array.isArray(item.contains) &&
+										item.contains.length > 0
+									) {
+										const found = searchForSanDiego(item.contains, depth + 1);
+										if (found) return found;
+									}
+								}
+								return null;
+							};
+
+							// Also check if the parent itself is San Diego
+							if (parentRes.name.toLowerCase().includes("san diego")) {
+								sanDiegoFound = {
+									_id: parentRes._id,
+									name: parentRes.name,
+									type: parentRes.type,
+									location: parentRes.location,
+									liesIn: parentRes.liesIn,
+									contains: parentRes.contains,
+								} as unknown as (typeof parentRes.contains)[0];
+							}
+
+							if (
+								!sanDiegoFound &&
+								parentRes.contains &&
+								parentRes.contains.length > 0
+							) {
+								sanDiegoFound = searchForSanDiego(parentRes.contains, 0);
+							}
+
+							// Recursively save all children (including nested ones)
+							const saveChildren = async (
+								children: NonNullable<typeof parentRes.contains>,
+								parentId: string,
+							) => {
+								if (!children || !Array.isArray(children)) return;
+								for (const child of children) {
+									await db
+										.insert(surfTaxonomy)
+										.values({
+											id: child._id,
+											parentId: parentId,
+											name: child.name,
+											type: child.type,
+											spotId:
+												child.type === "spot"
+													? (child as unknown as { spot: string }).spot
+													: null,
+											lat: child.location?.coordinates?.[1] || null,
+											lng: child.location?.coordinates?.[0] || null,
+										})
+										.onConflictDoUpdate({
+											target: surfTaxonomy.id,
+											set: { name: child.name, updatedAt: new Date() },
+										});
+
+									if (
+										"contains" in child &&
+										child.contains &&
+										Array.isArray(child.contains) &&
+										child.contains.length > 0
+									) {
+										await saveChildren(child.contains, child._id);
+									}
+								}
+							};
+
+							// Save all children (including nested ones)
+							await saveChildren(parentRes.contains, parentRes._id);
+
+							if (!sanDiegoFound) {
+								return {
+									error: `San Diego not found in ${triedParent}'s taxonomy tree. The taxonomy structure may have changed or the IDs are incorrect.`,
+								};
+							}
+
+							// Try to fetch San Diego with its children
+							try {
+								res = await fetchTaxonomy({
+									id: sanDiegoFound._id,
+									maxDepth: 1,
+								});
+							} catch (fetchError) {
+								// If we can't fetch it directly, that's okay - we've already saved it from the parent
+								return { success: true };
+							}
+						} catch (parentError) {
+							console.error("Failed to fetch SoCal parent", parentError);
+							const parentErrorMessage =
+								parentError instanceof Error
+									? parentError.message
+									: "Unknown error";
+							const directErrorMessage =
+								directError instanceof Error
+									? directError.message
+									: "Unknown error";
+							return {
+								error: `Failed to sync taxonomy. Direct fetch error: ${directErrorMessage}. Parent fetch error: ${parentErrorMessage}`,
+							};
+						}
+					} else {
+						throw directError;
+					}
+				}
+
+				// Save current item if not exists
+				try {
+					await db
+						.insert(surfTaxonomy)
+						.values({
+							id: res._id,
+							parentId: res.liesIn?.[0] || null,
+							name: res.name,
+							type: res.type,
+							spotId:
+								res.type === "spot"
+									? (res as unknown as { spot: string }).spot
+									: null,
+							lat: res.location?.coordinates?.[1] || null,
+							lng: res.location?.coordinates?.[0] || null,
+						})
+						.onConflictDoUpdate({
+							target: surfTaxonomy.id,
+							set: { name: res.name, updatedAt: new Date() },
+						});
+				} catch (dbError) {
+					console.error("Failed to save taxonomy to database", dbError);
+					throw dbError;
+				}
+
+				// Save children
+				if (res.contains && res.contains.length > 0) {
+					for (const child of res.contains) {
+						try {
+							await db
+								.insert(surfTaxonomy)
+								.values({
+									id: child._id,
+									parentId: res._id,
+									name: child.name,
+									type: child.type,
+									spotId:
+										child.type === "spot"
+											? (child as unknown as { spot: string }).spot
+											: null,
+									lat: child.location?.coordinates?.[1] || null,
+									lng: child.location?.coordinates?.[0] || null,
+								})
+								.onConflictDoUpdate({
+									target: surfTaxonomy.id,
+									set: { name: child.name, updatedAt: new Date() },
+								});
+						} catch (childError) {
+							console.error(
+								`Failed to save child ${child.name} (${child._id})`,
+								childError,
+							);
+							// Continue with other children even if one fails
+						}
+					}
+				}
+				return { success: true };
+			} catch (e) {
+				console.error("Failed to sync taxonomy", e);
+				const errorMessage = e instanceof Error ? e.message : "Unknown error";
+				return {
+					error: `Failed to sync with Surfline Taxonomy API: ${errorMessage}`,
+				};
+			}
+		}),
+
+	// Admin: Add a spot
+	addSpot: adminProcedure
+		.input(
+			z.object({
+				surflineId: z.string(),
+				name: z.string().optional(),
+				lat: z.number().optional(),
+				lng: z.number().optional(),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { db } = context;
+			const { surflineId, name, lat, lng } = input;
+
+			if (!surflineId) {
+				return { error: "Surfline ID is required" };
+			}
+
+			try {
+				let spotData: { _id: string; name: string; lat: number; lon: number };
+				if (name && lat !== undefined && lng !== undefined) {
+					spotData = { _id: surflineId, name, lat, lon: lng };
+				} else {
+					const spotInfoRes = await fetchSpotInfo({ spotIds: [surflineId] });
+					const res = spotInfoRes.data[0];
+					if (!res) return { error: "Spot not found on Surfline" };
+					spotData = {
+						_id: res._id,
+						name: res.name,
+						lat: res.lat,
+						lon: res.lon,
+					};
+				}
+
+				await db
+					.insert(surfSpots)
+					.values({
+						id: spotData._id,
+						name: spotData.name,
+						surflineId: spotData._id,
+						lat: spotData.lat,
+						lng: spotData.lon,
+						isActive: true,
+					})
+					.onConflictDoUpdate({
+						target: surfSpots.id,
+						set: {
+							name: spotData.name,
+							surflineId: spotData._id,
+							lat: spotData.lat,
+							lng: spotData.lon,
+						},
+					});
+
+				return { success: true };
+			} catch (e) {
+				console.error("Failed to add spot", e);
+				return { error: "Failed to fetch spot info" };
+			}
+		}),
+
+	// Admin: Delete a spot
+	deleteSpot: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { db } = context;
+			const { id } = input;
+			await db.delete(surfSpots).where(eq(surfSpots.id, id));
+			return { success: true };
+		}),
+
+	// Admin: Toggle active status of a spot
+	toggleActiveSpot: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+				isActive: z.boolean(),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const { db } = context;
+			const { id, isActive } = input;
+			await db
+				.update(surfSpots)
+				.set({ isActive: !isActive })
+				.where(eq(surfSpots.id, id));
 			return { success: true };
 		}),
 };

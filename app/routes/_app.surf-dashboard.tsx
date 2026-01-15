@@ -62,6 +62,7 @@ import { authClient } from "../lib/auth-client";
 import { createORPCContext } from "../lib/orpc/server-helpers";
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
+	console.log("context.cloudflare.env", context.cloudflare.env);
 	const orpcContext = await createORPCContext(context.cloudflare.env, request);
 	const url = new URL(request.url);
 	console.log("LOADING SPOTS");
@@ -291,6 +292,8 @@ export function SurfDashboardContent({
 	);
 	const syncSpotMutation = useSyncSpot();
 
+	const hasMultipleSources = enableSurfline && enableSwellCloud;
+
 	const currentUser = session?.user as
 		| { id: string; role?: string }
 		| undefined;
@@ -343,10 +346,8 @@ export function SurfDashboardContent({
 	// Filter data based on checkboxes
 	const filteredData = combinedData.map((item) => ({
 		...item,
-		surflineHeight:
-			enableSurfline && showSurfline ? item.surflineHeight : null,
-		surflinePeriod:
-			enableSurfline && showSurfline ? item.surflinePeriod : null,
+		surflineHeight: enableSurfline && showSurfline ? item.surflineHeight : null,
+		surflinePeriod: enableSurfline && showSurfline ? item.surflinePeriod : null,
 		surflineWindSpeed:
 			enableSurfline && showSurfline ? item.surflineWindSpeed : null,
 		swellcloudHeight:
@@ -491,10 +492,8 @@ export function SurfDashboardContent({
 																		</div>
 																		{forecast.surfline.period !== null && (
 																			<div className="text-xs text-muted-foreground">
-																				{forecast.surfline.period.toFixed(
-																					0,
-																				)}
-																				s period
+																				{forecast.surfline.period.toFixed(0)}s
+																				period
 																			</div>
 																		)}
 																		{forecast.surfline.rating && (
@@ -520,19 +519,15 @@ export function SurfDashboardContent({
 																{forecast.swellcloud.heightAvg !== null ? (
 																	<div className="space-y-1">
 																		<div className="text-lg font-bold">
-																			{forecast.swellcloud.heightMin !==
-																				null &&
-																			forecast.swellcloud.heightMax !==
-																				null
+																			{forecast.swellcloud.heightMin !== null &&
+																			forecast.swellcloud.heightMax !== null
 																				? `${forecast.swellcloud.heightMin.toFixed(1)}-${forecast.swellcloud.heightMax.toFixed(1)} ft`
 																				: `${forecast.swellcloud.heightAvg.toFixed(1)} ft`}
 																		</div>
 																		{forecast.swellcloud.period !== null && (
 																			<div className="text-xs text-muted-foreground">
-																				{forecast.swellcloud.period.toFixed(
-																					0,
-																				)}
-																				s period
+																				{forecast.swellcloud.period.toFixed(0)}s
+																				period
 																			</div>
 																		)}
 																	</div>
@@ -598,7 +593,7 @@ export function SurfDashboardContent({
 										</CardDescription>
 									</div>
 									<div className="flex items-center gap-6">
-										{enableSurfline && (
+										{hasMultipleSources && enableSurfline && (
 											<div className="flex items-center gap-2">
 												<Checkbox
 													id="show-surfline"
@@ -615,7 +610,7 @@ export function SurfDashboardContent({
 												</Label>
 											</div>
 										)}
-										{enableSwellCloud && (
+										{hasMultipleSources && enableSwellCloud && (
 											<div className="flex items-center gap-2">
 												<Checkbox
 													id="show-swellcloud"

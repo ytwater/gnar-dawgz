@@ -112,3 +112,58 @@ export function useSyncSpot() {
 		},
 	});
 }
+
+export function useSyncTaxonomy() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (targetId?: string) =>
+			orpcClient.surfForecast.syncTaxonomy({ targetId }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: surfForecastKeys.all,
+			});
+		},
+	});
+}
+
+export function useAddSpot() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (input: {
+			surflineId: string;
+			name?: string;
+			lat?: number;
+			lng?: number;
+		}) => orpcClient.surfForecast.addSpot(input),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: surfForecastKeys.spots(),
+			});
+		},
+	});
+}
+
+export function useDeleteSpot() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (id: string) => orpcClient.surfForecast.deleteSpot({ id }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: surfForecastKeys.spots(),
+			});
+		},
+	});
+}
+
+export function useToggleActiveSpot() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (input: { id: string; isActive: boolean }) =>
+			orpcClient.surfForecast.toggleActiveSpot(input),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: surfForecastKeys.spots(),
+			});
+		},
+	});
+}
