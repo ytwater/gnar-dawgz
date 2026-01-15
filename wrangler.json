@@ -18,6 +18,8 @@
 		"GOOGLE_CLIENT_ID": "843872966928-4q8r4o4p52h90f52jpjotmmncgr5mrra.apps.googleusercontent.com",
 		"VAPID_PUBLIC_KEY": "BLesCxd24BjJTGhGCLKN_b9mOCwlyL-paNFAyCMybZb5UbQ854bSVNV9zgCZJPNFBYwusXwFQTEKhq8pWAR_LYM",
 		"VAPID_SUBJECT": "https://gnardawgs.surf",
+		"ENABLE_SWELL_CLOUD": "true",
+		"ENABLE_SURFLINE": "true",
 		"TWILIO_SERVICE_SID": "ISc485decce355478e8ddb9b82dec4ccaa",
 		"TWILIO_EVENT_SYNC_ID_DEV": "DGbd9f47b1c0b9e4f7ce4222a2fdb9bfc2",
 		"TWILIO_EVENT_SYNC_ID_PROD": "DF2ebba80cc2694b7d743dcc6b346bebec"
