@@ -10,6 +10,4 @@
  * The Push Notification configuration for New Messages.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConfigurationServiceNotificationNewMessage =
-	| unknown
-	| null;
+export type ConversationsV1ServiceServiceConfigurationServiceNotificationNewMessage = unknown | null;

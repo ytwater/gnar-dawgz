@@ -9,11 +9,11 @@
 /**
  * Source via which the request came from. Can be sdk, api.
  */
-export type ServiceStatsConversationsRatelimitingerrorsEnumSource =
-	(typeof ServiceStatsConversationsRatelimitingerrorsEnumSource)[keyof typeof ServiceStatsConversationsRatelimitingerrorsEnumSource];
+export type ServiceStatsConversationsRatelimitingerrorsEnumSource = typeof ServiceStatsConversationsRatelimitingerrorsEnumSource[keyof typeof ServiceStatsConversationsRatelimitingerrorsEnumSource];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceStatsConversationsRatelimitingerrorsEnumSource = {
-	SDK: "SDK",
-	API: "API",
+  SDK: 'SDK',
+  API: 'API',
 } as const;

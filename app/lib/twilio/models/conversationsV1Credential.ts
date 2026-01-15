@@ -5,49 +5,49 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { CredentialEnumPushType } from "./credentialEnumPushType";
+import type { CredentialEnumPushType } from './credentialEnumPushType';
 
 export interface ConversationsV1Credential {
-	/**
-	 * A 34 character string that uniquely identifies this resource.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^CR[0-9a-fA-F]{32}$
-	 */
-	sid?: string | null;
-	/**
-	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this credential.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^AC[0-9a-fA-F]{32}$
-	 */
-	account_sid?: string | null;
-	/**
-	 * The human-readable name of this credential, limited to 64 characters. Optional.
-	 * @nullable
-	 */
-	friendly_name?: string | null;
-	type?: CredentialEnumPushType;
-	/**
-	 * [APN only] Whether to send the credential to sandbox APNs. Can be `true` to send to sandbox APNs or `false` to send to production.
-	 * @nullable
-	 */
-	sandbox?: string | null;
-	/**
-	 * The date that this resource was created.
-	 * @nullable
-	 */
-	date_created?: string | null;
-	/**
-	 * The date that this resource was last updated.
-	 * @nullable
-	 */
-	date_updated?: string | null;
-	/**
-	 * An absolute API resource URL for this credential.
-	 * @nullable
-	 */
-	url?: string | null;
+  /**
+   * A 34 character string that uniquely identifies this resource.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^CR[0-9a-fA-F]{32}$
+   */
+  sid?: string | null;
+  /**
+   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this credential.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^AC[0-9a-fA-F]{32}$
+   */
+  account_sid?: string | null;
+  /**
+   * The human-readable name of this credential, limited to 64 characters. Optional.
+   * @nullable
+   */
+  friendly_name?: string | null;
+  type?: CredentialEnumPushType;
+  /**
+   * [APN only] Whether to send the credential to sandbox APNs. Can be `true` to send to sandbox APNs or `false` to send to production.
+   * @nullable
+   */
+  sandbox?: string | null;
+  /**
+   * The date that this resource was created.
+   * @nullable
+   */
+  date_created?: string | null;
+  /**
+   * The date that this resource was last updated.
+   * @nullable
+   */
+  date_updated?: string | null;
+  /**
+   * An absolute API resource URL for this credential.
+   * @nullable
+   */
+  url?: string | null;
 }

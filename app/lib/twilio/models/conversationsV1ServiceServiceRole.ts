@@ -5,57 +5,57 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ServiceRoleEnumRoleType } from "./serviceRoleEnumRoleType";
+import type { ServiceRoleEnumRoleType } from './serviceRoleEnumRoleType';
 
 export interface ConversationsV1ServiceServiceRole {
-	/**
-	 * The unique string that we created to identify the Role resource.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^RL[0-9a-fA-F]{32}$
-	 */
-	sid?: string | null;
-	/**
-	 * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Role resource.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^AC[0-9a-fA-F]{32}$
-	 */
-	account_sid?: string | null;
-	/**
-	 * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Role resource is associated with.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^IS[0-9a-fA-F]{32}$
-	 */
-	chat_service_sid?: string | null;
-	/**
-	 * The string that you assigned to describe the resource.
-	 * @nullable
-	 */
-	friendly_name?: string | null;
-	type?: ServiceRoleEnumRoleType;
-	/**
-	 * An array of the permissions the role has been granted.
-	 * @nullable
-	 */
-	permissions?: string[] | null;
-	/**
-	 * The date and time in GMT when the resource was created specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-	 * @nullable
-	 */
-	date_created?: string | null;
-	/**
-	 * The date and time in GMT when the resource was last updated specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-	 * @nullable
-	 */
-	date_updated?: string | null;
-	/**
-	 * An absolute API resource URL for this user role.
-	 * @nullable
-	 */
-	url?: string | null;
+  /**
+   * The unique string that we created to identify the Role resource.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^RL[0-9a-fA-F]{32}$
+   */
+  sid?: string | null;
+  /**
+   * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Role resource.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^AC[0-9a-fA-F]{32}$
+   */
+  account_sid?: string | null;
+  /**
+   * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Role resource is associated with.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^IS[0-9a-fA-F]{32}$
+   */
+  chat_service_sid?: string | null;
+  /**
+   * The string that you assigned to describe the resource.
+   * @nullable
+   */
+  friendly_name?: string | null;
+  type?: ServiceRoleEnumRoleType;
+  /**
+   * An array of the permissions the role has been granted.
+   * @nullable
+   */
+  permissions?: string[] | null;
+  /**
+   * The date and time in GMT when the resource was created specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+   * @nullable
+   */
+  date_created?: string | null;
+  /**
+   * The date and time in GMT when the resource was last updated specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+   * @nullable
+   */
+  date_updated?: string | null;
+  /**
+   * An absolute API resource URL for this user role.
+   * @nullable
+   */
+  url?: string | null;
 }

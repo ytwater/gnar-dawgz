@@ -5,86 +5,90 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { TollfreeVerificationEnumOptInType } from "./tollfreeVerificationEnumOptInType";
+import type { TollfreeVerificationEnumOptInType } from './tollfreeVerificationEnumOptInType';
+import type { TollfreeVerificationEnumVettingProvider } from './tollfreeVerificationEnumVettingProvider';
 
 export type CreateTollfreeVerificationBody = {
-	/** The name of the business or organization using the Tollfree number. */
-	BusinessName: string;
-	/** The website of the business or organization using the Tollfree number. */
-	BusinessWebsite: string;
-	/** The email address to receive the notification about the verification result. . */
-	NotificationEmail: string;
-	/** The category of the use case for the Tollfree Number. List as many are applicable.. */
-	UseCaseCategories: string[];
-	/** Use this to further explain how messaging is used by the business or organization. */
-	UseCaseSummary: string;
-	/** An example of message content, i.e. a sample message. */
-	ProductionMessageSample: string;
-	/** Link to an image that shows the opt-in workflow. Multiple images allowed and must be a publicly hosted URL. */
-	OptInImageUrls: string[];
-	OptInType: TollfreeVerificationEnumOptInType;
-	/** Estimate monthly volume of messages from the Tollfree Number. */
-	MessageVolume: string;
-	/**
-	 * The SID of the Phone Number associated with the Tollfree Verification.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^PN[0-9a-fA-F]{32}$
-	 */
-	TollfreePhoneNumberSid: string;
-	/**
-	 * Customer's Profile Bundle BundleSid.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^BU[0-9a-fA-F]{32}$
-	 */
-	CustomerProfileSid?: string;
-	/** The address of the business or organization using the Tollfree number. */
-	BusinessStreetAddress?: string;
-	/** The address of the business or organization using the Tollfree number. */
-	BusinessStreetAddress2?: string;
-	/** The city of the business or organization using the Tollfree number. */
-	BusinessCity?: string;
-	/** The state/province/region of the business or organization using the Tollfree number. */
-	BusinessStateProvinceRegion?: string;
-	/** The postal code of the business or organization using the Tollfree number. */
-	BusinessPostalCode?: string;
-	/** The country of the business or organization using the Tollfree number. */
-	BusinessCountry?: string;
-	/** Additional information to be provided for verification. */
-	AdditionalInformation?: string;
-	/** The first name of the contact for the business or organization using the Tollfree number. */
-	BusinessContactFirstName?: string;
-	/** The last name of the contact for the business or organization using the Tollfree number. */
-	BusinessContactLastName?: string;
-	/** The email address of the contact for the business or organization using the Tollfree number. */
-	BusinessContactEmail?: string;
-	/** The E.164 formatted phone number of the contact for the business or organization using the Tollfree number. */
-	BusinessContactPhone?: string;
-	/** An optional external reference ID supplied by customer and echoed back on status retrieval. */
-	ExternalReferenceId?: string;
-	/** A legally recognized business registration number */
-	BusinessRegistrationNumber?: string;
-	/** The organizational authority for business registrations */
-	BusinessRegistrationAuthority?: string;
-	/** Country business is registered in */
-	BusinessRegistrationCountry?: string;
-	/** The type of business, valid values are PRIVATE_PROFIT, PUBLIC_PROFIT, NON_PROFIT, SOLE_PROPRIETOR, GOVERNMENT */
-	BusinessType?: string;
-	/** The E.164 formatted number associated with the business. */
-	BusinessRegistrationPhoneNumber?: string;
-	/** Trade name, sub entity, or downstream business name of business being submitted for verification */
-	DoingBusinessAs?: string;
-	/** The confirmation message sent to users when they opt in to receive messages. */
-	OptInConfirmationMessage?: string;
-	/** A sample help message provided to users. */
-	HelpMessageSample?: string;
-	/** The URL to the privacy policy for the business or organization. */
-	PrivacyPolicyUrl?: string;
-	/** The URL to the terms and conditions for the business or organization. */
-	TermsAndConditionsUrl?: string;
-	/** Indicates if the content is age gated. */
-	AgeGatedContent?: boolean;
-	/** List of keywords that users can text in to opt in to receive messages. */
-	OptInKeywords?: string[];
+  /** The name of the business or organization using the Tollfree number. */
+  BusinessName: string;
+  /** The website of the business or organization using the Tollfree number. */
+  BusinessWebsite: string;
+  /** The email address to receive the notification about the verification result. . */
+  NotificationEmail: string;
+  /** The category of the use case for the Tollfree Number. List as many are applicable.. */
+  UseCaseCategories: string[];
+  /** Use this to further explain how messaging is used by the business or organization. */
+  UseCaseSummary: string;
+  /** An example of message content, i.e. a sample message. */
+  ProductionMessageSample: string;
+  /** Link to an image that shows the opt-in workflow. Multiple images allowed and must be a publicly hosted URL. */
+  OptInImageUrls: string[];
+  OptInType: TollfreeVerificationEnumOptInType;
+  /** Estimate monthly volume of messages from the Tollfree Number. */
+  MessageVolume: string;
+  /**
+   * The SID of the Phone Number associated with the Tollfree Verification.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^PN[0-9a-fA-F]{32}$
+   */
+  TollfreePhoneNumberSid: string;
+  /**
+   * Customer's Profile Bundle BundleSid.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^BU[0-9a-fA-F]{32}$
+   */
+  CustomerProfileSid?: string;
+  /** The address of the business or organization using the Tollfree number. */
+  BusinessStreetAddress?: string;
+  /** The address of the business or organization using the Tollfree number. */
+  BusinessStreetAddress2?: string;
+  /** The city of the business or organization using the Tollfree number. */
+  BusinessCity?: string;
+  /** The state/province/region of the business or organization using the Tollfree number. */
+  BusinessStateProvinceRegion?: string;
+  /** The postal code of the business or organization using the Tollfree number. */
+  BusinessPostalCode?: string;
+  /** The country of the business or organization using the Tollfree number. */
+  BusinessCountry?: string;
+  /** Additional information to be provided for verification. */
+  AdditionalInformation?: string;
+  /** The first name of the contact for the business or organization using the Tollfree number. */
+  BusinessContactFirstName?: string;
+  /** The last name of the contact for the business or organization using the Tollfree number. */
+  BusinessContactLastName?: string;
+  /** The email address of the contact for the business or organization using the Tollfree number. */
+  BusinessContactEmail?: string;
+  /** The E.164 formatted phone number of the contact for the business or organization using the Tollfree number. */
+  BusinessContactPhone?: string;
+  /** An optional external reference ID supplied by customer and echoed back on status retrieval. */
+  ExternalReferenceId?: string;
+  /** A legally recognized business registration number */
+  BusinessRegistrationNumber?: string;
+  /** The organizational authority for business registrations */
+  BusinessRegistrationAuthority?: string;
+  /** Country business is registered in */
+  BusinessRegistrationCountry?: string;
+  /** The type of business, valid values are PRIVATE_PROFIT, PUBLIC_PROFIT, NON_PROFIT, SOLE_PROPRIETOR, GOVERNMENT */
+  BusinessType?: string;
+  /** The E.164 formatted number associated with the business. */
+  BusinessRegistrationPhoneNumber?: string;
+  /** Trade name, sub entity, or downstream business name of business being submitted for verification */
+  DoingBusinessAs?: string;
+  /** The confirmation message sent to users when they opt in to receive messages. */
+  OptInConfirmationMessage?: string;
+  /** A sample help message provided to users. */
+  HelpMessageSample?: string;
+  /** The URL to the privacy policy for the business or organization. */
+  PrivacyPolicyUrl?: string;
+  /** The URL to the terms and conditions for the business or organization. */
+  TermsAndConditionsUrl?: string;
+  /** Indicates if the content is age gated. */
+  AgeGatedContent?: boolean;
+  /** List of keywords that users can text in to opt in to receive messages. */
+  OptInKeywords?: string[];
+  VettingProvider?: TollfreeVerificationEnumVettingProvider;
+  /** The unique ID of the vetting */
+  VettingId?: string;
 };

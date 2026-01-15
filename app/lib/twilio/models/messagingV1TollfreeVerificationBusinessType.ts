@@ -10,15 +10,14 @@
  * The type of business, valid values are PRIVATE_PROFIT, PUBLIC_PROFIT, NON_PROFIT, SOLE_PROPRIETOR, GOVERNMENT
  * @nullable
  */
-export type MessagingV1TollfreeVerificationBusinessType =
-	| (typeof MessagingV1TollfreeVerificationBusinessType)[keyof typeof MessagingV1TollfreeVerificationBusinessType]
-	| null;
+export type MessagingV1TollfreeVerificationBusinessType = typeof MessagingV1TollfreeVerificationBusinessType[keyof typeof MessagingV1TollfreeVerificationBusinessType] | null;
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const MessagingV1TollfreeVerificationBusinessType = {
-	PRIVATE_PROFIT: "PRIVATE_PROFIT",
-	PUBLIC_PROFIT: "PUBLIC_PROFIT",
-	SOLE_PROPRIETOR: "SOLE_PROPRIETOR",
-	NON_PROFIT: "NON_PROFIT",
-	GOVERNMENT: "GOVERNMENT",
+  PRIVATE_PROFIT: 'PRIVATE_PROFIT',
+  PUBLIC_PROFIT: 'PUBLIC_PROFIT',
+  SOLE_PROPRIETOR: 'SOLE_PROPRIETOR',
+  NON_PROFIT: 'NON_PROFIT',
+  GOVERNMENT: 'GOVERNMENT',
 } as const;

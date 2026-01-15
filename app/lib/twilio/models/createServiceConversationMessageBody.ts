@@ -7,32 +7,32 @@
  */
 
 export type CreateServiceConversationMessageBody = {
-	/** The channel specific identifier of the message's author. Defaults to `system`. */
-	Author?: string;
-	/** The content of the message, can be up to 1,600 characters long. */
-	Body?: string;
-	/** The date that this resource was created. */
-	DateCreated?: string;
-	/** The date that this resource was last updated. `null` if the message has not been edited. */
-	DateUpdated?: string;
-	/** A string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
-	Attributes?: string;
-	/**
-	 * The Media SID to be attached to the new Message.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^ME[0-9a-fA-F]{32}$
-	 */
-	MediaSid?: string;
-	/**
-	 * The unique ID of the multi-channel [Rich Content](https://www.twilio.com/docs/content) template, required for template-generated messages.  **Note** that if this field is set, `Body` and `MediaSid` parameters are ignored.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^HX[0-9a-fA-F]{32}$
-	 */
-	ContentSid?: string;
-	/** A structurally valid JSON string that contains values to resolve Rich Content template variables. */
-	ContentVariables?: string;
-	/** The subject of the message, can be up to 256 characters long. */
-	Subject?: string;
+  /** The channel specific identifier of the message's author. Defaults to `system`. */
+  Author?: string;
+  /** The content of the message, can be up to 1,600 characters long. */
+  Body?: string;
+  /** The date that this resource was created. */
+  DateCreated?: string;
+  /** The date that this resource was last updated. `null` if the message has not been edited. */
+  DateUpdated?: string;
+  /** A string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
+  Attributes?: string;
+  /**
+   * The Media SID to be attached to the new Message.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^ME[0-9a-fA-F]{32}$
+   */
+  MediaSid?: string;
+  /**
+   * The unique ID of the multi-channel [Rich Content](https://www.twilio.com/docs/content) template, required for template-generated messages.  **Note** that if this field is set, `Body` and `MediaSid` parameters are ignored.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^HX[0-9a-fA-F]{32}$
+   */
+  ContentSid?: string;
+  /** A structurally valid JSON string that contains values to resolve Rich Content template variables. */
+  ContentVariables?: string;
+  /** The subject of the message, can be up to 256 characters long. */
+  Subject?: string;
 };

@@ -5,12 +5,12 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { SinkEnumSinkType } from "./sinkEnumSinkType";
+import type { SinkEnumSinkType } from './sinkEnumSinkType';
 
 export type CreateSinkBody = {
-	/** A human readable description for the Sink **This value should not contain PII.** */
-	Description: string;
-	/** The information required for Twilio to connect to the provided Sink encoded as JSON. */
-	SinkConfiguration: unknown;
-	SinkType: SinkEnumSinkType;
+  /** A human readable description for the Sink **This value should not contain PII.** */
+  Description: string;
+  /** The information required for Twilio to connect to the provided Sink encoded as JSON. */
+  SinkConfiguration: unknown;
+  SinkType: SinkEnumSinkType;
 };

@@ -7,25 +7,25 @@
  */
 
 export type CreateServiceConversationParticipantBody = {
-	/** A unique string identifier for the conversation participant as [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource). This parameter is non-null if (and only if) the participant is using the [Conversation SDK](https://www.twilio.com/docs/conversations/sdk-overview) to communicate. Limited to 256 characters. */
-	Identity?: string;
-	/** The address of the participant's device, e.g. a phone or WhatsApp number. Together with the Proxy address, this determines a participant uniquely. This field (with `proxy_address`) is only null when the participant is interacting from an SDK endpoint (see the `identity` field). */
-	"MessagingBinding.Address"?: string;
-	/** The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the `identity` field). */
-	"MessagingBinding.ProxyAddress"?: string;
-	/** The date on which this resource was created. */
-	DateCreated?: string;
-	/** The date on which this resource was last updated. */
-	DateUpdated?: string;
-	/** An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set `{}` will be returned. */
-	Attributes?: string;
-	/** The address of the Twilio phone number that is used in Group MMS. */
-	"MessagingBinding.ProjectedAddress"?: string;
-	/**
-	 * The SID of a conversation-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the participant.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^RL[0-9a-fA-F]{32}$
-	 */
-	RoleSid?: string;
+  /** A unique string identifier for the conversation participant as [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource). This parameter is non-null if (and only if) the participant is using the [Conversation SDK](https://www.twilio.com/docs/conversations/sdk-overview) to communicate. Limited to 256 characters. */
+  Identity?: string;
+  /** The address of the participant's device, e.g. a phone or WhatsApp number. Together with the Proxy address, this determines a participant uniquely. This field (with `proxy_address`) is only null when the participant is interacting from an SDK endpoint (see the `identity` field). */
+  'MessagingBinding.Address'?: string;
+  /** The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the `identity` field). */
+  'MessagingBinding.ProxyAddress'?: string;
+  /** The date on which this resource was created. */
+  DateCreated?: string;
+  /** The date on which this resource was last updated. */
+  DateUpdated?: string;
+  /** An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set `{}` will be returned. */
+  Attributes?: string;
+  /** The address of the Twilio phone number that is used in Group MMS. */
+  'MessagingBinding.ProjectedAddress'?: string;
+  /**
+   * The SID of a conversation-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the participant.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^RL[0-9a-fA-F]{32}$
+   */
+  RoleSid?: string;
 };

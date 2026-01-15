@@ -9,14 +9,14 @@
 /**
  * The message delivery status, can be `read`, `failed`, `delivered`, `undelivered`, `sent` or null.
  */
-export type ServiceConversationMessageReceiptEnumDeliveryStatus =
-	(typeof ServiceConversationMessageReceiptEnumDeliveryStatus)[keyof typeof ServiceConversationMessageReceiptEnumDeliveryStatus];
+export type ServiceConversationMessageReceiptEnumDeliveryStatus = typeof ServiceConversationMessageReceiptEnumDeliveryStatus[keyof typeof ServiceConversationMessageReceiptEnumDeliveryStatus];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceConversationMessageReceiptEnumDeliveryStatus = {
-	read: "read",
-	failed: "failed",
-	delivered: "delivered",
-	undelivered: "undelivered",
-	sent: "sent",
+  read: 'read',
+  failed: 'failed',
+  delivered: 'delivered',
+  undelivered: 'undelivered',
+  sent: 'sent',
 } as const;

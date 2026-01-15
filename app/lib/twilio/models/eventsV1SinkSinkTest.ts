@@ -7,9 +7,9 @@
  */
 
 export interface EventsV1SinkSinkTest {
-	/**
-	 * Feedback indicating whether the test event was generated.
-	 * @nullable
-	 */
-	result?: string | null;
+  /**
+   * Feedback indicating whether the test event was generated.
+   * @nullable
+   */
+  result?: string | null;
 }

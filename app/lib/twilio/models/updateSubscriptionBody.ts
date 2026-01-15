@@ -7,6 +7,6 @@
  */
 
 export type UpdateSubscriptionBody = {
-	/** A human readable description for the Subscription. */
-	Description?: string;
+  /** A human readable description for the Subscription. */
+  Description?: string;
 };

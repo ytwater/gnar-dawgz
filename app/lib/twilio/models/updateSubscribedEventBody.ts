@@ -7,6 +7,6 @@
  */
 
 export type UpdateSubscribedEventBody = {
-	/** The schema version that the Subscription should use. */
-	SchemaVersion?: number;
+  /** The schema version that the Subscription should use. */
+  SchemaVersion?: number;
 };

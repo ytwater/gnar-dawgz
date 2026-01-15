@@ -10,6 +10,4 @@
  * Timer date values representing state update for this conversation.
  * @nullable
  */
-export type ConversationsV1ServiceServiceParticipantConversationConversationTimers =
-	| unknown
-	| null;
+export type ConversationsV1ServiceServiceParticipantConversationConversationTimers = unknown | null;

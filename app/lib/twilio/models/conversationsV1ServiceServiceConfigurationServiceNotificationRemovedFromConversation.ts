@@ -10,6 +10,4 @@
  * The Push Notification configuration for being removed from a Conversation.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConfigurationServiceNotificationRemovedFromConversation =
-	| unknown
-	| null;
+export type ConversationsV1ServiceServiceConfigurationServiceNotificationRemovedFromConversation = unknown | null;

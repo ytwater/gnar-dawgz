@@ -7,29 +7,29 @@
  */
 
 export interface MessagingV1ServiceServiceForNumber {
-	/**
-	 * The SID to identify the number resource.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 */
-	number_sid?: string | null;
-	/**
-	 * The SID of the messaging service that the phone number is in.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^MG[0-9a-fA-F]{32}$
-	 */
-	sid?: string | null;
-	/**
-	 * The string that you assigned to describe the messaging service resource.
-	 * @nullable
-	 */
-	friendly_name?: string | null;
-	/**
-	 * The absolute URL of the Service resource.
-	 * @nullable
-	 */
-	url?: string | null;
+  /**
+   * The SID to identify the number resource.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   */
+  number_sid?: string | null;
+  /**
+   * The SID of the messaging service that the phone number is in.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^MG[0-9a-fA-F]{32}$
+   */
+  sid?: string | null;
+  /**
+   * The string that you assigned to describe the messaging service resource.
+   * @nullable
+   */
+  friendly_name?: string | null;
+  /**
+   * The absolute URL of the Service resource.
+   * @nullable
+   */
+  url?: string | null;
 }

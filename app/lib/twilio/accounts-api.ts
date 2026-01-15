@@ -5,2877 +5,2076 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult,
-} from "@tanstack/react-query";
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
-	AccountsV1AuthTokenPromotion,
-	AccountsV1BulkConsents,
-	AccountsV1BulkContacts,
-	AccountsV1CredentialCredentialAws,
-	AccountsV1CredentialCredentialPublicKey,
-	AccountsV1MessagingGeopermissions,
-	AccountsV1Safelist,
-	AccountsV1SecondaryAuthToken,
-	CreateBulkConsentsBody,
-	CreateBulkContactsBody,
-	CreateCredentialAwsBody,
-	CreateCredentialPublicKeyBody,
-	CreateSafelistBody,
-	DeleteSafelistParams,
-	FetchMessagingGeopermissionsParams,
-	FetchSafelistParams,
-	ListCredentialAws200,
-	ListCredentialAwsParams,
-	ListCredentialPublicKey200,
-	ListCredentialPublicKeyParams,
-	UpdateCredentialAwsBody,
-	UpdateCredentialPublicKeyBody,
-	UpdateMessagingGeopermissionsBody,
-} from "./models";
+  AccountsV1AuthTokenPromotion,
+  AccountsV1BulkConsents,
+  AccountsV1BulkContacts,
+  AccountsV1CredentialCredentialAws,
+  AccountsV1CredentialCredentialPublicKey,
+  AccountsV1MessagingGeopermissions,
+  AccountsV1Safelist,
+  AccountsV1SecondaryAuthToken,
+  CreateBulkConsentsBody,
+  CreateBulkContactsBody,
+  CreateCredentialAwsBody,
+  CreateCredentialPublicKeyBody,
+  CreateSafelistBody,
+  DeleteSafelistParams,
+  FetchMessagingGeopermissionsParams,
+  FetchSafelistParams,
+  ListCredentialAws200,
+  ListCredentialAwsParams,
+  ListCredentialPublicKey200,
+  ListCredentialPublicKeyParams,
+  UpdateCredentialAwsBody,
+  UpdateCredentialPublicKeyBody,
+  UpdateMessagingGeopermissionsBody
+} from './models';
 
 /**
  * Promote the secondary Auth Token to primary. After promoting the new token, all requests to Twilio using your old primary Auth Token will result in an error.
  * @summary Promote the secondary Auth Token to primary. After promoting the new token, all requests to Twilio using your old primary Auth Token will result in an error.
  */
 export type updateAuthTokenPromotionResponse200 = {
-	data: AccountsV1AuthTokenPromotion;
-	status: 200;
+  data: AccountsV1AuthTokenPromotion
+  status: 200
+}
+    
+export type updateAuthTokenPromotionResponseSuccess = (updateAuthTokenPromotionResponse200) & {
+  headers: Headers;
 };
+;
 
-export type updateAuthTokenPromotionResponseSuccess =
-	updateAuthTokenPromotionResponse200 & {
-		headers: Headers;
-	};
-
-export type updateAuthTokenPromotionResponse =
-	updateAuthTokenPromotionResponseSuccess;
+export type updateAuthTokenPromotionResponse = (updateAuthTokenPromotionResponseSuccess)
 
 export const getUpdateAuthTokenPromotionUrl = () => {
-	return "https://api.twilio.com/v1/AuthTokens/Promote";
-};
 
-export const updateAuthTokenPromotion = async (
-	options?: RequestInit,
-): Promise<updateAuthTokenPromotionResponse> => {
-	const res = await fetch(getUpdateAuthTokenPromotionUrl(), {
-		...options,
-		method: "POST",
-	});
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
 
-	const data: updateAuthTokenPromotionResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as updateAuthTokenPromotionResponse;
-};
+  return `https://api.twilio.com/v1/AuthTokens/Promote`
+}
 
-export const getUpdateAuthTokenPromotionMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof updateAuthTokenPromotion>>,
-		TError,
-		void,
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof updateAuthTokenPromotion>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationKey = ["updateAuthTokenPromotion"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+export const updateAuthTokenPromotion = async ( options?: RequestInit): Promise<updateAuthTokenPromotionResponse> => {
+  
+  const res = await fetch(getUpdateAuthTokenPromotionUrl(),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof updateAuthTokenPromotion>>,
-		void
-	> = () => {
-		return updateAuthTokenPromotion(fetchOptions);
-	};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateAuthTokenPromotionResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateAuthTokenPromotionResponse
+}
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type UpdateAuthTokenPromotionMutationResult = NonNullable<
-	Awaited<ReturnType<typeof updateAuthTokenPromotion>>
->;
 
-export type UpdateAuthTokenPromotionMutationError = unknown;
 
-/**
+export const getUpdateAuthTokenPromotionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAuthTokenPromotion>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAuthTokenPromotion>>, TError,void, TContext> => {
+
+const mutationKey = ['updateAuthTokenPromotion'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAuthTokenPromotion>>, void> = () => {
+          
+
+          return  updateAuthTokenPromotion(fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAuthTokenPromotionMutationResult = NonNullable<Awaited<ReturnType<typeof updateAuthTokenPromotion>>>
+    
+    export type UpdateAuthTokenPromotionMutationError = unknown
+
+    /**
  * @summary Promote the secondary Auth Token to primary. After promoting the new token, all requests to Twilio using your old primary Auth Token will result in an error.
  */
-export const useUpdateAuthTokenPromotion = <
-	TError = unknown,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof updateAuthTokenPromotion>>,
-			TError,
-			void,
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof updateAuthTokenPromotion>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationOptions = getUpdateAuthTokenPromotionMutationOptions(options);
+export const useUpdateAuthTokenPromotion = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAuthTokenPromotion>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateAuthTokenPromotion>>,
+        TError,
+        void,
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getUpdateAuthTokenPromotionMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 export type createBulkConsentsResponse201 = {
-	data: AccountsV1BulkConsents;
-	status: 201;
+  data: AccountsV1BulkConsents
+  status: 201
+}
+    
+export type createBulkConsentsResponseSuccess = (createBulkConsentsResponse201) & {
+  headers: Headers;
 };
+;
 
-export type createBulkConsentsResponseSuccess =
-	createBulkConsentsResponse201 & {
-		headers: Headers;
-	};
-
-export type createBulkConsentsResponse = createBulkConsentsResponseSuccess;
+export type createBulkConsentsResponse = (createBulkConsentsResponseSuccess)
 
 export const getCreateBulkConsentsUrl = () => {
-	return "https://api.twilio.com/v1/Consents/Bulk";
-};
 
-export const createBulkConsents = async (
-	createBulkConsentsBody: CreateBulkConsentsBody,
-	options?: RequestInit,
-): Promise<createBulkConsentsResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	createBulkConsentsBody.Items.forEach((value) =>
-		formUrlEncoded.append("Items", value),
-	);
 
-	const res = await fetch(getCreateBulkConsentsUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Consents/Bulk`
+}
 
-	const data: createBulkConsentsResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createBulkConsentsResponse;
-};
+export const createBulkConsents = async (createBulkConsentsBody: CreateBulkConsentsBody, options?: RequestInit): Promise<createBulkConsentsResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+createBulkConsentsBody.Items.forEach(value => formUrlEncoded.append(`Items`, value));
 
-export const getCreateBulkConsentsMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createBulkConsents>>,
-		TError,
-		{ data: CreateBulkConsentsBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof createBulkConsents>>,
-	TError,
-	{ data: CreateBulkConsentsBody },
-	TContext
-> => {
-	const mutationKey = ["createBulkConsents"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const res = await fetch(getCreateBulkConsentsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createBulkConsents>>,
-		{ data: CreateBulkConsentsBody }
-	> = (props) => {
-		const { data } = props ?? {};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createBulkConsentsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createBulkConsentsResponse
+}
 
-		return createBulkConsents(data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type CreateBulkConsentsMutationResult = NonNullable<
-	Awaited<ReturnType<typeof createBulkConsents>>
->;
-export type CreateBulkConsentsMutationBody = CreateBulkConsentsBody;
-export type CreateBulkConsentsMutationError = unknown;
 
-export const useCreateBulkConsents = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createBulkConsents>>,
-			TError,
-			{ data: CreateBulkConsentsBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof createBulkConsents>>,
-	TError,
-	{ data: CreateBulkConsentsBody },
-	TContext
-> => {
-	const mutationOptions = getCreateBulkConsentsMutationOptions(options);
+export const getCreateBulkConsentsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBulkConsents>>, TError,{data: CreateBulkConsentsBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof createBulkConsents>>, TError,{data: CreateBulkConsentsBody}, TContext> => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+const mutationKey = ['createBulkConsents'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createBulkConsents>>, {data: CreateBulkConsentsBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createBulkConsents(data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateBulkConsentsMutationResult = NonNullable<Awaited<ReturnType<typeof createBulkConsents>>>
+    export type CreateBulkConsentsMutationBody = CreateBulkConsentsBody
+    export type CreateBulkConsentsMutationError = unknown
+
+    export const useCreateBulkConsents = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBulkConsents>>, TError,{data: CreateBulkConsentsBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createBulkConsents>>,
+        TError,
+        {data: CreateBulkConsentsBody},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateBulkConsentsMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 export type createBulkContactsResponse201 = {
-	data: AccountsV1BulkContacts;
-	status: 201;
+  data: AccountsV1BulkContacts
+  status: 201
+}
+    
+export type createBulkContactsResponseSuccess = (createBulkContactsResponse201) & {
+  headers: Headers;
 };
+;
 
-export type createBulkContactsResponseSuccess =
-	createBulkContactsResponse201 & {
-		headers: Headers;
-	};
-
-export type createBulkContactsResponse = createBulkContactsResponseSuccess;
+export type createBulkContactsResponse = (createBulkContactsResponseSuccess)
 
 export const getCreateBulkContactsUrl = () => {
-	return "https://api.twilio.com/v1/Contacts/Bulk";
-};
 
-export const createBulkContacts = async (
-	createBulkContactsBody: CreateBulkContactsBody,
-	options?: RequestInit,
-): Promise<createBulkContactsResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	createBulkContactsBody.Items.forEach((value) =>
-		formUrlEncoded.append("Items", value),
-	);
 
-	const res = await fetch(getCreateBulkContactsUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Contacts/Bulk`
+}
 
-	const data: createBulkContactsResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createBulkContactsResponse;
-};
+export const createBulkContacts = async (createBulkContactsBody: CreateBulkContactsBody, options?: RequestInit): Promise<createBulkContactsResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+createBulkContactsBody.Items.forEach(value => formUrlEncoded.append(`Items`, value));
 
-export const getCreateBulkContactsMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createBulkContacts>>,
-		TError,
-		{ data: CreateBulkContactsBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof createBulkContacts>>,
-	TError,
-	{ data: CreateBulkContactsBody },
-	TContext
-> => {
-	const mutationKey = ["createBulkContacts"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const res = await fetch(getCreateBulkContactsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createBulkContacts>>,
-		{ data: CreateBulkContactsBody }
-	> = (props) => {
-		const { data } = props ?? {};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createBulkContactsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createBulkContactsResponse
+}
 
-		return createBulkContacts(data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type CreateBulkContactsMutationResult = NonNullable<
-	Awaited<ReturnType<typeof createBulkContacts>>
->;
-export type CreateBulkContactsMutationBody = CreateBulkContactsBody;
-export type CreateBulkContactsMutationError = unknown;
 
-export const useCreateBulkContacts = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createBulkContacts>>,
-			TError,
-			{ data: CreateBulkContactsBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof createBulkContacts>>,
-	TError,
-	{ data: CreateBulkContactsBody },
-	TContext
-> => {
-	const mutationOptions = getCreateBulkContactsMutationOptions(options);
+export const getCreateBulkContactsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBulkContacts>>, TError,{data: CreateBulkContactsBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof createBulkContacts>>, TError,{data: CreateBulkContactsBody}, TContext> => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+const mutationKey = ['createBulkContacts'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createBulkContacts>>, {data: CreateBulkContactsBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createBulkContacts(data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateBulkContactsMutationResult = NonNullable<Awaited<ReturnType<typeof createBulkContacts>>>
+    export type CreateBulkContactsMutationBody = CreateBulkContactsBody
+    export type CreateBulkContactsMutationError = unknown
+
+    export const useCreateBulkContacts = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBulkContacts>>, TError,{data: CreateBulkContactsBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createBulkContacts>>,
+        TError,
+        {data: CreateBulkContactsBody},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateBulkContactsMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Retrieves a collection of AWS Credentials belonging to the account used to make the request
  * @summary Retrieves a collection of AWS Credentials belonging to the account used to make the request
  */
 export type listCredentialAwsResponse200 = {
-	data: ListCredentialAws200;
-	status: 200;
+  data: ListCredentialAws200
+  status: 200
+}
+    
+export type listCredentialAwsResponseSuccess = (listCredentialAwsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type listCredentialAwsResponseSuccess = listCredentialAwsResponse200 & {
-	headers: Headers;
-};
+export type listCredentialAwsResponse = (listCredentialAwsResponseSuccess)
 
-export type listCredentialAwsResponse = listCredentialAwsResponseSuccess;
+export const getListCredentialAwsUrl = (params?: ListCredentialAwsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
-export const getListCredentialAwsUrl = (params?: ListCredentialAwsParams) => {
-	const normalizedParams = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? "null" : value.toString());
-		}
-	});
+  const stringifiedParams = normalizedParams.toString();
 
-	const stringifiedParams = normalizedParams.toString();
+  return stringifiedParams.length > 0 ? `https://api.twilio.com/v1/Credentials/AWS?${stringifiedParams}` : `https://api.twilio.com/v1/Credentials/AWS`
+}
 
-	return stringifiedParams.length > 0
-		? `https://api.twilio.com/v1/Credentials/AWS?${stringifiedParams}`
-		: "https://api.twilio.com/v1/Credentials/AWS";
-};
+export const listCredentialAws = async (params?: ListCredentialAwsParams, options?: RequestInit): Promise<listCredentialAwsResponse> => {
+  
+  const res = await fetch(getListCredentialAwsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
 
-export const listCredentialAws = async (
-	params?: ListCredentialAwsParams,
-	options?: RequestInit,
-): Promise<listCredentialAwsResponse> => {
-	const res = await fetch(getListCredentialAwsUrl(params), {
-		...options,
-		method: "GET",
-	});
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listCredentialAwsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listCredentialAwsResponse
+}
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: listCredentialAwsResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as listCredentialAwsResponse;
-};
 
-export const getListCredentialAwsQueryKey = (
-	params?: ListCredentialAwsParams,
+
+
+export const getListCredentialAwsQueryKey = (params?: ListCredentialAwsParams,) => {
+    return [
+    `https://api.twilio.com/v1/Credentials/AWS`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getListCredentialAwsQueryOptions = <TData = Awaited<ReturnType<typeof listCredentialAws>>, TError = unknown>(params?: ListCredentialAwsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialAws>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-	return [
-		"https://api.twilio.com/v1/Credentials/AWS",
-		...(params ? [params] : []),
-	] as const;
-};
 
-export const getListCredentialAwsQueryOptions = <
-	TData = Awaited<ReturnType<typeof listCredentialAws>>,
-	TError = unknown,
->(
-	params?: ListCredentialAwsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialAws>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-	const queryKey =
-		queryOptions?.queryKey ?? getListCredentialAwsQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getListCredentialAwsQueryKey(params);
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof listCredentialAws>>
-	> = ({ signal }) => listCredentialAws(params, { signal, ...fetchOptions });
+  
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof listCredentialAws>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCredentialAws>>> = ({ signal }) => listCredentialAws(params, { signal, ...fetchOptions });
 
-export type ListCredentialAwsQueryResult = NonNullable<
-	Awaited<ReturnType<typeof listCredentialAws>>
->;
-export type ListCredentialAwsQueryError = unknown;
+      
 
-export function useListCredentialAws<
-	TData = Awaited<ReturnType<typeof listCredentialAws>>,
-	TError = unknown,
->(
-	params: undefined | ListCredentialAwsParams,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialAws>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listCredentialAws>>,
-					TError,
-					Awaited<ReturnType<typeof listCredentialAws>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListCredentialAws<
-	TData = Awaited<ReturnType<typeof listCredentialAws>>,
-	TError = unknown,
->(
-	params?: ListCredentialAwsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialAws>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listCredentialAws>>,
-					TError,
-					Awaited<ReturnType<typeof listCredentialAws>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListCredentialAws<
-	TData = Awaited<ReturnType<typeof listCredentialAws>>,
-	TError = unknown,
->(
-	params?: ListCredentialAwsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialAws>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCredentialAws>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListCredentialAwsQueryResult = NonNullable<Awaited<ReturnType<typeof listCredentialAws>>>
+export type ListCredentialAwsQueryError = unknown
+
+
+export function useListCredentialAws<TData = Awaited<ReturnType<typeof listCredentialAws>>, TError = unknown>(
+ params: undefined |  ListCredentialAwsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialAws>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCredentialAws>>,
+          TError,
+          Awaited<ReturnType<typeof listCredentialAws>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListCredentialAws<TData = Awaited<ReturnType<typeof listCredentialAws>>, TError = unknown>(
+ params?: ListCredentialAwsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialAws>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCredentialAws>>,
+          TError,
+          Awaited<ReturnType<typeof listCredentialAws>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListCredentialAws<TData = Awaited<ReturnType<typeof listCredentialAws>>, TError = unknown>(
+ params?: ListCredentialAwsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialAws>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieves a collection of AWS Credentials belonging to the account used to make the request
  */
 
-export function useListCredentialAws<
-	TData = Awaited<ReturnType<typeof listCredentialAws>>,
-	TError = unknown,
->(
-	params?: ListCredentialAwsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialAws>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getListCredentialAwsQueryOptions(params, options);
+export function useListCredentialAws<TData = Awaited<ReturnType<typeof listCredentialAws>>, TError = unknown>(
+ params?: ListCredentialAwsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialAws>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getListCredentialAwsQueryOptions(params,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
+
+
+
+
 
 /**
  * Create a new AWS Credential
  * @summary Create a new AWS Credential
  */
 export type createCredentialAwsResponse201 = {
-	data: AccountsV1CredentialCredentialAws;
-	status: 201;
+  data: AccountsV1CredentialCredentialAws
+  status: 201
+}
+    
+export type createCredentialAwsResponseSuccess = (createCredentialAwsResponse201) & {
+  headers: Headers;
 };
+;
 
-export type createCredentialAwsResponseSuccess =
-	createCredentialAwsResponse201 & {
-		headers: Headers;
-	};
-
-export type createCredentialAwsResponse = createCredentialAwsResponseSuccess;
+export type createCredentialAwsResponse = (createCredentialAwsResponseSuccess)
 
 export const getCreateCredentialAwsUrl = () => {
-	return "https://api.twilio.com/v1/Credentials/AWS";
-};
 
-export const createCredentialAws = async (
-	createCredentialAwsBody: CreateCredentialAwsBody,
-	options?: RequestInit,
-): Promise<createCredentialAwsResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append("Credentials", createCredentialAwsBody.Credentials);
-	if (createCredentialAwsBody.FriendlyName !== undefined) {
-		formUrlEncoded.append("FriendlyName", createCredentialAwsBody.FriendlyName);
-	}
-	if (createCredentialAwsBody.AccountSid !== undefined) {
-		formUrlEncoded.append("AccountSid", createCredentialAwsBody.AccountSid);
-	}
 
-	const res = await fetch(getCreateCredentialAwsUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Credentials/AWS`
+}
 
-	const data: createCredentialAwsResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createCredentialAwsResponse;
-};
+export const createCredentialAws = async (createCredentialAwsBody: CreateCredentialAwsBody, options?: RequestInit): Promise<createCredentialAwsResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+formUrlEncoded.append(`Credentials`, createCredentialAwsBody.Credentials)
+if(createCredentialAwsBody.FriendlyName !== undefined) {
+ formUrlEncoded.append(`FriendlyName`, createCredentialAwsBody.FriendlyName)
+ }
+if(createCredentialAwsBody.AccountSid !== undefined) {
+ formUrlEncoded.append(`AccountSid`, createCredentialAwsBody.AccountSid)
+ }
 
-export const getCreateCredentialAwsMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createCredentialAws>>,
-		TError,
-		{ data: CreateCredentialAwsBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof createCredentialAws>>,
-	TError,
-	{ data: CreateCredentialAwsBody },
-	TContext
-> => {
-	const mutationKey = ["createCredentialAws"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const res = await fetch(getCreateCredentialAwsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createCredentialAws>>,
-		{ data: CreateCredentialAwsBody }
-	> = (props) => {
-		const { data } = props ?? {};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createCredentialAwsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createCredentialAwsResponse
+}
 
-		return createCredentialAws(data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type CreateCredentialAwsMutationResult = NonNullable<
-	Awaited<ReturnType<typeof createCredentialAws>>
->;
-export type CreateCredentialAwsMutationBody = CreateCredentialAwsBody;
-export type CreateCredentialAwsMutationError = unknown;
 
-/**
+export const getCreateCredentialAwsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCredentialAws>>, TError,{data: CreateCredentialAwsBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof createCredentialAws>>, TError,{data: CreateCredentialAwsBody}, TContext> => {
+
+const mutationKey = ['createCredentialAws'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createCredentialAws>>, {data: CreateCredentialAwsBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createCredentialAws(data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateCredentialAwsMutationResult = NonNullable<Awaited<ReturnType<typeof createCredentialAws>>>
+    export type CreateCredentialAwsMutationBody = CreateCredentialAwsBody
+    export type CreateCredentialAwsMutationError = unknown
+
+    /**
  * @summary Create a new AWS Credential
  */
-export const useCreateCredentialAws = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createCredentialAws>>,
-			TError,
-			{ data: CreateCredentialAwsBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof createCredentialAws>>,
-	TError,
-	{ data: CreateCredentialAwsBody },
-	TContext
-> => {
-	const mutationOptions = getCreateCredentialAwsMutationOptions(options);
+export const useCreateCredentialAws = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCredentialAws>>, TError,{data: CreateCredentialAwsBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createCredentialAws>>,
+        TError,
+        {data: CreateCredentialAwsBody},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getCreateCredentialAwsMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Fetch the AWS credentials specified by the provided Credential Sid
  * @summary Fetch the AWS credentials specified by the provided Credential Sid
  */
 export type fetchCredentialAwsResponse200 = {
-	data: AccountsV1CredentialCredentialAws;
-	status: 200;
+  data: AccountsV1CredentialCredentialAws
+  status: 200
+}
+    
+export type fetchCredentialAwsResponseSuccess = (fetchCredentialAwsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type fetchCredentialAwsResponseSuccess =
-	fetchCredentialAwsResponse200 & {
-		headers: Headers;
-	};
+export type fetchCredentialAwsResponse = (fetchCredentialAwsResponseSuccess)
 
-export type fetchCredentialAwsResponse = fetchCredentialAwsResponseSuccess;
+export const getFetchCredentialAwsUrl = (sid: string,) => {
 
-export const getFetchCredentialAwsUrl = (sid: string) => {
-	return `https://api.twilio.com/v1/Credentials/AWS/${sid}`;
-};
 
-export const fetchCredentialAws = async (
-	sid: string,
-	options?: RequestInit,
-): Promise<fetchCredentialAwsResponse> => {
-	const res = await fetch(getFetchCredentialAwsUrl(sid), {
-		...options,
-		method: "GET",
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Credentials/AWS/${sid}`
+}
 
-	const data: fetchCredentialAwsResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as fetchCredentialAwsResponse;
-};
+export const fetchCredentialAws = async (sid: string, options?: RequestInit): Promise<fetchCredentialAwsResponse> => {
+  
+  const res = await fetch(getFetchCredentialAwsUrl(sid),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
 
-export const getFetchCredentialAwsQueryKey = (sid?: string) => {
-	return [`https://api.twilio.com/v1/Credentials/AWS/${sid}`] as const;
-};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: fetchCredentialAwsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as fetchCredentialAwsResponse
+}
 
-export const getFetchCredentialAwsQueryOptions = <
-	TData = Awaited<ReturnType<typeof fetchCredentialAws>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialAws>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
+
+
+
+
+export const getFetchCredentialAwsQueryKey = (sid?: string,) => {
+    return [
+    `https://api.twilio.com/v1/Credentials/AWS/${sid}`
+    ] as const;
+    }
+
+    
+export const getFetchCredentialAwsQueryOptions = <TData = Awaited<ReturnType<typeof fetchCredentialAws>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialAws>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getFetchCredentialAwsQueryKey(sid);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof fetchCredentialAws>>
-	> = ({ signal }) => fetchCredentialAws(sid, { signal, ...fetchOptions });
+  const queryKey =  queryOptions?.queryKey ?? getFetchCredentialAwsQueryKey(sid);
 
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!sid,
-		...queryOptions,
-	} as UseQueryOptions<
-		Awaited<ReturnType<typeof fetchCredentialAws>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  
 
-export type FetchCredentialAwsQueryResult = NonNullable<
-	Awaited<ReturnType<typeof fetchCredentialAws>>
->;
-export type FetchCredentialAwsQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchCredentialAws>>> = ({ signal }) => fetchCredentialAws(sid, { signal, ...fetchOptions });
 
-export function useFetchCredentialAws<
-	TData = Awaited<ReturnType<typeof fetchCredentialAws>>,
-	TError = unknown,
->(
-	sid: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialAws>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchCredentialAws>>,
-					TError,
-					Awaited<ReturnType<typeof fetchCredentialAws>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchCredentialAws<
-	TData = Awaited<ReturnType<typeof fetchCredentialAws>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialAws>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchCredentialAws>>,
-					TError,
-					Awaited<ReturnType<typeof fetchCredentialAws>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchCredentialAws<
-	TData = Awaited<ReturnType<typeof fetchCredentialAws>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialAws>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialAws>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FetchCredentialAwsQueryResult = NonNullable<Awaited<ReturnType<typeof fetchCredentialAws>>>
+export type FetchCredentialAwsQueryError = unknown
+
+
+export function useFetchCredentialAws<TData = Awaited<ReturnType<typeof fetchCredentialAws>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialAws>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchCredentialAws>>,
+          TError,
+          Awaited<ReturnType<typeof fetchCredentialAws>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchCredentialAws<TData = Awaited<ReturnType<typeof fetchCredentialAws>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialAws>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchCredentialAws>>,
+          TError,
+          Awaited<ReturnType<typeof fetchCredentialAws>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchCredentialAws<TData = Awaited<ReturnType<typeof fetchCredentialAws>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialAws>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the AWS credentials specified by the provided Credential Sid
  */
 
-export function useFetchCredentialAws<
-	TData = Awaited<ReturnType<typeof fetchCredentialAws>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialAws>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getFetchCredentialAwsQueryOptions(sid, options);
+export function useFetchCredentialAws<TData = Awaited<ReturnType<typeof fetchCredentialAws>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialAws>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getFetchCredentialAwsQueryOptions(sid,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
+
+
+
+
 
 /**
  * Modify the properties of a given Account
  * @summary Modify the properties of a given Account
  */
 export type updateCredentialAwsResponse200 = {
-	data: AccountsV1CredentialCredentialAws;
-	status: 200;
+  data: AccountsV1CredentialCredentialAws
+  status: 200
+}
+    
+export type updateCredentialAwsResponseSuccess = (updateCredentialAwsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type updateCredentialAwsResponseSuccess =
-	updateCredentialAwsResponse200 & {
-		headers: Headers;
-	};
+export type updateCredentialAwsResponse = (updateCredentialAwsResponseSuccess)
 
-export type updateCredentialAwsResponse = updateCredentialAwsResponseSuccess;
+export const getUpdateCredentialAwsUrl = (sid: string,) => {
 
-export const getUpdateCredentialAwsUrl = (sid: string) => {
-	return `https://api.twilio.com/v1/Credentials/AWS/${sid}`;
-};
 
-export const updateCredentialAws = async (
-	sid: string,
-	updateCredentialAwsBody: UpdateCredentialAwsBody,
-	options?: RequestInit,
-): Promise<updateCredentialAwsResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	if (updateCredentialAwsBody.FriendlyName !== undefined) {
-		formUrlEncoded.append("FriendlyName", updateCredentialAwsBody.FriendlyName);
-	}
+  
 
-	const res = await fetch(getUpdateCredentialAwsUrl(sid), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  return `https://api.twilio.com/v1/Credentials/AWS/${sid}`
+}
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+export const updateCredentialAws = async (sid: string,
+    updateCredentialAwsBody: UpdateCredentialAwsBody, options?: RequestInit): Promise<updateCredentialAwsResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+if(updateCredentialAwsBody.FriendlyName !== undefined) {
+ formUrlEncoded.append(`FriendlyName`, updateCredentialAwsBody.FriendlyName)
+ }
 
-	const data: updateCredentialAwsResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as updateCredentialAwsResponse;
-};
+  const res = await fetch(getUpdateCredentialAwsUrl(sid),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
 
-export const getUpdateCredentialAwsMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof updateCredentialAws>>,
-		TError,
-		{ sid: string; data: UpdateCredentialAwsBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof updateCredentialAws>>,
-	TError,
-	{ sid: string; data: UpdateCredentialAwsBody },
-	TContext
-> => {
-	const mutationKey = ["updateCredentialAws"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateCredentialAwsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateCredentialAwsResponse
+}
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof updateCredentialAws>>,
-		{ sid: string; data: UpdateCredentialAwsBody }
-	> = (props) => {
-		const { sid, data } = props ?? {};
 
-		return updateCredentialAws(sid, data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type UpdateCredentialAwsMutationResult = NonNullable<
-	Awaited<ReturnType<typeof updateCredentialAws>>
->;
-export type UpdateCredentialAwsMutationBody = UpdateCredentialAwsBody;
-export type UpdateCredentialAwsMutationError = unknown;
+export const getUpdateCredentialAwsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCredentialAws>>, TError,{sid: string;data: UpdateCredentialAwsBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCredentialAws>>, TError,{sid: string;data: UpdateCredentialAwsBody}, TContext> => {
 
-/**
+const mutationKey = ['updateCredentialAws'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCredentialAws>>, {sid: string;data: UpdateCredentialAwsBody}> = (props) => {
+          const {sid,data} = props ?? {};
+
+          return  updateCredentialAws(sid,data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCredentialAwsMutationResult = NonNullable<Awaited<ReturnType<typeof updateCredentialAws>>>
+    export type UpdateCredentialAwsMutationBody = UpdateCredentialAwsBody
+    export type UpdateCredentialAwsMutationError = unknown
+
+    /**
  * @summary Modify the properties of a given Account
  */
-export const useUpdateCredentialAws = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof updateCredentialAws>>,
-			TError,
-			{ sid: string; data: UpdateCredentialAwsBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof updateCredentialAws>>,
-	TError,
-	{ sid: string; data: UpdateCredentialAwsBody },
-	TContext
-> => {
-	const mutationOptions = getUpdateCredentialAwsMutationOptions(options);
+export const useUpdateCredentialAws = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCredentialAws>>, TError,{sid: string;data: UpdateCredentialAwsBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCredentialAws>>,
+        TError,
+        {sid: string;data: UpdateCredentialAwsBody},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getUpdateCredentialAwsMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Delete a Credential from your account
  * @summary Delete a Credential from your account
  */
 export type deleteCredentialAwsResponse204 = {
-	data: undefined;
-	status: 204;
+  data: void
+  status: 204
+}
+    
+export type deleteCredentialAwsResponseSuccess = (deleteCredentialAwsResponse204) & {
+  headers: Headers;
 };
+;
 
-export type deleteCredentialAwsResponseSuccess =
-	deleteCredentialAwsResponse204 & {
-		headers: Headers;
-	};
+export type deleteCredentialAwsResponse = (deleteCredentialAwsResponseSuccess)
 
-export type deleteCredentialAwsResponse = deleteCredentialAwsResponseSuccess;
+export const getDeleteCredentialAwsUrl = (sid: string,) => {
 
-export const getDeleteCredentialAwsUrl = (sid: string) => {
-	return `https://api.twilio.com/v1/Credentials/AWS/${sid}`;
-};
 
-export const deleteCredentialAws = async (
-	sid: string,
-	options?: RequestInit,
-): Promise<deleteCredentialAwsResponse> => {
-	const res = await fetch(getDeleteCredentialAwsUrl(sid), {
-		...options,
-		method: "DELETE",
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Credentials/AWS/${sid}`
+}
 
-	const data: deleteCredentialAwsResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as deleteCredentialAwsResponse;
-};
+export const deleteCredentialAws = async (sid: string, options?: RequestInit): Promise<deleteCredentialAwsResponse> => {
+  
+  const res = await fetch(getDeleteCredentialAwsUrl(sid),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
 
-export const getDeleteCredentialAwsMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof deleteCredentialAws>>,
-		TError,
-		{ sid: string },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof deleteCredentialAws>>,
-	TError,
-	{ sid: string },
-	TContext
-> => {
-	const mutationKey = ["deleteCredentialAws"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteCredentialAwsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteCredentialAwsResponse
+}
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof deleteCredentialAws>>,
-		{ sid: string }
-	> = (props) => {
-		const { sid } = props ?? {};
 
-		return deleteCredentialAws(sid, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type DeleteCredentialAwsMutationResult = NonNullable<
-	Awaited<ReturnType<typeof deleteCredentialAws>>
->;
+export const getDeleteCredentialAwsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCredentialAws>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteCredentialAws>>, TError,{sid: string}, TContext> => {
 
-export type DeleteCredentialAwsMutationError = unknown;
+const mutationKey = ['deleteCredentialAws'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCredentialAws>>, {sid: string}> = (props) => {
+          const {sid} = props ?? {};
+
+          return  deleteCredentialAws(sid,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteCredentialAwsMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCredentialAws>>>
+    
+    export type DeleteCredentialAwsMutationError = unknown
+
+    /**
  * @summary Delete a Credential from your account
  */
-export const useDeleteCredentialAws = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof deleteCredentialAws>>,
-			TError,
-			{ sid: string },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof deleteCredentialAws>>,
-	TError,
-	{ sid: string },
-	TContext
-> => {
-	const mutationOptions = getDeleteCredentialAwsMutationOptions(options);
+export const useDeleteCredentialAws = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCredentialAws>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteCredentialAws>>,
+        TError,
+        {sid: string},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getDeleteCredentialAwsMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Retrieves a collection of Public Key Credentials belonging to the account used to make the request
  * @summary Retrieves a collection of Public Key Credentials belonging to the account used to make the request
  */
 export type listCredentialPublicKeyResponse200 = {
-	data: ListCredentialPublicKey200;
-	status: 200;
+  data: ListCredentialPublicKey200
+  status: 200
+}
+    
+export type listCredentialPublicKeyResponseSuccess = (listCredentialPublicKeyResponse200) & {
+  headers: Headers;
 };
+;
 
-export type listCredentialPublicKeyResponseSuccess =
-	listCredentialPublicKeyResponse200 & {
-		headers: Headers;
-	};
+export type listCredentialPublicKeyResponse = (listCredentialPublicKeyResponseSuccess)
 
-export type listCredentialPublicKeyResponse =
-	listCredentialPublicKeyResponseSuccess;
+export const getListCredentialPublicKeyUrl = (params?: ListCredentialPublicKeyParams,) => {
+  const normalizedParams = new URLSearchParams();
 
-export const getListCredentialPublicKeyUrl = (
-	params?: ListCredentialPublicKeyParams,
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `https://api.twilio.com/v1/Credentials/PublicKeys?${stringifiedParams}` : `https://api.twilio.com/v1/Credentials/PublicKeys`
+}
+
+export const listCredentialPublicKey = async (params?: ListCredentialPublicKeyParams, options?: RequestInit): Promise<listCredentialPublicKeyResponse> => {
+  
+  const res = await fetch(getListCredentialPublicKeyUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listCredentialPublicKeyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listCredentialPublicKeyResponse
+}
+
+
+
+
+
+export const getListCredentialPublicKeyQueryKey = (params?: ListCredentialPublicKeyParams,) => {
+    return [
+    `https://api.twilio.com/v1/Credentials/PublicKeys`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getListCredentialPublicKeyQueryOptions = <TData = Awaited<ReturnType<typeof listCredentialPublicKey>>, TError = unknown>(params?: ListCredentialPublicKeyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialPublicKey>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-	const normalizedParams = new URLSearchParams();
 
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? "null" : value.toString());
-		}
-	});
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-	const stringifiedParams = normalizedParams.toString();
+  const queryKey =  queryOptions?.queryKey ?? getListCredentialPublicKeyQueryKey(params);
 
-	return stringifiedParams.length > 0
-		? `https://api.twilio.com/v1/Credentials/PublicKeys?${stringifiedParams}`
-		: "https://api.twilio.com/v1/Credentials/PublicKeys";
-};
+  
 
-export const listCredentialPublicKey = async (
-	params?: ListCredentialPublicKeyParams,
-	options?: RequestInit,
-): Promise<listCredentialPublicKeyResponse> => {
-	const res = await fetch(getListCredentialPublicKeyUrl(params), {
-		...options,
-		method: "GET",
-	});
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCredentialPublicKey>>> = ({ signal }) => listCredentialPublicKey(params, { signal, ...fetchOptions });
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+      
 
-	const data: listCredentialPublicKeyResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as listCredentialPublicKeyResponse;
-};
+      
 
-export const getListCredentialPublicKeyQueryKey = (
-	params?: ListCredentialPublicKeyParams,
-) => {
-	return [
-		"https://api.twilio.com/v1/Credentials/PublicKeys",
-		...(params ? [params] : []),
-	] as const;
-};
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCredentialPublicKey>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-export const getListCredentialPublicKeyQueryOptions = <
-	TData = Awaited<ReturnType<typeof listCredentialPublicKey>>,
-	TError = unknown,
->(
-	params?: ListCredentialPublicKeyParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+export type ListCredentialPublicKeyQueryResult = NonNullable<Awaited<ReturnType<typeof listCredentialPublicKey>>>
+export type ListCredentialPublicKeyQueryError = unknown
 
-	const queryKey =
-		queryOptions?.queryKey ?? getListCredentialPublicKeyQueryKey(params);
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof listCredentialPublicKey>>
-	> = ({ signal }) =>
-		listCredentialPublicKey(params, { signal, ...fetchOptions });
-
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof listCredentialPublicKey>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type ListCredentialPublicKeyQueryResult = NonNullable<
-	Awaited<ReturnType<typeof listCredentialPublicKey>>
->;
-export type ListCredentialPublicKeyQueryError = unknown;
-
-export function useListCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof listCredentialPublicKey>>,
-	TError = unknown,
->(
-	params: undefined | ListCredentialPublicKeyParams,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listCredentialPublicKey>>,
-					TError,
-					Awaited<ReturnType<typeof listCredentialPublicKey>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof listCredentialPublicKey>>,
-	TError = unknown,
->(
-	params?: ListCredentialPublicKeyParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listCredentialPublicKey>>,
-					TError,
-					Awaited<ReturnType<typeof listCredentialPublicKey>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof listCredentialPublicKey>>,
-	TError = unknown,
->(
-	params?: ListCredentialPublicKeyParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
+export function useListCredentialPublicKey<TData = Awaited<ReturnType<typeof listCredentialPublicKey>>, TError = unknown>(
+ params: undefined |  ListCredentialPublicKeyParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialPublicKey>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCredentialPublicKey>>,
+          TError,
+          Awaited<ReturnType<typeof listCredentialPublicKey>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListCredentialPublicKey<TData = Awaited<ReturnType<typeof listCredentialPublicKey>>, TError = unknown>(
+ params?: ListCredentialPublicKeyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialPublicKey>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCredentialPublicKey>>,
+          TError,
+          Awaited<ReturnType<typeof listCredentialPublicKey>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListCredentialPublicKey<TData = Awaited<ReturnType<typeof listCredentialPublicKey>>, TError = unknown>(
+ params?: ListCredentialPublicKeyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialPublicKey>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Retrieves a collection of Public Key Credentials belonging to the account used to make the request
  */
 
-export function useListCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof listCredentialPublicKey>>,
-	TError = unknown,
->(
-	params?: ListCredentialPublicKeyParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof listCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getListCredentialPublicKeyQueryOptions(params, options);
+export function useListCredentialPublicKey<TData = Awaited<ReturnType<typeof listCredentialPublicKey>>, TError = unknown>(
+ params?: ListCredentialPublicKeyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listCredentialPublicKey>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getListCredentialPublicKeyQueryOptions(params,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
+
+
+
+
 
 /**
  * Create a new Public Key Credential
  * @summary Create a new Public Key Credential
  */
 export type createCredentialPublicKeyResponse201 = {
-	data: AccountsV1CredentialCredentialPublicKey;
-	status: 201;
+  data: AccountsV1CredentialCredentialPublicKey
+  status: 201
+}
+    
+export type createCredentialPublicKeyResponseSuccess = (createCredentialPublicKeyResponse201) & {
+  headers: Headers;
 };
+;
 
-export type createCredentialPublicKeyResponseSuccess =
-	createCredentialPublicKeyResponse201 & {
-		headers: Headers;
-	};
-
-export type createCredentialPublicKeyResponse =
-	createCredentialPublicKeyResponseSuccess;
+export type createCredentialPublicKeyResponse = (createCredentialPublicKeyResponseSuccess)
 
 export const getCreateCredentialPublicKeyUrl = () => {
-	return "https://api.twilio.com/v1/Credentials/PublicKeys";
-};
 
-export const createCredentialPublicKey = async (
-	createCredentialPublicKeyBody: CreateCredentialPublicKeyBody,
-	options?: RequestInit,
-): Promise<createCredentialPublicKeyResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append("PublicKey", createCredentialPublicKeyBody.PublicKey);
-	if (createCredentialPublicKeyBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(
-			"FriendlyName",
-			createCredentialPublicKeyBody.FriendlyName,
-		);
-	}
-	if (createCredentialPublicKeyBody.AccountSid !== undefined) {
-		formUrlEncoded.append(
-			"AccountSid",
-			createCredentialPublicKeyBody.AccountSid,
-		);
-	}
 
-	const res = await fetch(getCreateCredentialPublicKeyUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Credentials/PublicKeys`
+}
 
-	const data: createCredentialPublicKeyResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createCredentialPublicKeyResponse;
-};
+export const createCredentialPublicKey = async (createCredentialPublicKeyBody: CreateCredentialPublicKeyBody, options?: RequestInit): Promise<createCredentialPublicKeyResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+formUrlEncoded.append(`PublicKey`, createCredentialPublicKeyBody.PublicKey)
+if(createCredentialPublicKeyBody.FriendlyName !== undefined) {
+ formUrlEncoded.append(`FriendlyName`, createCredentialPublicKeyBody.FriendlyName)
+ }
+if(createCredentialPublicKeyBody.AccountSid !== undefined) {
+ formUrlEncoded.append(`AccountSid`, createCredentialPublicKeyBody.AccountSid)
+ }
 
-export const getCreateCredentialPublicKeyMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createCredentialPublicKey>>,
-		TError,
-		{ data: CreateCredentialPublicKeyBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof createCredentialPublicKey>>,
-	TError,
-	{ data: CreateCredentialPublicKeyBody },
-	TContext
-> => {
-	const mutationKey = ["createCredentialPublicKey"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const res = await fetch(getCreateCredentialPublicKeyUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createCredentialPublicKey>>,
-		{ data: CreateCredentialPublicKeyBody }
-	> = (props) => {
-		const { data } = props ?? {};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createCredentialPublicKeyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createCredentialPublicKeyResponse
+}
 
-		return createCredentialPublicKey(data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type CreateCredentialPublicKeyMutationResult = NonNullable<
-	Awaited<ReturnType<typeof createCredentialPublicKey>>
->;
-export type CreateCredentialPublicKeyMutationBody =
-	CreateCredentialPublicKeyBody;
-export type CreateCredentialPublicKeyMutationError = unknown;
 
-/**
+export const getCreateCredentialPublicKeyMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCredentialPublicKey>>, TError,{data: CreateCredentialPublicKeyBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof createCredentialPublicKey>>, TError,{data: CreateCredentialPublicKeyBody}, TContext> => {
+
+const mutationKey = ['createCredentialPublicKey'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createCredentialPublicKey>>, {data: CreateCredentialPublicKeyBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createCredentialPublicKey(data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateCredentialPublicKeyMutationResult = NonNullable<Awaited<ReturnType<typeof createCredentialPublicKey>>>
+    export type CreateCredentialPublicKeyMutationBody = CreateCredentialPublicKeyBody
+    export type CreateCredentialPublicKeyMutationError = unknown
+
+    /**
  * @summary Create a new Public Key Credential
  */
-export const useCreateCredentialPublicKey = <
-	TError = unknown,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createCredentialPublicKey>>,
-			TError,
-			{ data: CreateCredentialPublicKeyBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof createCredentialPublicKey>>,
-	TError,
-	{ data: CreateCredentialPublicKeyBody },
-	TContext
-> => {
-	const mutationOptions = getCreateCredentialPublicKeyMutationOptions(options);
+export const useCreateCredentialPublicKey = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCredentialPublicKey>>, TError,{data: CreateCredentialPublicKeyBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createCredentialPublicKey>>,
+        TError,
+        {data: CreateCredentialPublicKeyBody},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getCreateCredentialPublicKeyMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Fetch the public key specified by the provided Credential Sid
  * @summary Fetch the public key specified by the provided Credential Sid
  */
 export type fetchCredentialPublicKeyResponse200 = {
-	data: AccountsV1CredentialCredentialPublicKey;
-	status: 200;
+  data: AccountsV1CredentialCredentialPublicKey
+  status: 200
+}
+    
+export type fetchCredentialPublicKeyResponseSuccess = (fetchCredentialPublicKeyResponse200) & {
+  headers: Headers;
 };
+;
 
-export type fetchCredentialPublicKeyResponseSuccess =
-	fetchCredentialPublicKeyResponse200 & {
-		headers: Headers;
-	};
+export type fetchCredentialPublicKeyResponse = (fetchCredentialPublicKeyResponseSuccess)
 
-export type fetchCredentialPublicKeyResponse =
-	fetchCredentialPublicKeyResponseSuccess;
+export const getFetchCredentialPublicKeyUrl = (sid: string,) => {
 
-export const getFetchCredentialPublicKeyUrl = (sid: string) => {
-	return `https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`;
-};
 
-export const fetchCredentialPublicKey = async (
-	sid: string,
-	options?: RequestInit,
-): Promise<fetchCredentialPublicKeyResponse> => {
-	const res = await fetch(getFetchCredentialPublicKeyUrl(sid), {
-		...options,
-		method: "GET",
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`
+}
 
-	const data: fetchCredentialPublicKeyResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as fetchCredentialPublicKeyResponse;
-};
+export const fetchCredentialPublicKey = async (sid: string, options?: RequestInit): Promise<fetchCredentialPublicKeyResponse> => {
+  
+  const res = await fetch(getFetchCredentialPublicKeyUrl(sid),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
 
-export const getFetchCredentialPublicKeyQueryKey = (sid?: string) => {
-	return [`https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`] as const;
-};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: fetchCredentialPublicKeyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as fetchCredentialPublicKeyResponse
+}
 
-export const getFetchCredentialPublicKeyQueryOptions = <
-	TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
+
+
+
+
+export const getFetchCredentialPublicKeyQueryKey = (sid?: string,) => {
+    return [
+    `https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`
+    ] as const;
+    }
+
+    
+export const getFetchCredentialPublicKeyQueryOptions = <TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError = unknown>(sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-	const queryKey =
-		queryOptions?.queryKey ?? getFetchCredentialPublicKeyQueryKey(sid);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof fetchCredentialPublicKey>>
-	> = ({ signal }) =>
-		fetchCredentialPublicKey(sid, { signal, ...fetchOptions });
+  const queryKey =  queryOptions?.queryKey ?? getFetchCredentialPublicKeyQueryKey(sid);
 
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!sid,
-		...queryOptions,
-	} as UseQueryOptions<
-		Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  
 
-export type FetchCredentialPublicKeyQueryResult = NonNullable<
-	Awaited<ReturnType<typeof fetchCredentialPublicKey>>
->;
-export type FetchCredentialPublicKeyQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchCredentialPublicKey>>> = ({ signal }) => fetchCredentialPublicKey(sid, { signal, ...fetchOptions });
 
-export function useFetchCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-	TError = unknown,
->(
-	sid: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-					TError,
-					Awaited<ReturnType<typeof fetchCredentialPublicKey>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-					TError,
-					Awaited<ReturnType<typeof fetchCredentialPublicKey>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(sid), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FetchCredentialPublicKeyQueryResult = NonNullable<Awaited<ReturnType<typeof fetchCredentialPublicKey>>>
+export type FetchCredentialPublicKeyQueryError = unknown
+
+
+export function useFetchCredentialPublicKey<TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError = unknown>(
+ sid: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
+          TError,
+          Awaited<ReturnType<typeof fetchCredentialPublicKey>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchCredentialPublicKey<TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
+          TError,
+          Awaited<ReturnType<typeof fetchCredentialPublicKey>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchCredentialPublicKey<TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Fetch the public key specified by the provided Credential Sid
  */
 
-export function useFetchCredentialPublicKey<
-	TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-	TError = unknown,
->(
-	sid: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchCredentialPublicKey>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getFetchCredentialPublicKeyQueryOptions(sid, options);
+export function useFetchCredentialPublicKey<TData = Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError = unknown>(
+ sid: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCredentialPublicKey>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getFetchCredentialPublicKeyQueryOptions(sid,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
+
+
+
+
 
 /**
  * Modify the properties of a given Account
  * @summary Modify the properties of a given Account
  */
 export type updateCredentialPublicKeyResponse200 = {
-	data: AccountsV1CredentialCredentialPublicKey;
-	status: 200;
+  data: AccountsV1CredentialCredentialPublicKey
+  status: 200
+}
+    
+export type updateCredentialPublicKeyResponseSuccess = (updateCredentialPublicKeyResponse200) & {
+  headers: Headers;
 };
+;
 
-export type updateCredentialPublicKeyResponseSuccess =
-	updateCredentialPublicKeyResponse200 & {
-		headers: Headers;
-	};
+export type updateCredentialPublicKeyResponse = (updateCredentialPublicKeyResponseSuccess)
 
-export type updateCredentialPublicKeyResponse =
-	updateCredentialPublicKeyResponseSuccess;
+export const getUpdateCredentialPublicKeyUrl = (sid: string,) => {
 
-export const getUpdateCredentialPublicKeyUrl = (sid: string) => {
-	return `https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`;
-};
 
-export const updateCredentialPublicKey = async (
-	sid: string,
-	updateCredentialPublicKeyBody: UpdateCredentialPublicKeyBody,
-	options?: RequestInit,
-): Promise<updateCredentialPublicKeyResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	if (updateCredentialPublicKeyBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(
-			"FriendlyName",
-			updateCredentialPublicKeyBody.FriendlyName,
-		);
-	}
+  
 
-	const res = await fetch(getUpdateCredentialPublicKeyUrl(sid), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  return `https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`
+}
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+export const updateCredentialPublicKey = async (sid: string,
+    updateCredentialPublicKeyBody: UpdateCredentialPublicKeyBody, options?: RequestInit): Promise<updateCredentialPublicKeyResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+if(updateCredentialPublicKeyBody.FriendlyName !== undefined) {
+ formUrlEncoded.append(`FriendlyName`, updateCredentialPublicKeyBody.FriendlyName)
+ }
 
-	const data: updateCredentialPublicKeyResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as updateCredentialPublicKeyResponse;
-};
+  const res = await fetch(getUpdateCredentialPublicKeyUrl(sid),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
 
-export const getUpdateCredentialPublicKeyMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof updateCredentialPublicKey>>,
-		TError,
-		{ sid: string; data: UpdateCredentialPublicKeyBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof updateCredentialPublicKey>>,
-	TError,
-	{ sid: string; data: UpdateCredentialPublicKeyBody },
-	TContext
-> => {
-	const mutationKey = ["updateCredentialPublicKey"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateCredentialPublicKeyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateCredentialPublicKeyResponse
+}
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof updateCredentialPublicKey>>,
-		{ sid: string; data: UpdateCredentialPublicKeyBody }
-	> = (props) => {
-		const { sid, data } = props ?? {};
 
-		return updateCredentialPublicKey(sid, data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type UpdateCredentialPublicKeyMutationResult = NonNullable<
-	Awaited<ReturnType<typeof updateCredentialPublicKey>>
->;
-export type UpdateCredentialPublicKeyMutationBody =
-	UpdateCredentialPublicKeyBody;
-export type UpdateCredentialPublicKeyMutationError = unknown;
+export const getUpdateCredentialPublicKeyMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCredentialPublicKey>>, TError,{sid: string;data: UpdateCredentialPublicKeyBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCredentialPublicKey>>, TError,{sid: string;data: UpdateCredentialPublicKeyBody}, TContext> => {
 
-/**
+const mutationKey = ['updateCredentialPublicKey'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCredentialPublicKey>>, {sid: string;data: UpdateCredentialPublicKeyBody}> = (props) => {
+          const {sid,data} = props ?? {};
+
+          return  updateCredentialPublicKey(sid,data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCredentialPublicKeyMutationResult = NonNullable<Awaited<ReturnType<typeof updateCredentialPublicKey>>>
+    export type UpdateCredentialPublicKeyMutationBody = UpdateCredentialPublicKeyBody
+    export type UpdateCredentialPublicKeyMutationError = unknown
+
+    /**
  * @summary Modify the properties of a given Account
  */
-export const useUpdateCredentialPublicKey = <
-	TError = unknown,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof updateCredentialPublicKey>>,
-			TError,
-			{ sid: string; data: UpdateCredentialPublicKeyBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof updateCredentialPublicKey>>,
-	TError,
-	{ sid: string; data: UpdateCredentialPublicKeyBody },
-	TContext
-> => {
-	const mutationOptions = getUpdateCredentialPublicKeyMutationOptions(options);
+export const useUpdateCredentialPublicKey = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCredentialPublicKey>>, TError,{sid: string;data: UpdateCredentialPublicKeyBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCredentialPublicKey>>,
+        TError,
+        {sid: string;data: UpdateCredentialPublicKeyBody},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getUpdateCredentialPublicKeyMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Delete a Credential from your account
  * @summary Delete a Credential from your account
  */
 export type deleteCredentialPublicKeyResponse204 = {
-	data: undefined;
-	status: 204;
+  data: void
+  status: 204
+}
+    
+export type deleteCredentialPublicKeyResponseSuccess = (deleteCredentialPublicKeyResponse204) & {
+  headers: Headers;
 };
+;
 
-export type deleteCredentialPublicKeyResponseSuccess =
-	deleteCredentialPublicKeyResponse204 & {
-		headers: Headers;
-	};
+export type deleteCredentialPublicKeyResponse = (deleteCredentialPublicKeyResponseSuccess)
 
-export type deleteCredentialPublicKeyResponse =
-	deleteCredentialPublicKeyResponseSuccess;
+export const getDeleteCredentialPublicKeyUrl = (sid: string,) => {
 
-export const getDeleteCredentialPublicKeyUrl = (sid: string) => {
-	return `https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`;
-};
 
-export const deleteCredentialPublicKey = async (
-	sid: string,
-	options?: RequestInit,
-): Promise<deleteCredentialPublicKeyResponse> => {
-	const res = await fetch(getDeleteCredentialPublicKeyUrl(sid), {
-		...options,
-		method: "DELETE",
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/Credentials/PublicKeys/${sid}`
+}
 
-	const data: deleteCredentialPublicKeyResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as deleteCredentialPublicKeyResponse;
-};
+export const deleteCredentialPublicKey = async (sid: string, options?: RequestInit): Promise<deleteCredentialPublicKeyResponse> => {
+  
+  const res = await fetch(getDeleteCredentialPublicKeyUrl(sid),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
 
-export const getDeleteCredentialPublicKeyMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof deleteCredentialPublicKey>>,
-		TError,
-		{ sid: string },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof deleteCredentialPublicKey>>,
-	TError,
-	{ sid: string },
-	TContext
-> => {
-	const mutationKey = ["deleteCredentialPublicKey"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteCredentialPublicKeyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteCredentialPublicKeyResponse
+}
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof deleteCredentialPublicKey>>,
-		{ sid: string }
-	> = (props) => {
-		const { sid } = props ?? {};
 
-		return deleteCredentialPublicKey(sid, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type DeleteCredentialPublicKeyMutationResult = NonNullable<
-	Awaited<ReturnType<typeof deleteCredentialPublicKey>>
->;
+export const getDeleteCredentialPublicKeyMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCredentialPublicKey>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteCredentialPublicKey>>, TError,{sid: string}, TContext> => {
 
-export type DeleteCredentialPublicKeyMutationError = unknown;
+const mutationKey = ['deleteCredentialPublicKey'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCredentialPublicKey>>, {sid: string}> = (props) => {
+          const {sid} = props ?? {};
+
+          return  deleteCredentialPublicKey(sid,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteCredentialPublicKeyMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCredentialPublicKey>>>
+    
+    export type DeleteCredentialPublicKeyMutationError = unknown
+
+    /**
  * @summary Delete a Credential from your account
  */
-export const useDeleteCredentialPublicKey = <
-	TError = unknown,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof deleteCredentialPublicKey>>,
-			TError,
-			{ sid: string },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof deleteCredentialPublicKey>>,
-	TError,
-	{ sid: string },
-	TContext
-> => {
-	const mutationOptions = getDeleteCredentialPublicKeyMutationOptions(options);
+export const useDeleteCredentialPublicKey = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCredentialPublicKey>>, TError,{sid: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteCredentialPublicKey>>,
+        TError,
+        {sid: string},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getDeleteCredentialPublicKeyMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 export type updateMessagingGeopermissionsResponse200 = {
-	data: AccountsV1MessagingGeopermissions;
-	status: 200;
+  data: AccountsV1MessagingGeopermissions
+  status: 200
+}
+    
+export type updateMessagingGeopermissionsResponseSuccess = (updateMessagingGeopermissionsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type updateMessagingGeopermissionsResponseSuccess =
-	updateMessagingGeopermissionsResponse200 & {
-		headers: Headers;
-	};
-
-export type updateMessagingGeopermissionsResponse =
-	updateMessagingGeopermissionsResponseSuccess;
+export type updateMessagingGeopermissionsResponse = (updateMessagingGeopermissionsResponseSuccess)
 
 export const getUpdateMessagingGeopermissionsUrl = () => {
-	return "https://api.twilio.com/v1/Messaging/GeoPermissions";
-};
 
-export const updateMessagingGeopermissions = async (
-	updateMessagingGeopermissionsBody: UpdateMessagingGeopermissionsBody,
-	options?: RequestInit,
-): Promise<updateMessagingGeopermissionsResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	updateMessagingGeopermissionsBody.Permissions.forEach((value) =>
-		formUrlEncoded.append("Permissions", value),
-	);
 
-	const res = await fetch(getUpdateMessagingGeopermissionsUrl(), {
-		...options,
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-	const data: updateMessagingGeopermissionsResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as updateMessagingGeopermissionsResponse;
-};
-
-export const getUpdateMessagingGeopermissionsMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof updateMessagingGeopermissions>>,
-		TError,
-		{ data: UpdateMessagingGeopermissionsBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof updateMessagingGeopermissions>>,
-	TError,
-	{ data: UpdateMessagingGeopermissionsBody },
-	TContext
-> => {
-	const mutationKey = ["updateMessagingGeopermissions"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof updateMessagingGeopermissions>>,
-		{ data: UpdateMessagingGeopermissionsBody }
-	> = (props) => {
-		const { data } = props ?? {};
-
-		return updateMessagingGeopermissions(data, fetchOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type UpdateMessagingGeopermissionsMutationResult = NonNullable<
-	Awaited<ReturnType<typeof updateMessagingGeopermissions>>
->;
-export type UpdateMessagingGeopermissionsMutationBody =
-	UpdateMessagingGeopermissionsBody;
-export type UpdateMessagingGeopermissionsMutationError = unknown;
-
-export const useUpdateMessagingGeopermissions = <
-	TError = unknown,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof updateMessagingGeopermissions>>,
-			TError,
-			{ data: UpdateMessagingGeopermissionsBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof updateMessagingGeopermissions>>,
-	TError,
-	{ data: UpdateMessagingGeopermissionsBody },
-	TContext
-> => {
-	const mutationOptions =
-		getUpdateMessagingGeopermissionsMutationOptions(options);
-
-	return useMutation(mutationOptions, queryClient);
-};
-
-export type fetchMessagingGeopermissionsResponse200 = {
-	data: AccountsV1MessagingGeopermissions;
-	status: 200;
-};
-
-export type fetchMessagingGeopermissionsResponseSuccess =
-	fetchMessagingGeopermissionsResponse200 & {
-		headers: Headers;
-	};
-
-export type fetchMessagingGeopermissionsResponse =
-	fetchMessagingGeopermissionsResponseSuccess;
-
-export const getFetchMessagingGeopermissionsUrl = (
-	params?: FetchMessagingGeopermissionsParams,
-) => {
-	const normalizedParams = new URLSearchParams();
-
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? "null" : value.toString());
-		}
-	});
-
-	const stringifiedParams = normalizedParams.toString();
-
-	return stringifiedParams.length > 0
-		? `https://api.twilio.com/v1/Messaging/GeoPermissions?${stringifiedParams}`
-		: "https://api.twilio.com/v1/Messaging/GeoPermissions";
-};
-
-export const fetchMessagingGeopermissions = async (
-	params?: FetchMessagingGeopermissionsParams,
-	options?: RequestInit,
-): Promise<fetchMessagingGeopermissionsResponse> => {
-	const res = await fetch(getFetchMessagingGeopermissionsUrl(params), {
-		...options,
-		method: "GET",
-	});
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-	const data: fetchMessagingGeopermissionsResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as fetchMessagingGeopermissionsResponse;
-};
-
-export const getFetchMessagingGeopermissionsQueryKey = (
-	params?: FetchMessagingGeopermissionsParams,
-) => {
-	return [
-		"https://api.twilio.com/v1/Messaging/GeoPermissions",
-		...(params ? [params] : []),
-	] as const;
-};
-
-export const getFetchMessagingGeopermissionsQueryOptions = <
-	TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-	TError = unknown,
->(
-	params?: FetchMessagingGeopermissionsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
-
-	const queryKey =
-		queryOptions?.queryKey ?? getFetchMessagingGeopermissionsQueryKey(params);
-
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof fetchMessagingGeopermissions>>
-	> = ({ signal }) =>
-		fetchMessagingGeopermissions(params, { signal, ...fetchOptions });
-
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type FetchMessagingGeopermissionsQueryResult = NonNullable<
-	Awaited<ReturnType<typeof fetchMessagingGeopermissions>>
->;
-export type FetchMessagingGeopermissionsQueryError = unknown;
-
-export function useFetchMessagingGeopermissions<
-	TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-	TError = unknown,
->(
-	params: undefined | FetchMessagingGeopermissionsParams,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-					TError,
-					Awaited<ReturnType<typeof fetchMessagingGeopermissions>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchMessagingGeopermissions<
-	TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-	TError = unknown,
->(
-	params?: FetchMessagingGeopermissionsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-					TError,
-					Awaited<ReturnType<typeof fetchMessagingGeopermissions>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchMessagingGeopermissions<
-	TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-	TError = unknown,
->(
-	params?: FetchMessagingGeopermissionsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-
-export function useFetchMessagingGeopermissions<
-	TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-	TError = unknown,
->(
-	params?: FetchMessagingGeopermissionsParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getFetchMessagingGeopermissionsQueryOptions(
-		params,
-		options,
-	);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
+  return `https://api.twilio.com/v1/Messaging/GeoPermissions`
 }
+
+export const updateMessagingGeopermissions = async (updateMessagingGeopermissionsBody: UpdateMessagingGeopermissionsBody, options?: RequestInit): Promise<updateMessagingGeopermissionsResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+updateMessagingGeopermissionsBody.Permissions.forEach(value => formUrlEncoded.append(`Permissions`, value));
+
+  const res = await fetch(getUpdateMessagingGeopermissionsUrl(),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateMessagingGeopermissionsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateMessagingGeopermissionsResponse
+}
+
+
+
+
+export const getUpdateMessagingGeopermissionsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateMessagingGeopermissions>>, TError,{data: UpdateMessagingGeopermissionsBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updateMessagingGeopermissions>>, TError,{data: UpdateMessagingGeopermissionsBody}, TContext> => {
+
+const mutationKey = ['updateMessagingGeopermissions'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateMessagingGeopermissions>>, {data: UpdateMessagingGeopermissionsBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateMessagingGeopermissions(data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateMessagingGeopermissionsMutationResult = NonNullable<Awaited<ReturnType<typeof updateMessagingGeopermissions>>>
+    export type UpdateMessagingGeopermissionsMutationBody = UpdateMessagingGeopermissionsBody
+    export type UpdateMessagingGeopermissionsMutationError = unknown
+
+    export const useUpdateMessagingGeopermissions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateMessagingGeopermissions>>, TError,{data: UpdateMessagingGeopermissionsBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateMessagingGeopermissions>>,
+        TError,
+        {data: UpdateMessagingGeopermissionsBody},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateMessagingGeopermissionsMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+export type fetchMessagingGeopermissionsResponse200 = {
+  data: AccountsV1MessagingGeopermissions
+  status: 200
+}
+    
+export type fetchMessagingGeopermissionsResponseSuccess = (fetchMessagingGeopermissionsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type fetchMessagingGeopermissionsResponse = (fetchMessagingGeopermissionsResponseSuccess)
+
+export const getFetchMessagingGeopermissionsUrl = (params?: FetchMessagingGeopermissionsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `https://api.twilio.com/v1/Messaging/GeoPermissions?${stringifiedParams}` : `https://api.twilio.com/v1/Messaging/GeoPermissions`
+}
+
+export const fetchMessagingGeopermissions = async (params?: FetchMessagingGeopermissionsParams, options?: RequestInit): Promise<fetchMessagingGeopermissionsResponse> => {
+  
+  const res = await fetch(getFetchMessagingGeopermissionsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: fetchMessagingGeopermissionsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as fetchMessagingGeopermissionsResponse
+}
+
+
+
+
+
+export const getFetchMessagingGeopermissionsQueryKey = (params?: FetchMessagingGeopermissionsParams,) => {
+    return [
+    `https://api.twilio.com/v1/Messaging/GeoPermissions`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getFetchMessagingGeopermissionsQueryOptions = <TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError = unknown>(params?: FetchMessagingGeopermissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFetchMessagingGeopermissionsQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>> = ({ signal }) => fetchMessagingGeopermissions(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FetchMessagingGeopermissionsQueryResult = NonNullable<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>>
+export type FetchMessagingGeopermissionsQueryError = unknown
+
+
+export function useFetchMessagingGeopermissions<TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError = unknown>(
+ params: undefined |  FetchMessagingGeopermissionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
+          TError,
+          Awaited<ReturnType<typeof fetchMessagingGeopermissions>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchMessagingGeopermissions<TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError = unknown>(
+ params?: FetchMessagingGeopermissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchMessagingGeopermissions>>,
+          TError,
+          Awaited<ReturnType<typeof fetchMessagingGeopermissions>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchMessagingGeopermissions<TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError = unknown>(
+ params?: FetchMessagingGeopermissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useFetchMessagingGeopermissions<TData = Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError = unknown>(
+ params?: FetchMessagingGeopermissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchMessagingGeopermissions>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getFetchMessagingGeopermissionsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
 
 /**
  * Add a new phone number or phone number 1k prefix to SafeList.
  * @summary Add a new phone number or phone number 1k prefix to SafeList.
  */
 export type createSafelistResponse201 = {
-	data: AccountsV1Safelist;
-	status: 201;
+  data: AccountsV1Safelist
+  status: 201
+}
+    
+export type createSafelistResponseSuccess = (createSafelistResponse201) & {
+  headers: Headers;
 };
+;
 
-export type createSafelistResponseSuccess = createSafelistResponse201 & {
-	headers: Headers;
-};
-
-export type createSafelistResponse = createSafelistResponseSuccess;
+export type createSafelistResponse = (createSafelistResponseSuccess)
 
 export const getCreateSafelistUrl = () => {
-	return "https://api.twilio.com/v1/SafeList/Numbers";
-};
 
-export const createSafelist = async (
-	createSafelistBody: CreateSafelistBody,
-	options?: RequestInit,
-): Promise<createSafelistResponse> => {
-	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append("PhoneNumber", createSafelistBody.PhoneNumber);
 
-	const res = await fetch(getCreateSafelistUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			...options?.headers,
-		},
-		body: formUrlEncoded,
-	});
+  
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  return `https://api.twilio.com/v1/SafeList/Numbers`
+}
 
-	const data: createSafelistResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createSafelistResponse;
-};
+export const createSafelist = async (createSafelistBody: CreateSafelistBody, options?: RequestInit): Promise<createSafelistResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+formUrlEncoded.append(`PhoneNumber`, createSafelistBody.PhoneNumber)
 
-export const getCreateSafelistMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createSafelist>>,
-		TError,
-		{ data: CreateSafelistBody },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof createSafelist>>,
-	TError,
-	{ data: CreateSafelistBody },
-	TContext
-> => {
-	const mutationKey = ["createSafelist"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+  const res = await fetch(getCreateSafelistUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body: 
+      formUrlEncoded,
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createSafelist>>,
-		{ data: CreateSafelistBody }
-	> = (props) => {
-		const { data } = props ?? {};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createSafelistResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createSafelistResponse
+}
 
-		return createSafelist(data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type CreateSafelistMutationResult = NonNullable<
-	Awaited<ReturnType<typeof createSafelist>>
->;
-export type CreateSafelistMutationBody = CreateSafelistBody;
-export type CreateSafelistMutationError = unknown;
 
-/**
+export const getCreateSafelistMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSafelist>>, TError,{data: CreateSafelistBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof createSafelist>>, TError,{data: CreateSafelistBody}, TContext> => {
+
+const mutationKey = ['createSafelist'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createSafelist>>, {data: CreateSafelistBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createSafelist(data,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateSafelistMutationResult = NonNullable<Awaited<ReturnType<typeof createSafelist>>>
+    export type CreateSafelistMutationBody = CreateSafelistBody
+    export type CreateSafelistMutationError = unknown
+
+    /**
  * @summary Add a new phone number or phone number 1k prefix to SafeList.
  */
-export const useCreateSafelist = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createSafelist>>,
-			TError,
-			{ data: CreateSafelistBody },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof createSafelist>>,
-	TError,
-	{ data: CreateSafelistBody },
-	TContext
-> => {
-	const mutationOptions = getCreateSafelistMutationOptions(options);
+export const useCreateSafelist = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSafelist>>, TError,{data: CreateSafelistBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createSafelist>>,
+        TError,
+        {data: CreateSafelistBody},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getCreateSafelistMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Check if a phone number or phone number 1k prefix exists in SafeList.
  * @summary Check if a phone number or phone number 1k prefix exists in SafeList.
  */
 export type fetchSafelistResponse200 = {
-	data: AccountsV1Safelist;
-	status: 200;
+  data: AccountsV1Safelist
+  status: 200
+}
+    
+export type fetchSafelistResponseSuccess = (fetchSafelistResponse200) & {
+  headers: Headers;
 };
+;
 
-export type fetchSafelistResponseSuccess = fetchSafelistResponse200 & {
-	headers: Headers;
-};
+export type fetchSafelistResponse = (fetchSafelistResponseSuccess)
 
-export type fetchSafelistResponse = fetchSafelistResponseSuccess;
+export const getFetchSafelistUrl = (params?: FetchSafelistParams,) => {
+  const normalizedParams = new URLSearchParams();
 
-export const getFetchSafelistUrl = (params?: FetchSafelistParams) => {
-	const normalizedParams = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? "null" : value.toString());
-		}
-	});
+  const stringifiedParams = normalizedParams.toString();
 
-	const stringifiedParams = normalizedParams.toString();
+  return stringifiedParams.length > 0 ? `https://api.twilio.com/v1/SafeList/Numbers?${stringifiedParams}` : `https://api.twilio.com/v1/SafeList/Numbers`
+}
 
-	return stringifiedParams.length > 0
-		? `https://api.twilio.com/v1/SafeList/Numbers?${stringifiedParams}`
-		: "https://api.twilio.com/v1/SafeList/Numbers";
-};
+export const fetchSafelist = async (params?: FetchSafelistParams, options?: RequestInit): Promise<fetchSafelistResponse> => {
+  
+  const res = await fetch(getFetchSafelistUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
 
-export const fetchSafelist = async (
-	params?: FetchSafelistParams,
-	options?: RequestInit,
-): Promise<fetchSafelistResponse> => {
-	const res = await fetch(getFetchSafelistUrl(params), {
-		...options,
-		method: "GET",
-	});
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: fetchSafelistResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as fetchSafelistResponse
+}
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: fetchSafelistResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as fetchSafelistResponse;
-};
 
-export const getFetchSafelistQueryKey = (params?: FetchSafelistParams) => {
-	return [
-		"https://api.twilio.com/v1/SafeList/Numbers",
-		...(params ? [params] : []),
-	] as const;
-};
 
-export const getFetchSafelistQueryOptions = <
-	TData = Awaited<ReturnType<typeof fetchSafelist>>,
-	TError = unknown,
->(
-	params?: FetchSafelistParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>
-		>;
-		fetch?: RequestInit;
-	},
+
+export const getFetchSafelistQueryKey = (params?: FetchSafelistParams,) => {
+    return [
+    `https://api.twilio.com/v1/SafeList/Numbers`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getFetchSafelistQueryOptions = <TData = Awaited<ReturnType<typeof fetchSafelist>>, TError = unknown>(params?: FetchSafelistParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getFetchSafelistQueryKey(params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchSafelist>>> = ({
-		signal,
-	}) => fetchSafelist(params, { signal, ...fetchOptions });
+  const queryKey =  queryOptions?.queryKey ?? getFetchSafelistQueryKey(params);
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof fetchSafelist>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  
 
-export type FetchSafelistQueryResult = NonNullable<
-	Awaited<ReturnType<typeof fetchSafelist>>
->;
-export type FetchSafelistQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchSafelist>>> = ({ signal }) => fetchSafelist(params, { signal, ...fetchOptions });
 
-export function useFetchSafelist<
-	TData = Awaited<ReturnType<typeof fetchSafelist>>,
-	TError = unknown,
->(
-	params: undefined | FetchSafelistParams,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchSafelist>>,
-					TError,
-					Awaited<ReturnType<typeof fetchSafelist>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchSafelist<
-	TData = Awaited<ReturnType<typeof fetchSafelist>>,
-	TError = unknown,
->(
-	params?: FetchSafelistParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof fetchSafelist>>,
-					TError,
-					Awaited<ReturnType<typeof fetchSafelist>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchSafelist<
-	TData = Awaited<ReturnType<typeof fetchSafelist>>,
-	TError = unknown,
->(
-	params?: FetchSafelistParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FetchSafelistQueryResult = NonNullable<Awaited<ReturnType<typeof fetchSafelist>>>
+export type FetchSafelistQueryError = unknown
+
+
+export function useFetchSafelist<TData = Awaited<ReturnType<typeof fetchSafelist>>, TError = unknown>(
+ params: undefined |  FetchSafelistParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchSafelist>>,
+          TError,
+          Awaited<ReturnType<typeof fetchSafelist>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchSafelist<TData = Awaited<ReturnType<typeof fetchSafelist>>, TError = unknown>(
+ params?: FetchSafelistParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof fetchSafelist>>,
+          TError,
+          Awaited<ReturnType<typeof fetchSafelist>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchSafelist<TData = Awaited<ReturnType<typeof fetchSafelist>>, TError = unknown>(
+ params?: FetchSafelistParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Check if a phone number or phone number 1k prefix exists in SafeList.
  */
 
-export function useFetchSafelist<
-	TData = Awaited<ReturnType<typeof fetchSafelist>>,
-	TError = unknown,
->(
-	params?: FetchSafelistParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getFetchSafelistQueryOptions(params, options);
+export function useFetchSafelist<TData = Awaited<ReturnType<typeof fetchSafelist>>, TError = unknown>(
+ params?: FetchSafelistParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchSafelist>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getFetchSafelistQueryOptions(params,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
+
+
+
+
 
 /**
  * Remove a phone number or phone number 1k prefix from SafeList.
  * @summary Remove a phone number or phone number 1k prefix from SafeList.
  */
 export type deleteSafelistResponse204 = {
-	data: undefined;
-	status: 204;
+  data: void
+  status: 204
+}
+    
+export type deleteSafelistResponseSuccess = (deleteSafelistResponse204) & {
+  headers: Headers;
 };
+;
 
-export type deleteSafelistResponseSuccess = deleteSafelistResponse204 & {
-	headers: Headers;
-};
+export type deleteSafelistResponse = (deleteSafelistResponseSuccess)
 
-export type deleteSafelistResponse = deleteSafelistResponseSuccess;
+export const getDeleteSafelistUrl = (params?: DeleteSafelistParams,) => {
+  const normalizedParams = new URLSearchParams();
 
-export const getDeleteSafelistUrl = (params?: DeleteSafelistParams) => {
-	const normalizedParams = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? "null" : value.toString());
-		}
-	});
+  const stringifiedParams = normalizedParams.toString();
 
-	const stringifiedParams = normalizedParams.toString();
+  return stringifiedParams.length > 0 ? `https://api.twilio.com/v1/SafeList/Numbers?${stringifiedParams}` : `https://api.twilio.com/v1/SafeList/Numbers`
+}
 
-	return stringifiedParams.length > 0
-		? `https://api.twilio.com/v1/SafeList/Numbers?${stringifiedParams}`
-		: "https://api.twilio.com/v1/SafeList/Numbers";
-};
+export const deleteSafelist = async (params?: DeleteSafelistParams, options?: RequestInit): Promise<deleteSafelistResponse> => {
+  
+  const res = await fetch(getDeleteSafelistUrl(params),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
 
-export const deleteSafelist = async (
-	params?: DeleteSafelistParams,
-	options?: RequestInit,
-): Promise<deleteSafelistResponse> => {
-	const res = await fetch(getDeleteSafelistUrl(params), {
-		...options,
-		method: "DELETE",
-	});
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteSafelistResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteSafelistResponse
+}
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: deleteSafelistResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as deleteSafelistResponse;
-};
 
-export const getDeleteSafelistMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof deleteSafelist>>,
-		TError,
-		{ params?: DeleteSafelistParams },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof deleteSafelist>>,
-	TError,
-	{ params?: DeleteSafelistParams },
-	TContext
-> => {
-	const mutationKey = ["deleteSafelist"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof deleteSafelist>>,
-		{ params?: DeleteSafelistParams }
-	> = (props) => {
-		const { params } = props ?? {};
+export const getDeleteSafelistMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSafelist>>, TError,{params?: DeleteSafelistParams}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteSafelist>>, TError,{params?: DeleteSafelistParams}, TContext> => {
 
-		return deleteSafelist(params, fetchOptions);
-	};
+const mutationKey = ['deleteSafelist'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-	return { mutationFn, ...mutationOptions };
-};
+      
 
-export type DeleteSafelistMutationResult = NonNullable<
-	Awaited<ReturnType<typeof deleteSafelist>>
->;
 
-export type DeleteSafelistMutationError = unknown;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteSafelist>>, {params?: DeleteSafelistParams}> = (props) => {
+          const {params} = props ?? {};
 
-/**
+          return  deleteSafelist(params,fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteSafelistMutationResult = NonNullable<Awaited<ReturnType<typeof deleteSafelist>>>
+    
+    export type DeleteSafelistMutationError = unknown
+
+    /**
  * @summary Remove a phone number or phone number 1k prefix from SafeList.
  */
-export const useDeleteSafelist = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof deleteSafelist>>,
-			TError,
-			{ params?: DeleteSafelistParams },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof deleteSafelist>>,
-	TError,
-	{ params?: DeleteSafelistParams },
-	TContext
-> => {
-	const mutationOptions = getDeleteSafelistMutationOptions(options);
+export const useDeleteSafelist = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSafelist>>, TError,{params?: DeleteSafelistParams}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteSafelist>>,
+        TError,
+        {params?: DeleteSafelistParams},
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getDeleteSafelistMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Create a new secondary Auth Token
  * @summary Create a new secondary Auth Token
  */
 export type createSecondaryAuthTokenResponse201 = {
-	data: AccountsV1SecondaryAuthToken;
-	status: 201;
+  data: AccountsV1SecondaryAuthToken
+  status: 201
+}
+    
+export type createSecondaryAuthTokenResponseSuccess = (createSecondaryAuthTokenResponse201) & {
+  headers: Headers;
 };
+;
 
-export type createSecondaryAuthTokenResponseSuccess =
-	createSecondaryAuthTokenResponse201 & {
-		headers: Headers;
-	};
-
-export type createSecondaryAuthTokenResponse =
-	createSecondaryAuthTokenResponseSuccess;
+export type createSecondaryAuthTokenResponse = (createSecondaryAuthTokenResponseSuccess)
 
 export const getCreateSecondaryAuthTokenUrl = () => {
-	return "https://api.twilio.com/v1/AuthTokens/Secondary";
-};
 
-export const createSecondaryAuthToken = async (
-	options?: RequestInit,
-): Promise<createSecondaryAuthTokenResponse> => {
-	const res = await fetch(getCreateSecondaryAuthTokenUrl(), {
-		...options,
-		method: "POST",
-	});
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
 
-	const data: createSecondaryAuthTokenResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createSecondaryAuthTokenResponse;
-};
+  return `https://api.twilio.com/v1/AuthTokens/Secondary`
+}
 
-export const getCreateSecondaryAuthTokenMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createSecondaryAuthToken>>,
-		TError,
-		void,
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof createSecondaryAuthToken>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationKey = ["createSecondaryAuthToken"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+export const createSecondaryAuthToken = async ( options?: RequestInit): Promise<createSecondaryAuthTokenResponse> => {
+  
+  const res = await fetch(getCreateSecondaryAuthTokenUrl(),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createSecondaryAuthToken>>,
-		void
-	> = () => {
-		return createSecondaryAuthToken(fetchOptions);
-	};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createSecondaryAuthTokenResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createSecondaryAuthTokenResponse
+}
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type CreateSecondaryAuthTokenMutationResult = NonNullable<
-	Awaited<ReturnType<typeof createSecondaryAuthToken>>
->;
 
-export type CreateSecondaryAuthTokenMutationError = unknown;
 
-/**
+export const getCreateSecondaryAuthTokenMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSecondaryAuthToken>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof createSecondaryAuthToken>>, TError,void, TContext> => {
+
+const mutationKey = ['createSecondaryAuthToken'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createSecondaryAuthToken>>, void> = () => {
+          
+
+          return  createSecondaryAuthToken(fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateSecondaryAuthTokenMutationResult = NonNullable<Awaited<ReturnType<typeof createSecondaryAuthToken>>>
+    
+    export type CreateSecondaryAuthTokenMutationError = unknown
+
+    /**
  * @summary Create a new secondary Auth Token
  */
-export const useCreateSecondaryAuthToken = <
-	TError = unknown,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createSecondaryAuthToken>>,
-			TError,
-			void,
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof createSecondaryAuthToken>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationOptions = getCreateSecondaryAuthTokenMutationOptions(options);
+export const useCreateSecondaryAuthToken = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSecondaryAuthToken>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createSecondaryAuthToken>>,
+        TError,
+        void,
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getCreateSecondaryAuthTokenMutationOptions(options);
 
+      return useMutation(mutationOptions, queryClient);
+    }
+    
 /**
  * Delete the secondary Auth Token from your account
  * @summary Delete the secondary Auth Token from your account
  */
 export type deleteSecondaryAuthTokenResponse204 = {
-	data: undefined;
-	status: 204;
+  data: void
+  status: 204
+}
+    
+export type deleteSecondaryAuthTokenResponseSuccess = (deleteSecondaryAuthTokenResponse204) & {
+  headers: Headers;
 };
+;
 
-export type deleteSecondaryAuthTokenResponseSuccess =
-	deleteSecondaryAuthTokenResponse204 & {
-		headers: Headers;
-	};
-
-export type deleteSecondaryAuthTokenResponse =
-	deleteSecondaryAuthTokenResponseSuccess;
+export type deleteSecondaryAuthTokenResponse = (deleteSecondaryAuthTokenResponseSuccess)
 
 export const getDeleteSecondaryAuthTokenUrl = () => {
-	return "https://api.twilio.com/v1/AuthTokens/Secondary";
-};
 
-export const deleteSecondaryAuthToken = async (
-	options?: RequestInit,
-): Promise<deleteSecondaryAuthTokenResponse> => {
-	const res = await fetch(getDeleteSecondaryAuthTokenUrl(), {
-		...options,
-		method: "DELETE",
-	});
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
 
-	const data: deleteSecondaryAuthTokenResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as deleteSecondaryAuthTokenResponse;
-};
+  return `https://api.twilio.com/v1/AuthTokens/Secondary`
+}
 
-export const getDeleteSecondaryAuthTokenMutationOptions = <
-	TError = unknown,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof deleteSecondaryAuthToken>>,
-		TError,
-		void,
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof deleteSecondaryAuthToken>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationKey = ["deleteSecondaryAuthToken"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+export const deleteSecondaryAuthToken = async ( options?: RequestInit): Promise<deleteSecondaryAuthTokenResponse> => {
+  
+  const res = await fetch(getDeleteSecondaryAuthTokenUrl(),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof deleteSecondaryAuthToken>>,
-		void
-	> = () => {
-		return deleteSecondaryAuthToken(fetchOptions);
-	};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteSecondaryAuthTokenResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteSecondaryAuthTokenResponse
+}
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type DeleteSecondaryAuthTokenMutationResult = NonNullable<
-	Awaited<ReturnType<typeof deleteSecondaryAuthToken>>
->;
 
-export type DeleteSecondaryAuthTokenMutationError = unknown;
 
-/**
+export const getDeleteSecondaryAuthTokenMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSecondaryAuthToken>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteSecondaryAuthToken>>, TError,void, TContext> => {
+
+const mutationKey = ['deleteSecondaryAuthToken'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteSecondaryAuthToken>>, void> = () => {
+          
+
+          return  deleteSecondaryAuthToken(fetchOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteSecondaryAuthTokenMutationResult = NonNullable<Awaited<ReturnType<typeof deleteSecondaryAuthToken>>>
+    
+    export type DeleteSecondaryAuthTokenMutationError = unknown
+
+    /**
  * @summary Delete the secondary Auth Token from your account
  */
-export const useDeleteSecondaryAuthToken = <
-	TError = unknown,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof deleteSecondaryAuthToken>>,
-			TError,
-			void,
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof deleteSecondaryAuthToken>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationOptions = getDeleteSecondaryAuthTokenMutationOptions(options);
+export const useDeleteSecondaryAuthToken = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSecondaryAuthToken>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteSecondaryAuthToken>>,
+        TError,
+        void,
+        TContext
+      > => {
 
-	return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getDeleteSecondaryAuthTokenMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }

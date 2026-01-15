@@ -5,45 +5,45 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { TollfreeVerificationEnumStatus } from "./tollfreeVerificationEnumStatus";
+import type { TollfreeVerificationEnumStatus } from './tollfreeVerificationEnumStatus';
 
 export type ListTollfreeVerificationParams = {
-	/**
-	 * The SID of the Phone Number associated with the Tollfree Verification.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^PN[0-9a-fA-F]{32}$
-	 */
-	TollfreePhoneNumberSid?: string;
-	/**
-	 * The compliance status of the Tollfree Verification record.
-	 */
-	Status?: TollfreeVerificationEnumStatus;
-	/**
-	 * Customer supplied reference id for the Tollfree Verification record.
-	 */
-	ExternalReferenceId?: string;
-	/**
-	 * Whether to include Tollfree Verifications from sub accounts in list response.
-	 */
-	IncludeSubAccounts?: boolean;
-	/**
-	 * How many resources to return in each list page. The default is 50, and the maximum is 1000.
-	 * @minimum 1
-	 * @maximum 1000
-	 */
-	PageSize?: number;
-	/**
-	 * The page index. This value is simply for client state.
-	 * @minimum 0
-	 */
-	Page?: number;
-	/**
-	 * The page token. This is provided by the API.
-	 */
-	PageToken?: string;
-	/**
-	 * The trust product sids / tollfree bundle sids of tollfree verifications
-	 */
-	TrustProductSid?: string[];
+/**
+ * The SID of the Phone Number associated with the Tollfree Verification.
+ * @minLength 34
+ * @maxLength 34
+ * @pattern ^PN[0-9a-fA-F]{32}$
+ */
+TollfreePhoneNumberSid?: string;
+/**
+ * The compliance status of the Tollfree Verification record.
+ */
+Status?: TollfreeVerificationEnumStatus;
+/**
+ * Customer supplied reference id for the Tollfree Verification record.
+ */
+ExternalReferenceId?: string;
+/**
+ * Whether to include Tollfree Verifications from sub accounts in list response.
+ */
+IncludeSubAccounts?: boolean;
+/**
+ * How many resources to return in each list page. The default is 50, and the maximum is 1000.
+ * @minimum 1
+ * @maximum 1000
+ */
+PageSize?: number;
+/**
+ * The page index. This value is simply for client state.
+ * @minimum 0
+ */
+Page?: number;
+/**
+ * The page token. This is provided by the API.
+ */
+PageToken?: string;
+/**
+ * The trust product sids / tollfree bundle sids of tollfree verifications
+ */
+TrustProductSid?: string[];
 };

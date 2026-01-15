@@ -7,11 +7,11 @@
  */
 
 export type FetchUsAppToPersonUsecaseParams = {
-	/**
-	 * The unique string to identify the A2P brand.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^BN[0-9a-fA-F]{32}$
-	 */
-	BrandRegistrationSid?: string;
+/**
+ * The unique string to identify the A2P brand.
+ * @minLength 34
+ * @maxLength 34
+ * @pattern ^BN[0-9a-fA-F]{32}$
+ */
+BrandRegistrationSid?: string;
 };

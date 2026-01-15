@@ -9,11 +9,11 @@
 /**
  * The type of role. Can be: `conversation` for [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) roles or `service` for [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) roles.
  */
-export type ServiceRoleEnumRoleType =
-	(typeof ServiceRoleEnumRoleType)[keyof typeof ServiceRoleEnumRoleType];
+export type ServiceRoleEnumRoleType = typeof ServiceRoleEnumRoleType[keyof typeof ServiceRoleEnumRoleType];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceRoleEnumRoleType = {
-	conversation: "conversation",
-	service: "service",
+  conversation: 'conversation',
+  service: 'service',
 } as const;

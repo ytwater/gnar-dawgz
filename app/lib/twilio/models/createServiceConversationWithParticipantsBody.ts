@@ -5,35 +5,35 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ServiceConversationWithParticipantsEnumState } from "./serviceConversationWithParticipantsEnumState";
+import type { ServiceConversationWithParticipantsEnumState } from './serviceConversationWithParticipantsEnumState';
 
 export type CreateServiceConversationWithParticipantsBody = {
-	/** The human-readable name of this conversation, limited to 256 characters. Optional. */
-	FriendlyName?: string;
-	/** An application-defined string that uniquely identifies the resource. It can be used to address the resource in place of the resource's `sid` in the URL. */
-	UniqueName?: string;
-	/** The date that this resource was created. */
-	DateCreated?: string;
-	/** The date that this resource was last updated. */
-	DateUpdated?: string;
-	/**
-	 * The unique ID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) this conversation belongs to.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^MG[0-9a-fA-F]{32}$
-	 */
-	MessagingServiceSid?: string;
-	/** An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
-	Attributes?: string;
-	State?: ServiceConversationWithParticipantsEnumState;
-	/** ISO8601 duration when conversation will be switched to `inactive` state. Minimum value for this timer is 1 minute. */
-	"Timers.Inactive"?: string;
-	/** ISO8601 duration when conversation will be switched to `closed` state. Minimum value for this timer is 10 minutes. */
-	"Timers.Closed"?: string;
-	/** The default email address that will be used when sending outbound emails in this conversation. */
-	"Bindings.Email.Address"?: string;
-	/** The default name that will be used when sending outbound emails in this conversation. */
-	"Bindings.Email.Name"?: string;
-	/** The participant to be added to the conversation in JSON format. The JSON object attributes are as parameters in [Participant Resource](https://www.twilio.com/docs/conversations/api/conversation-participant-resource). The maximum number of participants that can be added in a single request is 10. */
-	Participant?: string[];
+  /** The human-readable name of this conversation, limited to 256 characters. Optional. */
+  FriendlyName?: string;
+  /** An application-defined string that uniquely identifies the resource. It can be used to address the resource in place of the resource's `sid` in the URL. */
+  UniqueName?: string;
+  /** The date that this resource was created. */
+  DateCreated?: string;
+  /** The date that this resource was last updated. */
+  DateUpdated?: string;
+  /**
+   * The unique ID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) this conversation belongs to.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^MG[0-9a-fA-F]{32}$
+   */
+  MessagingServiceSid?: string;
+  /** An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set "{}" will be returned. */
+  Attributes?: string;
+  State?: ServiceConversationWithParticipantsEnumState;
+  /** ISO8601 duration when conversation will be switched to `inactive` state. Minimum value for this timer is 1 minute. */
+  'Timers.Inactive'?: string;
+  /** ISO8601 duration when conversation will be switched to `closed` state. Minimum value for this timer is 10 minutes. */
+  'Timers.Closed'?: string;
+  /** The default email address that will be used when sending outbound emails in this conversation. */
+  'Bindings.Email.Address'?: string;
+  /** The default name that will be used when sending outbound emails in this conversation. */
+  'Bindings.Email.Name'?: string;
+  /** The participant to be added to the conversation in JSON format. The JSON object attributes are as parameters in [Participant Resource](https://www.twilio.com/docs/conversations/api/conversation-participant-resource). The maximum number of participants that can be added in a single request is 10. */
+  Participant?: string[];
 };

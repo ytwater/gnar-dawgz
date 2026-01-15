@@ -5,64 +5,64 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration } from "./conversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration";
+import type { ConversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration } from './conversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration';
 
 export interface ConversationsV1ServiceServiceConversationServiceConversationScopedWebhook {
-	/**
-	 * A 34 character string that uniquely identifies this resource.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^WH[0-9a-fA-F]{32}$
-	 */
-	sid?: string | null;
-	/**
-	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this conversation.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^AC[0-9a-fA-F]{32}$
-	 */
-	account_sid?: string | null;
-	/**
-	 * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Participant resource is associated with.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^IS[0-9a-fA-F]{32}$
-	 */
-	chat_service_sid?: string | null;
-	/**
-	 * The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this webhook.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^CH[0-9a-fA-F]{32}$
-	 */
-	conversation_sid?: string | null;
-	/**
-	 * The target of this webhook: `webhook`, `studio`, `trigger`
-	 * @nullable
-	 */
-	target?: string | null;
-	/**
-	 * An absolute API resource URL for this webhook.
-	 * @nullable
-	 */
-	url?: string | null;
-	/**
-	 * The configuration of this webhook. Is defined based on target.
-	 * @nullable
-	 */
-	configuration?: ConversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration;
-	/**
-	 * The date that this resource was created.
-	 * @nullable
-	 */
-	date_created?: string | null;
-	/**
-	 * The date that this resource was last updated.
-	 * @nullable
-	 */
-	date_updated?: string | null;
+  /**
+   * A 34 character string that uniquely identifies this resource.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^WH[0-9a-fA-F]{32}$
+   */
+  sid?: string | null;
+  /**
+   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this conversation.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^AC[0-9a-fA-F]{32}$
+   */
+  account_sid?: string | null;
+  /**
+   * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Participant resource is associated with.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^IS[0-9a-fA-F]{32}$
+   */
+  chat_service_sid?: string | null;
+  /**
+   * The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this webhook.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^CH[0-9a-fA-F]{32}$
+   */
+  conversation_sid?: string | null;
+  /**
+   * The target of this webhook: `webhook`, `studio`, `trigger`
+   * @nullable
+   */
+  target?: string | null;
+  /**
+   * An absolute API resource URL for this webhook.
+   * @nullable
+   */
+  url?: string | null;
+  /**
+   * The configuration of this webhook. Is defined based on target.
+   * @nullable
+   */
+  configuration?: ConversationsV1ServiceServiceConversationServiceConversationScopedWebhookConfiguration;
+  /**
+   * The date that this resource was created.
+   * @nullable
+   */
+  date_created?: string | null;
+  /**
+   * The date that this resource was last updated.
+   * @nullable
+   */
+  date_updated?: string | null;
 }

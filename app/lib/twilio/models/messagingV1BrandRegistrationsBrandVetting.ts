@@ -5,62 +5,62 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { BrandVettingEnumVettingProvider } from "./brandVettingEnumVettingProvider";
+import type { BrandVettingEnumVettingProvider } from './brandVettingEnumVettingProvider';
 
 export interface MessagingV1BrandRegistrationsBrandVetting {
-	/**
-	 * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the vetting record.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^AC[0-9a-fA-F]{32}$
-	 */
-	account_sid?: string | null;
-	/**
-	 * The unique string to identify Brand Registration.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^BN[0-9a-fA-F]{32}$
-	 */
-	brand_sid?: string | null;
-	/**
-	 * The Twilio SID of the third-party vetting record.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^VT[0-9a-fA-F]{32}$
-	 */
-	brand_vetting_sid?: string | null;
-	/**
-	 * The date and time in GMT when the resource was last updated specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-	 * @nullable
-	 */
-	date_updated?: string | null;
-	/**
-	 * The date and time in GMT when the resource was created specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-	 * @nullable
-	 */
-	date_created?: string | null;
-	/**
-	 * The unique identifier of the vetting from the third-party provider.
-	 * @nullable
-	 */
-	vetting_id?: string | null;
-	/**
-	 * The type of vetting that has been conducted. One of “STANDARD” (Aegis) or “POLITICAL” (Campaign Verify).
-	 * @nullable
-	 */
-	vetting_class?: string | null;
-	/**
-	 * The status of the import vetting attempt. One of “PENDING,” “SUCCESS,” or “FAILED”.
-	 * @nullable
-	 */
-	vetting_status?: string | null;
-	vetting_provider?: BrandVettingEnumVettingProvider;
-	/**
-	 * The absolute URL of the Brand Vetting resource.
-	 * @nullable
-	 */
-	url?: string | null;
+  /**
+   * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the vetting record.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^AC[0-9a-fA-F]{32}$
+   */
+  account_sid?: string | null;
+  /**
+   * The unique string to identify Brand Registration.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^BN[0-9a-fA-F]{32}$
+   */
+  brand_sid?: string | null;
+  /**
+   * The Twilio SID of the third-party vetting record.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^VT[0-9a-fA-F]{32}$
+   */
+  brand_vetting_sid?: string | null;
+  /**
+   * The date and time in GMT when the resource was last updated specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+   * @nullable
+   */
+  date_updated?: string | null;
+  /**
+   * The date and time in GMT when the resource was created specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+   * @nullable
+   */
+  date_created?: string | null;
+  /**
+   * The unique identifier of the vetting from the third-party provider.
+   * @nullable
+   */
+  vetting_id?: string | null;
+  /**
+   * The type of vetting that has been conducted. One of “STANDARD” (Aegis) or “POLITICAL” (Campaign Verify).
+   * @nullable
+   */
+  vetting_class?: string | null;
+  /**
+   * The status of the import vetting attempt. One of “PENDING,” “SUCCESS,” or “FAILED”.
+   * @nullable
+   */
+  vetting_status?: string | null;
+  vetting_provider?: BrandVettingEnumVettingProvider;
+  /**
+   * The absolute URL of the Brand Vetting resource.
+   * @nullable
+   */
+  url?: string | null;
 }

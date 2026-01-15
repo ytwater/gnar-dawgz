@@ -24,8 +24,25 @@ declare namespace Cloudflare {
 }
 interface CloudflareBindings extends Cloudflare.Env {}
 type StringifyValues<EnvType extends Record<string, unknown>> = {
-	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
+	[Binding in keyof EnvType]: EnvType[Binding] extends string
+		? EnvType[Binding]
+		: string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "ENVIRONMENT" | "VALUE_FROM_CLOUDFLARE" | "ACCOUNT_ID" | "AI_GATEWAY_ID" | "GOOGLE_CLIENT_ID" | "VAPID_PUBLIC_KEY" | "VAPID_SUBJECT" | "TWILIO_SERVICE_SID" | "TWILIO_EVENT_SYNC_ID_DEV" | "TWILIO_EVENT_SYNC_ID_PROD">> {}
+	interface ProcessEnv
+		extends StringifyValues<
+			Pick<
+				Cloudflare.Env,
+				| "ENVIRONMENT"
+				| "VALUE_FROM_CLOUDFLARE"
+				| "ACCOUNT_ID"
+				| "AI_GATEWAY_ID"
+				| "GOOGLE_CLIENT_ID"
+				| "VAPID_PUBLIC_KEY"
+				| "VAPID_SUBJECT"
+				| "TWILIO_SERVICE_SID"
+				| "TWILIO_EVENT_SYNC_ID_DEV"
+				| "TWILIO_EVENT_SYNC_ID_PROD"
+			>
+		> {}
 }

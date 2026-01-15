@@ -10,6 +10,4 @@
  * Contains absolute URLs to access the [participant](https://www.twilio.com/docs/conversations/api/conversation-participant-resource) and [conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) of this conversation.
  * @nullable
  */
-export type ConversationsV1ServiceServiceUserServiceUserConversationLinks = {
-	[key: string]: unknown;
-} | null;
+export type ConversationsV1ServiceServiceUserServiceUserConversationLinks = { [key: string]: unknown } | null;

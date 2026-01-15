@@ -7,23 +7,23 @@
  */
 
 export type ListConfigurationAddressParams = {
-	/**
-	 * Filter the address configurations by its type. This value can be one of: `whatsapp`, `sms`.
-	 */
-	Type?: string;
-	/**
-	 * How many resources to return in each list page. The default is 50, and the maximum is 50.
-	 * @minimum 1
-	 * @maximum 50
-	 */
-	PageSize?: number;
-	/**
-	 * The page index. This value is simply for client state.
-	 * @minimum 0
-	 */
-	Page?: number;
-	/**
-	 * The page token. This is provided by the API.
-	 */
-	PageToken?: string;
+/**
+ * Filter the address configurations by its type. This value can be one of: `whatsapp`, `sms`.
+ */
+Type?: string;
+/**
+ * How many resources to return in each list page. The default is 50, and the maximum is 50.
+ * @minimum 1
+ * @maximum 50
+ */
+PageSize?: number;
+/**
+ * The page index. This value is simply for client state.
+ * @minimum 0
+ */
+Page?: number;
+/**
+ * The page token. This is provided by the API.
+ */
+PageToken?: string;
 };

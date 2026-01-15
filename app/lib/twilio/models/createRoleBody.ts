@@ -5,12 +5,12 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { RoleEnumRoleType } from "./roleEnumRoleType";
+import type { RoleEnumRoleType } from './roleEnumRoleType';
 
 export type CreateRoleBody = {
-	/** A descriptive string that you create to describe the new resource. It can be up to 64 characters long. */
-	FriendlyName: string;
-	Type: RoleEnumRoleType;
-	/** A permission that you grant to the new role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. The values for this parameter depend on the role's `type`. */
-	Permission: string[];
+  /** A descriptive string that you create to describe the new resource. It can be up to 64 characters long. */
+  FriendlyName: string;
+  Type: RoleEnumRoleType;
+  /** A permission that you grant to the new role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. The values for this parameter depend on the role's `type`. */
+  Permission: string[];
 };

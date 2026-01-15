@@ -7,30 +7,30 @@
  */
 
 export type UpdateServiceNotificationBody = {
-	/** Weather the notification logging is enabled. */
-	LogEnabled?: boolean;
-	/** Whether to send a notification when a new message is added to a conversation. The default is `false`. */
-	"NewMessage.Enabled"?: boolean;
-	/** The template to use to create the notification text displayed when a new message is added to a conversation and `new_message.enabled` is `true`. */
-	"NewMessage.Template"?: string;
-	/** The name of the sound to play when a new message is added to a conversation and `new_message.enabled` is `true`. */
-	"NewMessage.Sound"?: string;
-	/** Whether the new message badge is enabled. The default is `false`. */
-	"NewMessage.BadgeCountEnabled"?: boolean;
-	/** Whether to send a notification when a participant is added to a conversation. The default is `false`. */
-	"AddedToConversation.Enabled"?: boolean;
-	/** The template to use to create the notification text displayed when a participant is added to a conversation and `added_to_conversation.enabled` is `true`. */
-	"AddedToConversation.Template"?: string;
-	/** The name of the sound to play when a participant is added to a conversation and `added_to_conversation.enabled` is `true`. */
-	"AddedToConversation.Sound"?: string;
-	/** Whether to send a notification to a user when they are removed from a conversation. The default is `false`. */
-	"RemovedFromConversation.Enabled"?: boolean;
-	/** The template to use to create the notification text displayed to a user when they are removed from a conversation and `removed_from_conversation.enabled` is `true`. */
-	"RemovedFromConversation.Template"?: string;
-	/** The name of the sound to play to a user when they are removed from a conversation and `removed_from_conversation.enabled` is `true`. */
-	"RemovedFromConversation.Sound"?: string;
-	/** Whether to send a notification when a new message with media/file attachments is added to a conversation. The default is `false`. */
-	"NewMessage.WithMedia.Enabled"?: boolean;
-	/** The template to use to create the notification text displayed when a new message with media/file attachments is added to a conversation and `new_message.attachments.enabled` is `true`. */
-	"NewMessage.WithMedia.Template"?: string;
+  /** Weather the notification logging is enabled. */
+  LogEnabled?: boolean;
+  /** Whether to send a notification when a new message is added to a conversation. The default is `false`. */
+  'NewMessage.Enabled'?: boolean;
+  /** The template to use to create the notification text displayed when a new message is added to a conversation and `new_message.enabled` is `true`. */
+  'NewMessage.Template'?: string;
+  /** The name of the sound to play when a new message is added to a conversation and `new_message.enabled` is `true`. */
+  'NewMessage.Sound'?: string;
+  /** Whether the new message badge is enabled. The default is `false`. */
+  'NewMessage.BadgeCountEnabled'?: boolean;
+  /** Whether to send a notification when a participant is added to a conversation. The default is `false`. */
+  'AddedToConversation.Enabled'?: boolean;
+  /** The template to use to create the notification text displayed when a participant is added to a conversation and `added_to_conversation.enabled` is `true`. */
+  'AddedToConversation.Template'?: string;
+  /** The name of the sound to play when a participant is added to a conversation and `added_to_conversation.enabled` is `true`. */
+  'AddedToConversation.Sound'?: string;
+  /** Whether to send a notification to a user when they are removed from a conversation. The default is `false`. */
+  'RemovedFromConversation.Enabled'?: boolean;
+  /** The template to use to create the notification text displayed to a user when they are removed from a conversation and `removed_from_conversation.enabled` is `true`. */
+  'RemovedFromConversation.Template'?: string;
+  /** The name of the sound to play to a user when they are removed from a conversation and `removed_from_conversation.enabled` is `true`. */
+  'RemovedFromConversation.Sound'?: string;
+  /** Whether to send a notification when a new message with media/file attachments is added to a conversation. The default is `false`. */
+  'NewMessage.WithMedia.Enabled'?: boolean;
+  /** The template to use to create the notification text displayed when a new message with media/file attachments is added to a conversation and `new_message.attachments.enabled` is `true`. */
+  'NewMessage.WithMedia.Template'?: string;
 };

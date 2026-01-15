@@ -7,52 +7,52 @@
  */
 
 export interface MessagingV1DomainConfig {
-	/**
-	 * The unique string that we created to identify the Domain resource.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^DN[0-9a-fA-F]{32}$
-	 */
-	domain_sid?: string | null;
-	/**
-	 * The unique string that we created to identify the Domain config (prefix ZK).
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^ZK[0-9a-fA-F]{32}$
-	 */
-	config_sid?: string | null;
-	/**
-	 * Any requests we receive to this domain that do not match an existing shortened message will be redirected to the fallback url. These will likely be either expired messages, random misdirected traffic, or intentional scraping.
-	 * @nullable
-	 */
-	fallback_url?: string | null;
-	/**
-	 * URL to receive click events to your webhook whenever the recipients click on the shortened links.
-	 * @nullable
-	 */
-	callback_url?: string | null;
-	/**
-	 * Boolean field to set customer delivery preference when there is a failure in linkShortening service
-	 * @nullable
-	 */
-	continue_on_failure?: boolean | null;
-	/**
-	 * Date this Domain Config was created.
-	 * @nullable
-	 */
-	date_created?: string | null;
-	/**
-	 * Date that this Domain Config was last updated.
-	 * @nullable
-	 */
-	date_updated?: string | null;
-	/** @nullable */
-	url?: string | null;
-	/**
-	 * Customer's choice to send links with/without "https://" attached to shortened url. If true, messages will not be sent with https:// at the beginning of the url. If false, messages will be sent with https:// at the beginning of the url. False is the default behavior if it is not specified.
-	 * @nullable
-	 */
-	disable_https?: boolean | null;
+  /**
+   * The unique string that we created to identify the Domain resource.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^DN[0-9a-fA-F]{32}$
+   */
+  domain_sid?: string | null;
+  /**
+   * The unique string that we created to identify the Domain config (prefix ZK).
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^ZK[0-9a-fA-F]{32}$
+   */
+  config_sid?: string | null;
+  /**
+   * Any requests we receive to this domain that do not match an existing shortened message will be redirected to the fallback url. These will likely be either expired messages, random misdirected traffic, or intentional scraping.
+   * @nullable
+   */
+  fallback_url?: string | null;
+  /**
+   * URL to receive click events to your webhook whenever the recipients click on the shortened links.
+   * @nullable
+   */
+  callback_url?: string | null;
+  /**
+   * Boolean field to set customer delivery preference when there is a failure in linkShortening service
+   * @nullable
+   */
+  continue_on_failure?: boolean | null;
+  /**
+   * Date this Domain Config was created.
+   * @nullable
+   */
+  date_created?: string | null;
+  /**
+   * Date that this Domain Config was last updated.
+   * @nullable
+   */
+  date_updated?: string | null;
+  /** @nullable */
+  url?: string | null;
+  /**
+   * Customer's choice to send links with/without "https://" attached to shortened url. If true, messages will not be sent with https:// at the beginning of the url. If false, messages will be sent with https:// at the beginning of the url. False is the default behavior if it is not specified.
+   * @nullable
+   */
+  disable_https?: boolean | null;
 }

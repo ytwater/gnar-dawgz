@@ -7,11 +7,11 @@
  */
 
 export type CreateChannelSenderBody = {
-	/**
-	 * The SID of the Channel Sender being added to the Service.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^XE[0-9a-fA-F]{32}$
-	 */
-	Sid: string;
+  /**
+   * The SID of the Channel Sender being added to the Service.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^XE[0-9a-fA-F]{32}$
+   */
+  Sid: string;
 };

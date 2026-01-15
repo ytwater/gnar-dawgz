@@ -10,12 +10,11 @@
  * The HTTP method we use to call `inbound_request_url`. Can be `GET` or `POST`.
  * @nullable
  */
-export type MessagingV1ServiceInboundMethod =
-	| (typeof MessagingV1ServiceInboundMethod)[keyof typeof MessagingV1ServiceInboundMethod]
-	| null;
+export type MessagingV1ServiceInboundMethod = typeof MessagingV1ServiceInboundMethod[keyof typeof MessagingV1ServiceInboundMethod] | null;
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const MessagingV1ServiceInboundMethod = {
-	GET: "GET",
-	POST: "POST",
+  GET: 'GET',
+  POST: 'POST',
 } as const;

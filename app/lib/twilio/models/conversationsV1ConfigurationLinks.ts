@@ -10,6 +10,4 @@
  * Contains absolute API resource URLs to access the webhook and default service configurations.
  * @nullable
  */
-export type ConversationsV1ConfigurationLinks = {
-	[key: string]: unknown;
-} | null;
+export type ConversationsV1ConfigurationLinks = { [key: string]: unknown } | null;

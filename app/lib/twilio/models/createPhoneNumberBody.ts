@@ -7,11 +7,11 @@
  */
 
 export type CreatePhoneNumberBody = {
-	/**
-	 * The SID of the Phone Number being added to the Service.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^PN[0-9a-fA-F]{32}$
-	 */
-	PhoneNumberSid: string;
+  /**
+   * The SID of the Phone Number being added to the Service.
+   * @minLength 34
+   * @maxLength 34
+   * @pattern ^PN[0-9a-fA-F]{32}$
+   */
+  PhoneNumberSid: string;
 };

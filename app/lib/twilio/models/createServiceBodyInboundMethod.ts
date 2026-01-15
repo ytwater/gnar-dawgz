@@ -9,11 +9,11 @@
 /**
  * The HTTP method we should use to call `inbound_request_url`. Can be `GET` or `POST` and the default is `POST`.
  */
-export type CreateServiceBodyInboundMethod =
-	(typeof CreateServiceBodyInboundMethod)[keyof typeof CreateServiceBodyInboundMethod];
+export type CreateServiceBodyInboundMethod = typeof CreateServiceBodyInboundMethod[keyof typeof CreateServiceBodyInboundMethod];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CreateServiceBodyInboundMethod = {
-	GET: "GET",
-	POST: "POST",
+  GET: 'GET',
+  POST: 'POST',
 } as const;

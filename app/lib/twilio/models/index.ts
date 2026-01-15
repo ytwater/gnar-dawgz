@@ -358,6 +358,7 @@ export * from "./statsTwilsockRatelimitingerrorsEnumSource";
 export * from "./supportedMessageTypes";
 export * from "./tollfreeVerificationEnumOptInType";
 export * from "./tollfreeVerificationEnumStatus";
+export * from "./tollfreeVerificationEnumVettingProvider";
 export * from "./updateConfigurationAddressBody";
 export * from "./updateConfigurationBody";
 export * from "./updateConfigurationWebhookBody";

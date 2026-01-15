@@ -9,11 +9,11 @@
 /**
  * The HTTP method to be used when sending a webhook request. One of `GET` or `POST`.
  */
-export type ServiceWebhookConfigurationEnumMethod =
-	(typeof ServiceWebhookConfigurationEnumMethod)[keyof typeof ServiceWebhookConfigurationEnumMethod];
+export type ServiceWebhookConfigurationEnumMethod = typeof ServiceWebhookConfigurationEnumMethod[keyof typeof ServiceWebhookConfigurationEnumMethod];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceWebhookConfigurationEnumMethod = {
-	GET: "GET",
-	POST: "POST",
+  GET: 'GET',
+  POST: 'POST',
 } as const;

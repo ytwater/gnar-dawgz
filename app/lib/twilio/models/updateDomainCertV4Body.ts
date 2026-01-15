@@ -7,6 +7,6 @@
  */
 
 export type UpdateDomainCertV4Body = {
-	/** Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain. */
-	TlsCert: string;
+  /** Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain. */
+  TlsCert: string;
 };

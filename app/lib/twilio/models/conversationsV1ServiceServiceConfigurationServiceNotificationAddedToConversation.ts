@@ -10,6 +10,4 @@
  * The Push Notification configuration for being added to a Conversation.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConfigurationServiceNotificationAddedToConversation =
-	| unknown
-	| null;
+export type ConversationsV1ServiceServiceConfigurationServiceNotificationAddedToConversation = unknown | null;

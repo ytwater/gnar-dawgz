@@ -5,87 +5,87 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding } from "./conversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding";
+import type { ConversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding } from './conversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding';
 
 export interface ConversationsV1ServiceServiceConversationServiceConversationParticipant {
-	/**
-	 * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this participant.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^AC[0-9a-fA-F]{32}$
-	 */
-	account_sid?: string | null;
-	/**
-	 * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Participant resource is associated with.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^IS[0-9a-fA-F]{32}$
-	 */
-	chat_service_sid?: string | null;
-	/**
-	 * The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this participant.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^CH[0-9a-fA-F]{32}$
-	 */
-	conversation_sid?: string | null;
-	/**
-	 * A 34 character string that uniquely identifies this resource.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^MB[0-9a-fA-F]{32}$
-	 */
-	sid?: string | null;
-	/**
-	 * A unique string identifier for the conversation participant as [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource). This parameter is non-null if (and only if) the participant is using the [Conversation SDK](https://www.twilio.com/docs/conversations/sdk-overview) to communicate. Limited to 256 characters.
-	 * @nullable
-	 */
-	identity?: string | null;
-	/**
-	 * An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set `{}` will be returned.
-	 * @nullable
-	 */
-	attributes?: string | null;
-	/**
-	 * Information about how this participant exchanges messages with the conversation. A JSON parameter consisting of type and address fields of the participant.
-	 * @nullable
-	 */
-	messaging_binding?: ConversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding;
-	/**
-	 * The SID of a conversation-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the participant.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^RL[0-9a-fA-F]{32}$
-	 */
-	role_sid?: string | null;
-	/**
-	 * The date on which this resource was created.
-	 * @nullable
-	 */
-	date_created?: string | null;
-	/**
-	 * The date on which this resource was last updated.
-	 * @nullable
-	 */
-	date_updated?: string | null;
-	/**
-	 * An absolute API resource URL for this participant.
-	 * @nullable
-	 */
-	url?: string | null;
-	/**
-	 * Index of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant.
-	 * @nullable
-	 */
-	last_read_message_index?: number | null;
-	/**
-	 * Timestamp of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant.
-	 * @nullable
-	 */
-	last_read_timestamp?: string | null;
+  /**
+   * The unique ID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this participant.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^AC[0-9a-fA-F]{32}$
+   */
+  account_sid?: string | null;
+  /**
+   * The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Participant resource is associated with.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^IS[0-9a-fA-F]{32}$
+   */
+  chat_service_sid?: string | null;
+  /**
+   * The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this participant.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^CH[0-9a-fA-F]{32}$
+   */
+  conversation_sid?: string | null;
+  /**
+   * A 34 character string that uniquely identifies this resource.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^MB[0-9a-fA-F]{32}$
+   */
+  sid?: string | null;
+  /**
+   * A unique string identifier for the conversation participant as [Conversation User](https://www.twilio.com/docs/conversations/api/user-resource). This parameter is non-null if (and only if) the participant is using the [Conversation SDK](https://www.twilio.com/docs/conversations/sdk-overview) to communicate. Limited to 256 characters.
+   * @nullable
+   */
+  identity?: string | null;
+  /**
+   * An optional string metadata field you can use to store any data you wish. The string value must contain structurally valid JSON if specified.  **Note** that if the attributes are not set `{}` will be returned.
+   * @nullable
+   */
+  attributes?: string | null;
+  /**
+   * Information about how this participant exchanges messages with the conversation. A JSON parameter consisting of type and address fields of the participant.
+   * @nullable
+   */
+  messaging_binding?: ConversationsV1ServiceServiceConversationServiceConversationParticipantMessagingBinding;
+  /**
+   * The SID of a conversation-level [Role](https://www.twilio.com/docs/conversations/api/role-resource) to assign to the participant.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^RL[0-9a-fA-F]{32}$
+   */
+  role_sid?: string | null;
+  /**
+   * The date on which this resource was created.
+   * @nullable
+   */
+  date_created?: string | null;
+  /**
+   * The date on which this resource was last updated.
+   * @nullable
+   */
+  date_updated?: string | null;
+  /**
+   * An absolute API resource URL for this participant.
+   * @nullable
+   */
+  url?: string | null;
+  /**
+   * Index of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant.
+   * @nullable
+   */
+  last_read_message_index?: number | null;
+  /**
+   * Timestamp of last “read” message in the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for the Participant.
+   * @nullable
+   */
+  last_read_timestamp?: string | null;
 }

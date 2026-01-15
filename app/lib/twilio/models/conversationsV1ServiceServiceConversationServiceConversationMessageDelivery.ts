@@ -10,6 +10,4 @@
  * An object that contains the summary of delivery statuses for the message to non-chat participants.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConversationServiceConversationMessageDelivery =
-	| unknown
-	| null;
+export type ConversationsV1ServiceServiceConversationServiceConversationMessageDelivery = unknown | null;

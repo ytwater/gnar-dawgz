@@ -9,16 +9,16 @@
 /**
  * Brand Registration status. One of "PENDING", "APPROVED", "FAILED", "IN_REVIEW", "DELETION_PENDING", "DELETION_FAILED", "SUSPENDED".
  */
-export type BrandRegistrationsEnumStatus =
-	(typeof BrandRegistrationsEnumStatus)[keyof typeof BrandRegistrationsEnumStatus];
+export type BrandRegistrationsEnumStatus = typeof BrandRegistrationsEnumStatus[keyof typeof BrandRegistrationsEnumStatus];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const BrandRegistrationsEnumStatus = {
-	PENDING: "PENDING",
-	APPROVED: "APPROVED",
-	FAILED: "FAILED",
-	IN_REVIEW: "IN_REVIEW",
-	DELETION_PENDING: "DELETION_PENDING",
-	DELETION_FAILED: "DELETION_FAILED",
-	SUSPENDED: "SUSPENDED",
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  FAILED: 'FAILED',
+  IN_REVIEW: 'IN_REVIEW',
+  DELETION_PENDING: 'DELETION_PENDING',
+  DELETION_FAILED: 'DELETION_FAILED',
+  SUSPENDED: 'SUSPENDED',
 } as const;

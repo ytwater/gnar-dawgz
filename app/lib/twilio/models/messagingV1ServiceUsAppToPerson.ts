@@ -5,159 +5,159 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { MessagingV1ServiceUsAppToPersonRateLimits } from "./messagingV1ServiceUsAppToPersonRateLimits";
+import type { MessagingV1ServiceUsAppToPersonRateLimits } from './messagingV1ServiceUsAppToPersonRateLimits';
 
 export interface MessagingV1ServiceUsAppToPerson {
-	/**
-	 * The unique string that identifies a US A2P Compliance resource `QE2c6890da8086d771620e9b13fadeba0b`.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^QE[0-9a-fA-F]{32}$
-	 */
-	sid?: string | null;
-	/**
-	 * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that the Campaign belongs to.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^AC[0-9a-fA-F]{32}$
-	 */
-	account_sid?: string | null;
-	/**
-	 * The unique string to identify the A2P brand.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^BN[0-9a-fA-F]{32}$
-	 */
-	brand_registration_sid?: string | null;
-	/**
-	 * The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^MG[0-9a-fA-F]{32}$
-	 */
-	messaging_service_sid?: string | null;
-	/**
-	 * A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
-	 * @nullable
-	 */
-	description?: string | null;
-	/**
-	 * An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
-	 * @nullable
-	 */
-	message_samples?: string[] | null;
-	/**
-	 * A2P Campaign Use Case. Examples: [ 2FA, EMERGENCY, MARKETING, SOLE_PROPRIETOR...]. SOLE_PROPRIETOR campaign use cases can only be created by SOLE_PROPRIETOR Brands, and there can only be one SOLE_PROPRIETOR campaign created per SOLE_PROPRIETOR Brand.
-	 * @nullable
-	 */
-	us_app_to_person_usecase?: string | null;
-	/**
-	 * Indicate that this SMS campaign will send messages that contain links.
-	 * @nullable
-	 */
-	has_embedded_links?: boolean | null;
-	/**
-	 * Indicates that this SMS campaign will send messages that contain phone numbers.
-	 * @nullable
-	 */
-	has_embedded_phone?: boolean | null;
-	/**
-	 * A boolean that specifies whether campaign has Subscriber Optin or not.
-	 * @nullable
-	 */
-	subscriber_opt_in?: boolean | null;
-	/**
-	 * A boolean that specifies whether campaign is age gated or not.
-	 * @nullable
-	 */
-	age_gated?: boolean | null;
-	/**
-	 * A boolean that specifies whether campaign allows direct lending or not.
-	 * @nullable
-	 */
-	direct_lending?: boolean | null;
-	/**
-	 * Campaign status. Examples: IN_PROGRESS, VERIFIED, FAILED.
-	 * @nullable
-	 */
-	campaign_status?: string | null;
-	/**
-	 * The Campaign Registry (TCR) Campaign ID.
-	 * @nullable
-	 */
-	campaign_id?: string | null;
-	/**
-	 * Indicates whether the campaign was registered externally or not.
-	 * @nullable
-	 */
-	is_externally_registered?: boolean | null;
-	/**
-	 * Rate limit and/or classification set by each carrier, Ex. AT&T or T-Mobile.
-	 * @nullable
-	 */
-	rate_limits?: MessagingV1ServiceUsAppToPersonRateLimits;
-	/**
-	 * Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
-	 * @nullable
-	 */
-	message_flow?: string | null;
-	/**
-	 * If end users can text in a keyword to start receiving messages from this campaign, the auto-reply messages sent to the end users must be provided. The opt-in response should include the Brand name, confirmation of opt-in enrollment to a recurring message campaign, how to get help, and clear description of how to opt-out. This field is required if end users can text in a keyword to start receiving messages from this campaign. 20 character minimum. 320 character maximum.
-	 * @nullable
-	 */
-	opt_in_message?: string | null;
-	/**
-	 * Upon receiving the opt-out keywords from the end users, Twilio customers are expected to send back an auto-generated response, which must provide acknowledgment of the opt-out request and confirmation that no further messages will be sent. It is also recommended that these opt-out messages include the brand name. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum.
-	 * @nullable
-	 */
-	opt_out_message?: string | null;
-	/**
-	 * When customers receive the help keywords from their end users, Twilio customers are expected to send back an auto-generated response; this may include the brand name and additional support contact information. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum.
-	 * @nullable
-	 */
-	help_message?: string | null;
-	/**
-	 * If end users can text in a keyword to start receiving messages from this campaign, those keywords must be provided. This field is required if end users can text in a keyword to start receiving messages from this campaign. Values must be alphanumeric. 255 character maximum.
-	 * @nullable
-	 */
-	opt_in_keywords?: string[] | null;
-	/**
-	 * End users should be able to text in a keyword to stop receiving messages from this campaign. Those keywords must be provided. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum.
-	 * @nullable
-	 */
-	opt_out_keywords?: string[] | null;
-	/**
-	 * End users should be able to text in a keyword to receive help. Those keywords must be provided as part of the campaign registration request. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum.
-	 * @nullable
-	 */
-	help_keywords?: string[] | null;
-	/**
-	 * The date and time in GMT when the resource was created specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-	 * @nullable
-	 */
-	date_created?: string | null;
-	/**
-	 * The date and time in GMT when the resource was last updated specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-	 * @nullable
-	 */
-	date_updated?: string | null;
-	/**
-	 * The absolute URL of the US App to Person resource.
-	 * @nullable
-	 */
-	url?: string | null;
-	/**
-	 * A boolean that specifies whether campaign is a mock or not. Mock campaigns will be automatically created if using a mock brand. Mock campaigns should only be used for testing purposes.
-	 * @nullable
-	 */
-	mock?: boolean | null;
-	/**
-	 * Details indicating why a campaign registration failed. These errors can indicate one or more fields that were incorrect or did not meet review requirements.
-	 * @nullable
-	 */
-	errors?: unknown[] | null;
+  /**
+   * The unique string that identifies a US A2P Compliance resource `QE2c6890da8086d771620e9b13fadeba0b`.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^QE[0-9a-fA-F]{32}$
+   */
+  sid?: string | null;
+  /**
+   * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that the Campaign belongs to.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^AC[0-9a-fA-F]{32}$
+   */
+  account_sid?: string | null;
+  /**
+   * The unique string to identify the A2P brand.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^BN[0-9a-fA-F]{32}$
+   */
+  brand_registration_sid?: string | null;
+  /**
+   * The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^MG[0-9a-fA-F]{32}$
+   */
+  messaging_service_sid?: string | null;
+  /**
+   * A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+   * @nullable
+   */
+  description?: string | null;
+  /**
+   * An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+   * @nullable
+   */
+  message_samples?: string[] | null;
+  /**
+   * A2P Campaign Use Case. Examples: [ 2FA, EMERGENCY, MARKETING, SOLE_PROPRIETOR...]. SOLE_PROPRIETOR campaign use cases can only be created by SOLE_PROPRIETOR Brands, and there can only be one SOLE_PROPRIETOR campaign created per SOLE_PROPRIETOR Brand.
+   * @nullable
+   */
+  us_app_to_person_usecase?: string | null;
+  /**
+   * Indicate that this SMS campaign will send messages that contain links.
+   * @nullable
+   */
+  has_embedded_links?: boolean | null;
+  /**
+   * Indicates that this SMS campaign will send messages that contain phone numbers.
+   * @nullable
+   */
+  has_embedded_phone?: boolean | null;
+  /**
+   * A boolean that specifies whether campaign has Subscriber Optin or not.
+   * @nullable
+   */
+  subscriber_opt_in?: boolean | null;
+  /**
+   * A boolean that specifies whether campaign is age gated or not.
+   * @nullable
+   */
+  age_gated?: boolean | null;
+  /**
+   * A boolean that specifies whether campaign allows direct lending or not.
+   * @nullable
+   */
+  direct_lending?: boolean | null;
+  /**
+   * Campaign status. Examples: IN_PROGRESS, VERIFIED, FAILED.
+   * @nullable
+   */
+  campaign_status?: string | null;
+  /**
+   * The Campaign Registry (TCR) Campaign ID.
+   * @nullable
+   */
+  campaign_id?: string | null;
+  /**
+   * Indicates whether the campaign was registered externally or not.
+   * @nullable
+   */
+  is_externally_registered?: boolean | null;
+  /**
+   * Rate limit and/or classification set by each carrier, Ex. AT&T or T-Mobile.
+   * @nullable
+   */
+  rate_limits?: MessagingV1ServiceUsAppToPersonRateLimits;
+  /**
+   * Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+   * @nullable
+   */
+  message_flow?: string | null;
+  /**
+   * If end users can text in a keyword to start receiving messages from this campaign, the auto-reply messages sent to the end users must be provided. The opt-in response should include the Brand name, confirmation of opt-in enrollment to a recurring message campaign, how to get help, and clear description of how to opt-out. This field is required if end users can text in a keyword to start receiving messages from this campaign. 20 character minimum. 320 character maximum.
+   * @nullable
+   */
+  opt_in_message?: string | null;
+  /**
+   * Upon receiving the opt-out keywords from the end users, Twilio customers are expected to send back an auto-generated response, which must provide acknowledgment of the opt-out request and confirmation that no further messages will be sent. It is also recommended that these opt-out messages include the brand name. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum.
+   * @nullable
+   */
+  opt_out_message?: string | null;
+  /**
+   * When customers receive the help keywords from their end users, Twilio customers are expected to send back an auto-generated response; this may include the brand name and additional support contact information. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). 20 character minimum. 320 character maximum.
+   * @nullable
+   */
+  help_message?: string | null;
+  /**
+   * If end users can text in a keyword to start receiving messages from this campaign, those keywords must be provided. This field is required if end users can text in a keyword to start receiving messages from this campaign. Values must be alphanumeric. 255 character maximum.
+   * @nullable
+   */
+  opt_in_keywords?: string[] | null;
+  /**
+   * End users should be able to text in a keyword to stop receiving messages from this campaign. Those keywords must be provided. This field is required if managing opt out keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum.
+   * @nullable
+   */
+  opt_out_keywords?: string[] | null;
+  /**
+   * End users should be able to text in a keyword to receive help. Those keywords must be provided as part of the campaign registration request. This field is required if managing help keywords yourself (i.e. not using Twilio's Default or Advanced Opt Out features). Values must be alphanumeric. 255 character maximum.
+   * @nullable
+   */
+  help_keywords?: string[] | null;
+  /**
+   * The date and time in GMT when the resource was created specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+   * @nullable
+   */
+  date_created?: string | null;
+  /**
+   * The date and time in GMT when the resource was last updated specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+   * @nullable
+   */
+  date_updated?: string | null;
+  /**
+   * The absolute URL of the US App to Person resource.
+   * @nullable
+   */
+  url?: string | null;
+  /**
+   * A boolean that specifies whether campaign is a mock or not. Mock campaigns will be automatically created if using a mock brand. Mock campaigns should only be used for testing purposes.
+   * @nullable
+   */
+  mock?: boolean | null;
+  /**
+   * Details indicating why a campaign registration failed. These errors can indicate one or more fields that were incorrect or did not meet review requirements.
+   * @nullable
+   */
+  errors?: unknown[] | null;
 }

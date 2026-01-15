@@ -9,13 +9,13 @@
 /**
  * The Sink type. Can only be "kinesis" or "webhook" currently.
  */
-export type SinkEnumSinkType =
-	(typeof SinkEnumSinkType)[keyof typeof SinkEnumSinkType];
+export type SinkEnumSinkType = typeof SinkEnumSinkType[keyof typeof SinkEnumSinkType];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SinkEnumSinkType = {
-	kinesis: "kinesis",
-	webhook: "webhook",
-	segment: "segment",
-	email: "email",
+  kinesis: 'kinesis',
+  webhook: 'webhook',
+  segment: 'segment',
+  email: 'email',
 } as const;

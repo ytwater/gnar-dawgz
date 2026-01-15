@@ -9,13 +9,13 @@
 /**
  * When a brand is registered, TCR will attempt to verify the identity of the brand based on the supplied information.
  */
-export type BrandRegistrationsEnumIdentityStatus =
-	(typeof BrandRegistrationsEnumIdentityStatus)[keyof typeof BrandRegistrationsEnumIdentityStatus];
+export type BrandRegistrationsEnumIdentityStatus = typeof BrandRegistrationsEnumIdentityStatus[keyof typeof BrandRegistrationsEnumIdentityStatus];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const BrandRegistrationsEnumIdentityStatus = {
-	SELF_DECLARED: "SELF_DECLARED",
-	UNVERIFIED: "UNVERIFIED",
-	VERIFIED: "VERIFIED",
-	VETTED_VERIFIED: "VETTED_VERIFIED",
+  SELF_DECLARED: 'SELF_DECLARED',
+  UNVERIFIED: 'UNVERIFIED',
+  VERIFIED: 'VERIFIED',
+  VETTED_VERIFIED: 'VETTED_VERIFIED',
 } as const;

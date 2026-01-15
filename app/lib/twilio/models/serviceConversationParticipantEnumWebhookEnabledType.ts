@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ServiceConversationParticipantEnumWebhookEnabledType =
-	(typeof ServiceConversationParticipantEnumWebhookEnabledType)[keyof typeof ServiceConversationParticipantEnumWebhookEnabledType];
+export type ServiceConversationParticipantEnumWebhookEnabledType = typeof ServiceConversationParticipantEnumWebhookEnabledType[keyof typeof ServiceConversationParticipantEnumWebhookEnabledType];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceConversationParticipantEnumWebhookEnabledType = {
-	true: "true",
-	false: "false",
+  true: 'true',
+  false: 'false',
 } as const;

@@ -9,13 +9,13 @@
 /**
  * The push technology to use for the Binding. Can be: `apn`, `gcm`, `fcm`, or `twilsock`.  See [push notification configuration](https://www.twilio.com/docs/chat/push-notification-configuration) for more info.
  */
-export type ServiceBindingEnumBindingType =
-	(typeof ServiceBindingEnumBindingType)[keyof typeof ServiceBindingEnumBindingType];
+export type ServiceBindingEnumBindingType = typeof ServiceBindingEnumBindingType[keyof typeof ServiceBindingEnumBindingType];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ServiceBindingEnumBindingType = {
-	apn: "apn",
-	gcm: "gcm",
-	fcm: "fcm",
-	twilsock: "twilsock",
+  apn: 'apn',
+  gcm: 'gcm',
+  fcm: 'fcm',
+  twilsock: 'twilsock',
 } as const;

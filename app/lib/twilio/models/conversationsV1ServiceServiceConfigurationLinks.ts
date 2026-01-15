@@ -10,6 +10,4 @@
  * Contains an absolute API resource URL to access the push notifications configuration of this service.
  * @nullable
  */
-export type ConversationsV1ServiceServiceConfigurationLinks = {
-	[key: string]: unknown;
-} | null;
+export type ConversationsV1ServiceServiceConfigurationLinks = { [key: string]: unknown } | null;

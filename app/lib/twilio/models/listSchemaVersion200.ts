@@ -5,10 +5,10 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { EventsV1SchemaSchemaVersion } from "./eventsV1SchemaSchemaVersion";
-import type { ListSchemaVersion200Meta } from "./listSchemaVersion200Meta";
+import type { EventsV1SchemaSchemaVersion } from './eventsV1SchemaSchemaVersion';
+import type { ListSchemaVersion200Meta } from './listSchemaVersion200Meta';
 
 export type ListSchemaVersion200 = {
-	schema_versions?: EventsV1SchemaSchemaVersion[];
-	meta?: ListSchemaVersion200Meta;
+  schema_versions?: EventsV1SchemaSchemaVersion[];
+  meta?: ListSchemaVersion200Meta;
 };

@@ -9,6 +9,4 @@
 /**
  * @nullable
  */
-export type ConversationsV1ConversationWithParticipantsBindings =
-	| unknown
-	| null;
+export type ConversationsV1ConversationWithParticipantsBindings = unknown | null;

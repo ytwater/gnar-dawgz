@@ -7,26 +7,26 @@
  */
 
 export type ListSubscriptionParams = {
-	/**
-	 * The SID of the sink that the list of Subscriptions should be filtered by.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @pattern ^DG[0-9a-fA-F]{32}$
-	 */
-	SinkSid?: string;
-	/**
-	 * How many resources to return in each list page. The default is 50, and the maximum is 1000.
-	 * @minimum 1
-	 * @maximum 1000
-	 */
-	PageSize?: number;
-	/**
-	 * The page index. This value is simply for client state.
-	 * @minimum 0
-	 */
-	Page?: number;
-	/**
-	 * The page token. This is provided by the API.
-	 */
-	PageToken?: string;
+/**
+ * The SID of the sink that the list of Subscriptions should be filtered by.
+ * @minLength 34
+ * @maxLength 34
+ * @pattern ^DG[0-9a-fA-F]{32}$
+ */
+SinkSid?: string;
+/**
+ * How many resources to return in each list page. The default is 50, and the maximum is 1000.
+ * @minimum 1
+ * @maximum 1000
+ */
+PageSize?: number;
+/**
+ * The page index. This value is simply for client state.
+ * @minimum 0
+ */
+Page?: number;
+/**
+ * The page token. This is provided by the API.
+ */
+PageToken?: string;
 };

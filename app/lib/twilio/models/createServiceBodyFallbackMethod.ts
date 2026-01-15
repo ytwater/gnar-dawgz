@@ -9,11 +9,11 @@
 /**
  * The HTTP method we should use to call `fallback_url`. Can be: `GET` or `POST`.
  */
-export type CreateServiceBodyFallbackMethod =
-	(typeof CreateServiceBodyFallbackMethod)[keyof typeof CreateServiceBodyFallbackMethod];
+export type CreateServiceBodyFallbackMethod = typeof CreateServiceBodyFallbackMethod[keyof typeof CreateServiceBodyFallbackMethod];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CreateServiceBodyFallbackMethod = {
-	GET: "GET",
-	POST: "POST",
+  GET: 'GET',
+  POST: 'POST',
 } as const;

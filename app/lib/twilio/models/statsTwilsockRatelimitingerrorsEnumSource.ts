@@ -9,10 +9,10 @@
 /**
  * Source via which the request came from. Can be Twilsock.
  */
-export type StatsTwilsockRatelimitingerrorsEnumSource =
-	(typeof StatsTwilsockRatelimitingerrorsEnumSource)[keyof typeof StatsTwilsockRatelimitingerrorsEnumSource];
+export type StatsTwilsockRatelimitingerrorsEnumSource = typeof StatsTwilsockRatelimitingerrorsEnumSource[keyof typeof StatsTwilsockRatelimitingerrorsEnumSource];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const StatsTwilsockRatelimitingerrorsEnumSource = {
-	TWILSOCK: "TWILSOCK",
+  TWILSOCK: 'TWILSOCK',
 } as const;

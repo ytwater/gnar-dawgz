@@ -9,6 +9,4 @@
 /**
  * @nullable
  */
-export type ConversationsV1ServiceServiceUserLinks = {
-	[key: string]: unknown;
-} | null;
+export type ConversationsV1ServiceServiceUserLinks = { [key: string]: unknown } | null;

@@ -5,51 +5,51 @@
  * This is the public Twilio REST API.
  * OpenAPI spec version: 1.0.0
  */
-import type { ConversationsV1ConfigurationLinks } from "./conversationsV1ConfigurationLinks";
+import type { ConversationsV1ConfigurationLinks } from './conversationsV1ConfigurationLinks';
 
 export interface ConversationsV1Configuration {
-	/**
-	 * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this configuration.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^AC[0-9a-fA-F]{32}$
-	 */
-	account_sid?: string | null;
-	/**
-	 * The SID of the default [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) used when creating a conversation.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^IS[0-9a-fA-F]{32}$
-	 */
-	default_chat_service_sid?: string | null;
-	/**
-	 * The SID of the default [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) used when creating a conversation.
-	 * @minLength 34
-	 * @maxLength 34
-	 * @nullable
-	 * @pattern ^MG[0-9a-fA-F]{32}$
-	 */
-	default_messaging_service_sid?: string | null;
-	/**
-	 * Default ISO8601 duration when conversation will be switched to `inactive` state. Minimum value for this timer is 1 minute.
-	 * @nullable
-	 */
-	default_inactive_timer?: string | null;
-	/**
-	 * Default ISO8601 duration when conversation will be switched to `closed` state. Minimum value for this timer is 10 minutes.
-	 * @nullable
-	 */
-	default_closed_timer?: string | null;
-	/**
-	 * An absolute API resource URL for this global configuration.
-	 * @nullable
-	 */
-	url?: string | null;
-	/**
-	 * Contains absolute API resource URLs to access the webhook and default service configurations.
-	 * @nullable
-	 */
-	links?: ConversationsV1ConfigurationLinks;
+  /**
+   * The SID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this configuration.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^AC[0-9a-fA-F]{32}$
+   */
+  account_sid?: string | null;
+  /**
+   * The SID of the default [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) used when creating a conversation.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^IS[0-9a-fA-F]{32}$
+   */
+  default_chat_service_sid?: string | null;
+  /**
+   * The SID of the default [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) used when creating a conversation.
+   * @minLength 34
+   * @maxLength 34
+   * @nullable
+   * @pattern ^MG[0-9a-fA-F]{32}$
+   */
+  default_messaging_service_sid?: string | null;
+  /**
+   * Default ISO8601 duration when conversation will be switched to `inactive` state. Minimum value for this timer is 1 minute.
+   * @nullable
+   */
+  default_inactive_timer?: string | null;
+  /**
+   * Default ISO8601 duration when conversation will be switched to `closed` state. Minimum value for this timer is 10 minutes.
+   * @nullable
+   */
+  default_closed_timer?: string | null;
+  /**
+   * An absolute API resource URL for this global configuration.
+   * @nullable
+   */
+  url?: string | null;
+  /**
+   * Contains absolute API resource URLs to access the webhook and default service configurations.
+   * @nullable
+   */
+  links?: ConversationsV1ConfigurationLinks;
 }
