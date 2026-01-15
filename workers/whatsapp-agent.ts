@@ -129,7 +129,7 @@ export class WhatsAppAgent {
 				};
 
 		const systemPrompt = isOnboarding
-			? "You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach. Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'"
+			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach and that they can assign or clear demerits. Make sure you tell them that they can login to the webpage at https://gnardawgs.surf or message 'login' here to get a login code. Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
 			: `You are a helpful assistant for the Gnar Dawgs surf collective. Keep responses concise and friendly.
 You manage the Gnar Dawgs demerit tracker:
 - If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.

@@ -449,119 +449,55 @@ export function SurfDashboardContent({
 									No forecast data available
 								</div>
 							) : (
-								<div className="overflow-x-auto">
-									<div className="grid grid-cols-1 md:grid-cols-5 gap-4 min-w-[600px]">
-										{dailyForecasts.map((forecast) => {
-											const isToday =
-												forecast.dateObj.toDateString() ===
-												new Date().toDateString();
-											const dateLabel = isToday
-												? "Today"
-												: forecast.dateObj.toLocaleDateString([], {
-														weekday: "short",
-														month: "short",
-														day: "numeric",
-													});
+								<div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+									{dailyForecasts.map((forecast) => {
+										const isToday =
+											forecast.dateObj.toDateString() ===
+											new Date().toDateString();
+										const dateLabel = isToday
+											? "Today"
+											: forecast.dateObj.toLocaleDateString([], {
+													weekday: "short",
+													month: "short",
+													day: "numeric",
+												});
 
-											return (
-												<div
-													key={forecast.date}
-													className={`border rounded-lg p-4 ${
-														isToday
-															? "border-primary bg-primary/5"
-															: "border-border"
-													}`}
-												>
-													<div className="text-sm font-semibold mb-3">
-														{dateLabel}
-													</div>
-													<div className="space-y-3">
-														{/* Surfline */}
-														{enableSurfline && (
-															<div>
-																<div className="text-xs text-muted-foreground mb-1">
-																	Surfline
-																</div>
-																{forecast.surfline.heightAvg !== null ? (
-																	<div className="space-y-1">
-																		<div className="text-lg font-bold">
-																			{forecast.surfline.heightMin !== null &&
-																			forecast.surfline.heightMax !== null
-																				? `${forecast.surfline.heightMin.toFixed(1)}-${forecast.surfline.heightMax.toFixed(1)} ft`
-																				: `${forecast.surfline.heightAvg.toFixed(1)} ft`}
-																		</div>
-																		{forecast.surfline.period !== null && (
-																			<div className="text-xs text-muted-foreground">
-																				{forecast.surfline.period.toFixed(0)}s
-																				period
-																			</div>
-																		)}
-																		{forecast.surfline.rating && (
-																			<div className="text-xs font-medium capitalize">
-																				{forecast.surfline.rating.toLowerCase()}
-																			</div>
-																		)}
-																	</div>
-																) : (
-																	<div className="text-sm text-muted-foreground">
-																		No data
-																	</div>
-																)}
-															</div>
-														)}
-
-														{/* Swellcloud */}
-														{enableSwellCloud && (
-															<div>
-																<div className="text-xs text-muted-foreground mb-1">
-																	Swellcloud
-																</div>
-																{forecast.swellcloud.heightAvg !== null ? (
-																	<div className="space-y-1">
-																		<div className="text-lg font-bold">
-																			{forecast.swellcloud.heightMin !== null &&
-																			forecast.swellcloud.heightMax !== null
-																				? `${forecast.swellcloud.heightMin.toFixed(1)}-${forecast.swellcloud.heightMax.toFixed(1)} ft`
-																				: `${forecast.swellcloud.heightAvg.toFixed(1)} ft`}
-																		</div>
-																		{forecast.swellcloud.period !== null && (
-																			<div className="text-xs text-muted-foreground">
-																				{forecast.swellcloud.period.toFixed(0)}s
-																				period
-																			</div>
-																		)}
-																	</div>
-																) : (
-																	<div className="text-sm text-muted-foreground">
-																		No data
-																	</div>
-																)}
-															</div>
-														)}
-
-														{/* Weather */}
-														<div className="pt-2 border-t border-border/50">
+										return (
+											<div
+												key={forecast.date}
+												className={`border rounded-lg p-4 ${
+													isToday
+														? "border-primary bg-primary/5"
+														: "border-border"
+												}`}
+											>
+												<div className="text-sm font-semibold mb-3">
+													{dateLabel}
+												</div>
+												<div className="space-y-3">
+													{/* Surfline */}
+													{enableSurfline && (
+														<div>
 															<div className="text-xs text-muted-foreground mb-1">
-																Weather
+																Surfline
 															</div>
-															{forecast.weather.temperature !== null ? (
+															{forecast.surfline.heightAvg !== null ? (
 																<div className="space-y-1">
-																	<div className="text-base font-semibold">
-																		{forecast.weather.temperature.toFixed(0)}°F
+																	<div className="text-lg font-bold">
+																		{forecast.surfline.heightMin !== null &&
+																		forecast.surfline.heightMax !== null
+																			? `${forecast.surfline.heightMin.toFixed(1)}-${forecast.surfline.heightMax.toFixed(1)} ft`
+																			: `${forecast.surfline.heightAvg.toFixed(1)} ft`}
 																	</div>
-																	{forecast.weather.precipitation !== null &&
-																		forecast.weather.precipitation > 0 && (
-																			<div className="text-xs text-muted-foreground">
-																				{forecast.weather.precipitation.toFixed(
-																					2,
-																				)}
-																				" rain
-																			</div>
-																		)}
-																	{forecast.weather.cloudCover !== null && (
+																	{forecast.surfline.period !== null && (
 																		<div className="text-xs text-muted-foreground">
-																			{forecast.weather.cloudCover.toFixed(0)}%
-																			clouds
+																			{forecast.surfline.period.toFixed(0)}s
+																			period
+																		</div>
+																	)}
+																	{forecast.surfline.rating && (
+																		<div className="text-xs font-medium capitalize">
+																			{forecast.surfline.rating.toLowerCase()}
 																		</div>
 																	)}
 																</div>
@@ -571,11 +507,73 @@ export function SurfDashboardContent({
 																</div>
 															)}
 														</div>
+													)}
+
+													{/* Swellcloud */}
+													{enableSwellCloud && (
+														<div>
+															<div className="text-xs text-muted-foreground mb-1">
+																Swellcloud
+															</div>
+															{forecast.swellcloud.heightAvg !== null ? (
+																<div className="space-y-1">
+																	<div className="text-lg font-bold">
+																		{forecast.swellcloud.heightMin !== null &&
+																		forecast.swellcloud.heightMax !== null
+																			? `${forecast.swellcloud.heightMin.toFixed(1)}-${forecast.swellcloud.heightMax.toFixed(1)} ft`
+																			: `${forecast.swellcloud.heightAvg.toFixed(1)} ft`}
+																	</div>
+																	{forecast.swellcloud.period !== null && (
+																		<div className="text-xs text-muted-foreground">
+																			{forecast.swellcloud.period.toFixed(0)}s
+																			period
+																		</div>
+																	)}
+																</div>
+															) : (
+																<div className="text-sm text-muted-foreground">
+																	No data
+																</div>
+															)}
+														</div>
+													)}
+
+													{/* Weather */}
+													<div className="pt-2 border-t border-border/50">
+														<div className="text-xs text-muted-foreground mb-1">
+															Weather
+														</div>
+														{forecast.weather.temperature !== null ? (
+															<div className="space-y-1">
+																<div className="text-base font-semibold">
+																	{forecast.weather.temperature.toFixed(0)}°F
+																</div>
+																{forecast.weather.precipitation !== null &&
+																	forecast.weather.precipitation > 0 && (
+																		<div className="text-xs text-muted-foreground">
+																			{forecast.weather.precipitation.toFixed(
+																				2,
+																			)}
+																			" rain
+																		</div>
+																	)}
+																{forecast.weather.cloudCover !== null && (
+																	<div className="text-xs text-muted-foreground">
+																		{forecast.weather.cloudCover.toFixed(0)}%
+																		clouds
+																	</div>
+																)}
+															</div>
+														) : (
+															<div className="text-sm text-muted-foreground">
+																No data
+															</div>
+														)}
 													</div>
 												</div>
-											);
-										})}
-									</div>
+											</div>
+										);
+									})}
 								</div>
 							)}
 						</CardContent>
