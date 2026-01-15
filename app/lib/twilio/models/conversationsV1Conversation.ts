@@ -6,9 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { ConversationEnumState } from "./conversationEnumState";
-import type { ConversationsV1ConversationTimers } from "./conversationsV1ConversationTimers";
-import type { ConversationsV1ConversationLinks } from "./conversationsV1ConversationLinks";
 import type { ConversationsV1ConversationBindings } from "./conversationsV1ConversationBindings";
+import type { ConversationsV1ConversationLinks } from "./conversationsV1ConversationLinks";
+import type { ConversationsV1ConversationTimers } from "./conversationsV1ConversationTimers";
 
 export interface ConversationsV1Conversation {
 	/**

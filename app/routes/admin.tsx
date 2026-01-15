@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
-import { ADMIN_USER_IDS } from "~/app/config/constants";
 import { Layout } from "~/app/components/layout";
+import { ADMIN_USER_IDS } from "~/app/config/constants";
 import { authClient } from "~/app/lib/auth-client";
 
 type AdminUser = {

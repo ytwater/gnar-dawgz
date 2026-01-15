@@ -10,8 +10,10 @@ import { getDb } from "app/lib/db";
 import { whatsappMessages } from "app/lib/schema";
 import type { User } from "better-auth";
 import { and, eq, gte } from "drizzle-orm";
-import { SURFLINE_TORREY_PINES_SPOT_ID } from "~/app/config/constants";
 import { executions } from "./tools";
+import { createAssignDemeritTool } from "./tools/createAssignDemeritTool";
+import { createClearDemeritsTool } from "./tools/createClearDemeritsTool";
+import { createGetCharterTool } from "./tools/createGetCharterTool";
 import { createGetSurfSpotsTool } from "./tools/createGetSurfSpotsTool";
 import { createSurfForecastTool } from "./tools/createSurfForecastTool";
 import { createUserNameTool } from "./tools/createUserNameTool";
@@ -94,6 +96,9 @@ export class WhatsAppAgent {
 		const getSurfForecast = createSurfForecastTool(this.env);
 		const getSurfSpots = createGetSurfSpotsTool(this.env);
 		const updateUserName = createUserNameTool(this.env, this.user.id);
+		const assignDemerit = createAssignDemeritTool(this.env, this.user.id);
+		const clearDemerits = createClearDemeritsTool(this.env);
+		const getCharter = createGetCharterTool(this.env);
 
 		const isOnboarding = this.user.name === "Guest";
 
@@ -105,11 +110,21 @@ export class WhatsAppAgent {
 			: {
 					getSurfForecast,
 					getSurfSpots,
+					assignDemerit,
+					clearDemerits,
+					getCharter,
 				};
 
 		const systemPrompt = isOnboarding
 			? "You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach. Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'"
-			: `You are a helpful assistant that can do various tasks via WhatsApp. Keep responses concise and friendly. You should default to telling the user what you can do. You can use the getSurfSpots tool to get the list of surf spots we have in the database, but we should always default to Torrey Pines beach which is the default surf spot and has spotId '${SURFLINE_TORREY_PINES_SPOT_ID}'. You can use the getSurfForecast tool to get the surf forecast. The tool will defaults to Torrey Pines beach, so no need to specify the location unless the user asks for a specific spot. It can take a start and end date to get the forecast for a specific period. If no start or end date is provided, it will default to tomorrow and the day after. If the user asks about this week, assume that it's midweek, Monday - Friday. Weekends should be the coming weekend.`;
+			: `You are a helpful assistant for the Gnar Dawgs surf collective. Keep responses concise and friendly.
+You manage the Gnar Dawgs demerit tracker:
+- If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.
+- If a member buys a beer for someone, their active demerits can be cleared using the 'clearDemerits' tool.
+- You can use the 'getCharter' tool to see the current rules if anyone asks.
+- You can also provide surf forecasts using 'getSurfForecast' (default is Torrey Pines) and 'getSurfSpots'.
+Be concise. If someone asks "Who has the most demerits?", tell them to check the /charter page on the website.
+Search for users by name when assigning or clearing demerits.`;
 		console.log(
 			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",
 			systemPrompt,

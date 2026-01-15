@@ -77,7 +77,7 @@ export const getListEventTypeUrl = (params?: ListEventTypeParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://events.twilio.com/v1/Types?${stringifiedParams}`
-		: `https://events.twilio.com/v1/Types`;
+		: "https://events.twilio.com/v1/Types";
 };
 
 export const listEventType = async (
@@ -101,7 +101,7 @@ export const listEventType = async (
 
 export const getListEventTypeQueryKey = (params?: ListEventTypeParams) => {
 	return [
-		`https://events.twilio.com/v1/Types`,
+		"https://events.twilio.com/v1/Types",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -1175,7 +1175,7 @@ export function useFetchSink<
  * @summary Delete a specific Sink.
  */
 export type deleteSinkResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -1302,7 +1302,7 @@ export const updateSink = async (
 	options?: RequestInit,
 ): Promise<updateSinkResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Description`, updateSinkBody.Description);
+	formUrlEncoded.append("Description", updateSinkBody.Description);
 
 	const res = await fetch(getUpdateSinkUrl(sid), {
 		...options,
@@ -1409,7 +1409,7 @@ export type createSinkResponseSuccess = createSinkResponse201 & {
 export type createSinkResponse = createSinkResponseSuccess;
 
 export const getCreateSinkUrl = () => {
-	return `https://events.twilio.com/v1/Sinks`;
+	return "https://events.twilio.com/v1/Sinks";
 };
 
 export const createSink = async (
@@ -1417,9 +1417,9 @@ export const createSink = async (
 	options?: RequestInit,
 ): Promise<createSinkResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Description`, createSinkBody.Description);
-	formUrlEncoded.append(`SinkConfiguration`, createSinkBody.SinkConfiguration);
-	formUrlEncoded.append(`SinkType`, createSinkBody.SinkType);
+	formUrlEncoded.append("Description", createSinkBody.Description);
+	formUrlEncoded.append("SinkConfiguration", createSinkBody.SinkConfiguration);
+	formUrlEncoded.append("SinkType", createSinkBody.SinkType);
 
 	const res = await fetch(getCreateSinkUrl(), {
 		...options,
@@ -1538,7 +1538,7 @@ export const getListSinkUrl = (params?: ListSinkParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://events.twilio.com/v1/Sinks?${stringifiedParams}`
-		: `https://events.twilio.com/v1/Sinks`;
+		: "https://events.twilio.com/v1/Sinks";
 };
 
 export const listSink = async (
@@ -1558,7 +1558,7 @@ export const listSink = async (
 
 export const getListSinkQueryKey = (params?: ListSinkParams) => {
 	return [
-		`https://events.twilio.com/v1/Sinks`,
+		"https://events.twilio.com/v1/Sinks",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -1828,7 +1828,7 @@ export const createSinkValidate = async (
 	options?: RequestInit,
 ): Promise<createSinkValidateResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`TestId`, createSinkValidateBody.TestId);
+	formUrlEncoded.append("TestId", createSinkValidateBody.TestId);
 
 	const res = await fetch(getCreateSinkValidateUrl(sid), {
 		...options,
@@ -2181,10 +2181,10 @@ export const createSubscribedEvent = async (
 	options?: RequestInit,
 ): Promise<createSubscribedEventResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Type`, createSubscribedEventBody.Type);
+	formUrlEncoded.append("Type", createSubscribedEventBody.Type);
 	if (createSubscribedEventBody.SchemaVersion !== undefined) {
 		formUrlEncoded.append(
-			`SchemaVersion`,
+			"SchemaVersion",
 			createSubscribedEventBody.SchemaVersion.toString(),
 		);
 	}
@@ -2528,7 +2528,7 @@ export const updateSubscribedEvent = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateSubscribedEventBody.SchemaVersion !== undefined) {
 		formUrlEncoded.append(
-			`SchemaVersion`,
+			"SchemaVersion",
 			updateSubscribedEventBody.SchemaVersion.toString(),
 		);
 	}
@@ -2633,7 +2633,7 @@ export const useUpdateSubscribedEvent = <TError = unknown, TContext = unknown>(
  * @summary Remove an event type from a Subscription.
  */
 export type deleteSubscribedEventResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -2771,7 +2771,7 @@ export const getListSubscriptionUrl = (params?: ListSubscriptionParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://events.twilio.com/v1/Subscriptions?${stringifiedParams}`
-		: `https://events.twilio.com/v1/Subscriptions`;
+		: "https://events.twilio.com/v1/Subscriptions";
 };
 
 export const listSubscription = async (
@@ -2797,7 +2797,7 @@ export const getListSubscriptionQueryKey = (
 	params?: ListSubscriptionParams,
 ) => {
 	return [
-		`https://events.twilio.com/v1/Subscriptions`,
+		"https://events.twilio.com/v1/Subscriptions",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -2964,7 +2964,7 @@ export type createSubscriptionResponseSuccess =
 export type createSubscriptionResponse = createSubscriptionResponseSuccess;
 
 export const getCreateSubscriptionUrl = () => {
-	return `https://events.twilio.com/v1/Subscriptions`;
+	return "https://events.twilio.com/v1/Subscriptions";
 };
 
 export const createSubscription = async (
@@ -2972,10 +2972,10 @@ export const createSubscription = async (
 	options?: RequestInit,
 ): Promise<createSubscriptionResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Description`, createSubscriptionBody.Description);
-	formUrlEncoded.append(`SinkSid`, createSubscriptionBody.SinkSid);
+	formUrlEncoded.append("Description", createSubscriptionBody.Description);
+	formUrlEncoded.append("SinkSid", createSubscriptionBody.SinkSid);
 	createSubscriptionBody.Types.forEach((value) =>
-		formUrlEncoded.append(`Types`, value),
+		formUrlEncoded.append("Types", value),
 	);
 
 	const res = await fetch(getCreateSubscriptionUrl(), {
@@ -3285,7 +3285,7 @@ export const updateSubscription = async (
 ): Promise<updateSubscriptionResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateSubscriptionBody.Description !== undefined) {
-		formUrlEncoded.append(`Description`, updateSubscriptionBody.Description);
+		formUrlEncoded.append("Description", updateSubscriptionBody.Description);
 	}
 
 	const res = await fetch(getUpdateSubscriptionUrl(sid), {
@@ -3382,7 +3382,7 @@ export const useUpdateSubscription = <TError = unknown, TContext = unknown>(
  * @summary Delete a specific Subscription.
  */
 export type deleteSubscriptionResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 

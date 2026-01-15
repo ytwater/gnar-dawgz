@@ -150,7 +150,7 @@ export type fetchConfigurationResponseSuccess =
 export type fetchConfigurationResponse = fetchConfigurationResponseSuccess;
 
 export const getFetchConfigurationUrl = () => {
-	return `https://conversations.twilio.com/v1/Configuration`;
+	return "https://conversations.twilio.com/v1/Configuration";
 };
 
 export const fetchConfiguration = async (
@@ -172,7 +172,7 @@ export const fetchConfiguration = async (
 };
 
 export const getFetchConfigurationQueryKey = () => {
-	return [`https://conversations.twilio.com/v1/Configuration`] as const;
+	return ["https://conversations.twilio.com/v1/Configuration"] as const;
 };
 
 export const getFetchConfigurationQueryOptions = <
@@ -329,7 +329,7 @@ export type updateConfigurationResponseSuccess =
 export type updateConfigurationResponse = updateConfigurationResponseSuccess;
 
 export const getUpdateConfigurationUrl = () => {
-	return `https://conversations.twilio.com/v1/Configuration`;
+	return "https://conversations.twilio.com/v1/Configuration";
 };
 
 export const updateConfiguration = async (
@@ -339,25 +339,25 @@ export const updateConfiguration = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateConfigurationBody.DefaultChatServiceSid !== undefined) {
 		formUrlEncoded.append(
-			`DefaultChatServiceSid`,
+			"DefaultChatServiceSid",
 			updateConfigurationBody.DefaultChatServiceSid,
 		);
 	}
 	if (updateConfigurationBody.DefaultMessagingServiceSid !== undefined) {
 		formUrlEncoded.append(
-			`DefaultMessagingServiceSid`,
+			"DefaultMessagingServiceSid",
 			updateConfigurationBody.DefaultMessagingServiceSid,
 		);
 	}
 	if (updateConfigurationBody.DefaultInactiveTimer !== undefined) {
 		formUrlEncoded.append(
-			`DefaultInactiveTimer`,
+			"DefaultInactiveTimer",
 			updateConfigurationBody.DefaultInactiveTimer,
 		);
 	}
 	if (updateConfigurationBody.DefaultClosedTimer !== undefined) {
 		formUrlEncoded.append(
-			`DefaultClosedTimer`,
+			"DefaultClosedTimer",
 			updateConfigurationBody.DefaultClosedTimer,
 		);
 	}
@@ -485,7 +485,7 @@ export const getListConfigurationAddressUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://conversations.twilio.com/v1/Configuration/Addresses?${stringifiedParams}`
-		: `https://conversations.twilio.com/v1/Configuration/Addresses`;
+		: "https://conversations.twilio.com/v1/Configuration/Addresses";
 };
 
 export const listConfigurationAddress = async (
@@ -513,7 +513,7 @@ export const getListConfigurationAddressQueryKey = (
 	params?: ListConfigurationAddressParams,
 ) => {
 	return [
-		`https://conversations.twilio.com/v1/Configuration/Addresses`,
+		"https://conversations.twilio.com/v1/Configuration/Addresses",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -682,7 +682,7 @@ export type createConfigurationAddressResponse =
 	createConfigurationAddressResponseSuccess;
 
 export const getCreateConfigurationAddressUrl = () => {
-	return `https://conversations.twilio.com/v1/Configuration/Addresses`;
+	return "https://conversations.twilio.com/v1/Configuration/Addresses";
 };
 
 export const createConfigurationAddress = async (
@@ -690,23 +690,23 @@ export const createConfigurationAddress = async (
 	options?: RequestInit,
 ): Promise<createConfigurationAddressResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Type`, createConfigurationAddressBody.Type);
-	formUrlEncoded.append(`Address`, createConfigurationAddressBody.Address);
+	formUrlEncoded.append("Type", createConfigurationAddressBody.Type);
+	formUrlEncoded.append("Address", createConfigurationAddressBody.Address);
 	if (createConfigurationAddressBody.FriendlyName !== undefined) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			createConfigurationAddressBody.FriendlyName,
 		);
 	}
 	if (createConfigurationAddressBody["AutoCreation.Enabled"] !== undefined) {
 		formUrlEncoded.append(
-			`AutoCreation.Enabled`,
+			"AutoCreation.Enabled",
 			createConfigurationAddressBody["AutoCreation.Enabled"].toString(),
 		);
 	}
 	if (createConfigurationAddressBody["AutoCreation.Type"] !== undefined) {
 		formUrlEncoded.append(
-			`AutoCreation.Type`,
+			"AutoCreation.Type",
 			createConfigurationAddressBody["AutoCreation.Type"],
 		);
 	}
@@ -715,13 +715,13 @@ export const createConfigurationAddress = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.ConversationServiceSid`,
+			"AutoCreation.ConversationServiceSid",
 			createConfigurationAddressBody["AutoCreation.ConversationServiceSid"],
 		);
 	}
 	if (createConfigurationAddressBody["AutoCreation.WebhookUrl"] !== undefined) {
 		formUrlEncoded.append(
-			`AutoCreation.WebhookUrl`,
+			"AutoCreation.WebhookUrl",
 			createConfigurationAddressBody["AutoCreation.WebhookUrl"],
 		);
 	}
@@ -729,7 +729,7 @@ export const createConfigurationAddress = async (
 		createConfigurationAddressBody["AutoCreation.WebhookMethod"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.WebhookMethod`,
+			"AutoCreation.WebhookMethod",
 			createConfigurationAddressBody["AutoCreation.WebhookMethod"],
 		);
 	}
@@ -737,14 +737,14 @@ export const createConfigurationAddress = async (
 		createConfigurationAddressBody["AutoCreation.WebhookFilters"] !== undefined
 	) {
 		createConfigurationAddressBody["AutoCreation.WebhookFilters"].forEach(
-			(value) => formUrlEncoded.append(`AutoCreation.WebhookFilters`, value),
+			(value) => formUrlEncoded.append("AutoCreation.WebhookFilters", value),
 		);
 	}
 	if (
 		createConfigurationAddressBody["AutoCreation.StudioFlowSid"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.StudioFlowSid`,
+			"AutoCreation.StudioFlowSid",
 			createConfigurationAddressBody["AutoCreation.StudioFlowSid"],
 		);
 	}
@@ -753,7 +753,7 @@ export const createConfigurationAddress = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.StudioRetryCount`,
+			"AutoCreation.StudioRetryCount",
 			createConfigurationAddressBody[
 				"AutoCreation.StudioRetryCount"
 			].toString(),
@@ -761,7 +761,7 @@ export const createConfigurationAddress = async (
 	}
 	if (createConfigurationAddressBody.AddressCountry !== undefined) {
 		formUrlEncoded.append(
-			`AddressCountry`,
+			"AddressCountry",
 			createConfigurationAddressBody.AddressCountry,
 		);
 	}
@@ -1089,19 +1089,19 @@ export const updateConfigurationAddress = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateConfigurationAddressBody.FriendlyName !== undefined) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			updateConfigurationAddressBody.FriendlyName,
 		);
 	}
 	if (updateConfigurationAddressBody["AutoCreation.Enabled"] !== undefined) {
 		formUrlEncoded.append(
-			`AutoCreation.Enabled`,
+			"AutoCreation.Enabled",
 			updateConfigurationAddressBody["AutoCreation.Enabled"].toString(),
 		);
 	}
 	if (updateConfigurationAddressBody["AutoCreation.Type"] !== undefined) {
 		formUrlEncoded.append(
-			`AutoCreation.Type`,
+			"AutoCreation.Type",
 			updateConfigurationAddressBody["AutoCreation.Type"],
 		);
 	}
@@ -1110,13 +1110,13 @@ export const updateConfigurationAddress = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.ConversationServiceSid`,
+			"AutoCreation.ConversationServiceSid",
 			updateConfigurationAddressBody["AutoCreation.ConversationServiceSid"],
 		);
 	}
 	if (updateConfigurationAddressBody["AutoCreation.WebhookUrl"] !== undefined) {
 		formUrlEncoded.append(
-			`AutoCreation.WebhookUrl`,
+			"AutoCreation.WebhookUrl",
 			updateConfigurationAddressBody["AutoCreation.WebhookUrl"],
 		);
 	}
@@ -1124,7 +1124,7 @@ export const updateConfigurationAddress = async (
 		updateConfigurationAddressBody["AutoCreation.WebhookMethod"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.WebhookMethod`,
+			"AutoCreation.WebhookMethod",
 			updateConfigurationAddressBody["AutoCreation.WebhookMethod"],
 		);
 	}
@@ -1132,14 +1132,14 @@ export const updateConfigurationAddress = async (
 		updateConfigurationAddressBody["AutoCreation.WebhookFilters"] !== undefined
 	) {
 		updateConfigurationAddressBody["AutoCreation.WebhookFilters"].forEach(
-			(value) => formUrlEncoded.append(`AutoCreation.WebhookFilters`, value),
+			(value) => formUrlEncoded.append("AutoCreation.WebhookFilters", value),
 		);
 	}
 	if (
 		updateConfigurationAddressBody["AutoCreation.StudioFlowSid"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.StudioFlowSid`,
+			"AutoCreation.StudioFlowSid",
 			updateConfigurationAddressBody["AutoCreation.StudioFlowSid"],
 		);
 	}
@@ -1148,7 +1148,7 @@ export const updateConfigurationAddress = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`AutoCreation.StudioRetryCount`,
+			"AutoCreation.StudioRetryCount",
 			updateConfigurationAddressBody[
 				"AutoCreation.StudioRetryCount"
 			].toString(),
@@ -1255,7 +1255,7 @@ export const useUpdateConfigurationAddress = <
  * @summary Remove an existing address configuration
  */
 export type deleteConfigurationAddressResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -1378,7 +1378,7 @@ export type fetchConfigurationWebhookResponse =
 	fetchConfigurationWebhookResponseSuccess;
 
 export const getFetchConfigurationWebhookUrl = () => {
-	return `https://conversations.twilio.com/v1/Configuration/Webhooks`;
+	return "https://conversations.twilio.com/v1/Configuration/Webhooks";
 };
 
 export const fetchConfigurationWebhook = async (
@@ -1403,7 +1403,7 @@ export const fetchConfigurationWebhook = async (
 
 export const getFetchConfigurationWebhookQueryKey = () => {
 	return [
-		`https://conversations.twilio.com/v1/Configuration/Webhooks`,
+		"https://conversations.twilio.com/v1/Configuration/Webhooks",
 	] as const;
 };
 
@@ -1556,7 +1556,7 @@ export type updateConfigurationWebhookResponse =
 	updateConfigurationWebhookResponseSuccess;
 
 export const getUpdateConfigurationWebhookUrl = () => {
-	return `https://conversations.twilio.com/v1/Configuration/Webhooks`;
+	return "https://conversations.twilio.com/v1/Configuration/Webhooks";
 };
 
 export const updateConfigurationWebhook = async (
@@ -1565,27 +1565,27 @@ export const updateConfigurationWebhook = async (
 ): Promise<updateConfigurationWebhookResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateConfigurationWebhookBody.Method !== undefined) {
-		formUrlEncoded.append(`Method`, updateConfigurationWebhookBody.Method);
+		formUrlEncoded.append("Method", updateConfigurationWebhookBody.Method);
 	}
 	if (updateConfigurationWebhookBody.Filters !== undefined) {
 		updateConfigurationWebhookBody.Filters.forEach((value) =>
-			formUrlEncoded.append(`Filters`, value),
+			formUrlEncoded.append("Filters", value),
 		);
 	}
 	if (updateConfigurationWebhookBody.PreWebhookUrl !== undefined) {
 		formUrlEncoded.append(
-			`PreWebhookUrl`,
+			"PreWebhookUrl",
 			updateConfigurationWebhookBody.PreWebhookUrl,
 		);
 	}
 	if (updateConfigurationWebhookBody.PostWebhookUrl !== undefined) {
 		formUrlEncoded.append(
-			`PostWebhookUrl`,
+			"PostWebhookUrl",
 			updateConfigurationWebhookBody.PostWebhookUrl,
 		);
 	}
 	if (updateConfigurationWebhookBody.Target !== undefined) {
-		formUrlEncoded.append(`Target`, updateConfigurationWebhookBody.Target);
+		formUrlEncoded.append("Target", updateConfigurationWebhookBody.Target);
 	}
 
 	const res = await fetch(getUpdateConfigurationWebhookUrl(), {
@@ -1697,7 +1697,7 @@ export type createConversationResponseSuccess =
 export type createConversationResponse = createConversationResponseSuccess;
 
 export const getCreateConversationUrl = () => {
-	return `https://conversations.twilio.com/v1/Conversations`;
+	return "https://conversations.twilio.com/v1/Conversations";
 };
 
 export const createConversation = async (
@@ -1706,50 +1706,50 @@ export const createConversation = async (
 ): Promise<createConversationResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (createConversationBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, createConversationBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", createConversationBody.FriendlyName);
 	}
 	if (createConversationBody.UniqueName !== undefined) {
-		formUrlEncoded.append(`UniqueName`, createConversationBody.UniqueName);
+		formUrlEncoded.append("UniqueName", createConversationBody.UniqueName);
 	}
 	if (createConversationBody.DateCreated !== undefined) {
-		formUrlEncoded.append(`DateCreated`, createConversationBody.DateCreated);
+		formUrlEncoded.append("DateCreated", createConversationBody.DateCreated);
 	}
 	if (createConversationBody.DateUpdated !== undefined) {
-		formUrlEncoded.append(`DateUpdated`, createConversationBody.DateUpdated);
+		formUrlEncoded.append("DateUpdated", createConversationBody.DateUpdated);
 	}
 	if (createConversationBody.MessagingServiceSid !== undefined) {
 		formUrlEncoded.append(
-			`MessagingServiceSid`,
+			"MessagingServiceSid",
 			createConversationBody.MessagingServiceSid,
 		);
 	}
 	if (createConversationBody.Attributes !== undefined) {
-		formUrlEncoded.append(`Attributes`, createConversationBody.Attributes);
+		formUrlEncoded.append("Attributes", createConversationBody.Attributes);
 	}
 	if (createConversationBody.State !== undefined) {
-		formUrlEncoded.append(`State`, createConversationBody.State);
+		formUrlEncoded.append("State", createConversationBody.State);
 	}
 	if (createConversationBody["Timers.Inactive"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Inactive`,
+			"Timers.Inactive",
 			createConversationBody["Timers.Inactive"],
 		);
 	}
 	if (createConversationBody["Timers.Closed"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Closed`,
+			"Timers.Closed",
 			createConversationBody["Timers.Closed"],
 		);
 	}
 	if (createConversationBody["Bindings.Email.Address"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Address`,
+			"Bindings.Email.Address",
 			createConversationBody["Bindings.Email.Address"],
 		);
 	}
 	if (createConversationBody["Bindings.Email.Name"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Name`,
+			"Bindings.Email.Name",
 			createConversationBody["Bindings.Email.Name"],
 		);
 	}
@@ -1871,7 +1871,7 @@ export const getListConversationUrl = (params?: ListConversationParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://conversations.twilio.com/v1/Conversations?${stringifiedParams}`
-		: `https://conversations.twilio.com/v1/Conversations`;
+		: "https://conversations.twilio.com/v1/Conversations";
 };
 
 export const listConversation = async (
@@ -1897,7 +1897,7 @@ export const getListConversationQueryKey = (
 	params?: ListConversationParams,
 ) => {
 	return [
-		`https://conversations.twilio.com/v1/Conversations`,
+		"https://conversations.twilio.com/v1/Conversations",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -2074,50 +2074,50 @@ export const updateConversation = async (
 ): Promise<updateConversationResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateConversationBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, updateConversationBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", updateConversationBody.FriendlyName);
 	}
 	if (updateConversationBody.DateCreated !== undefined) {
-		formUrlEncoded.append(`DateCreated`, updateConversationBody.DateCreated);
+		formUrlEncoded.append("DateCreated", updateConversationBody.DateCreated);
 	}
 	if (updateConversationBody.DateUpdated !== undefined) {
-		formUrlEncoded.append(`DateUpdated`, updateConversationBody.DateUpdated);
+		formUrlEncoded.append("DateUpdated", updateConversationBody.DateUpdated);
 	}
 	if (updateConversationBody.Attributes !== undefined) {
-		formUrlEncoded.append(`Attributes`, updateConversationBody.Attributes);
+		formUrlEncoded.append("Attributes", updateConversationBody.Attributes);
 	}
 	if (updateConversationBody.MessagingServiceSid !== undefined) {
 		formUrlEncoded.append(
-			`MessagingServiceSid`,
+			"MessagingServiceSid",
 			updateConversationBody.MessagingServiceSid,
 		);
 	}
 	if (updateConversationBody.State !== undefined) {
-		formUrlEncoded.append(`State`, updateConversationBody.State);
+		formUrlEncoded.append("State", updateConversationBody.State);
 	}
 	if (updateConversationBody["Timers.Inactive"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Inactive`,
+			"Timers.Inactive",
 			updateConversationBody["Timers.Inactive"],
 		);
 	}
 	if (updateConversationBody["Timers.Closed"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Closed`,
+			"Timers.Closed",
 			updateConversationBody["Timers.Closed"],
 		);
 	}
 	if (updateConversationBody.UniqueName !== undefined) {
-		formUrlEncoded.append(`UniqueName`, updateConversationBody.UniqueName);
+		formUrlEncoded.append("UniqueName", updateConversationBody.UniqueName);
 	}
 	if (updateConversationBody["Bindings.Email.Address"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Address`,
+			"Bindings.Email.Address",
 			updateConversationBody["Bindings.Email.Address"],
 		);
 	}
 	if (updateConversationBody["Bindings.Email.Name"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Name`,
+			"Bindings.Email.Name",
 			updateConversationBody["Bindings.Email.Name"],
 		);
 	}
@@ -2216,7 +2216,7 @@ export const useUpdateConversation = <TError = unknown, TContext = unknown>(
  * @summary Remove a conversation from your account's default service
  */
 export type deleteConversationResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -2538,46 +2538,46 @@ export const createConversationMessage = async (
 ): Promise<createConversationMessageResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (createConversationMessageBody.Author !== undefined) {
-		formUrlEncoded.append(`Author`, createConversationMessageBody.Author);
+		formUrlEncoded.append("Author", createConversationMessageBody.Author);
 	}
 	if (createConversationMessageBody.Body !== undefined) {
-		formUrlEncoded.append(`Body`, createConversationMessageBody.Body);
+		formUrlEncoded.append("Body", createConversationMessageBody.Body);
 	}
 	if (createConversationMessageBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			createConversationMessageBody.DateCreated,
 		);
 	}
 	if (createConversationMessageBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			createConversationMessageBody.DateUpdated,
 		);
 	}
 	if (createConversationMessageBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			createConversationMessageBody.Attributes,
 		);
 	}
 	if (createConversationMessageBody.MediaSid !== undefined) {
-		formUrlEncoded.append(`MediaSid`, createConversationMessageBody.MediaSid);
+		formUrlEncoded.append("MediaSid", createConversationMessageBody.MediaSid);
 	}
 	if (createConversationMessageBody.ContentSid !== undefined) {
 		formUrlEncoded.append(
-			`ContentSid`,
+			"ContentSid",
 			createConversationMessageBody.ContentSid,
 		);
 	}
 	if (createConversationMessageBody.ContentVariables !== undefined) {
 		formUrlEncoded.append(
-			`ContentVariables`,
+			"ContentVariables",
 			createConversationMessageBody.ContentVariables,
 		);
 	}
 	if (createConversationMessageBody.Subject !== undefined) {
-		formUrlEncoded.append(`Subject`, createConversationMessageBody.Subject);
+		formUrlEncoded.append("Subject", createConversationMessageBody.Subject);
 	}
 
 	const res = await fetch(getCreateConversationMessageUrl(conversationSid), {
@@ -2942,31 +2942,31 @@ export const updateConversationMessage = async (
 ): Promise<updateConversationMessageResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateConversationMessageBody.Author !== undefined) {
-		formUrlEncoded.append(`Author`, updateConversationMessageBody.Author);
+		formUrlEncoded.append("Author", updateConversationMessageBody.Author);
 	}
 	if (updateConversationMessageBody.Body !== undefined) {
-		formUrlEncoded.append(`Body`, updateConversationMessageBody.Body);
+		formUrlEncoded.append("Body", updateConversationMessageBody.Body);
 	}
 	if (updateConversationMessageBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			updateConversationMessageBody.DateCreated,
 		);
 	}
 	if (updateConversationMessageBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			updateConversationMessageBody.DateUpdated,
 		);
 	}
 	if (updateConversationMessageBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			updateConversationMessageBody.Attributes,
 		);
 	}
 	if (updateConversationMessageBody.Subject !== undefined) {
-		formUrlEncoded.append(`Subject`, updateConversationMessageBody.Subject);
+		formUrlEncoded.append("Subject", updateConversationMessageBody.Subject);
 	}
 
 	const res = await fetch(
@@ -3084,7 +3084,7 @@ export const useUpdateConversationMessage = <
  * @summary Remove a message from the conversation
  */
 export type deleteConversationMessageResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -3933,7 +3933,7 @@ export const createConversationParticipant = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (createConversationParticipantBody.Identity !== undefined) {
 		formUrlEncoded.append(
-			`Identity`,
+			"Identity",
 			createConversationParticipantBody.Identity,
 		);
 	}
@@ -3941,7 +3941,7 @@ export const createConversationParticipant = async (
 		createConversationParticipantBody["MessagingBinding.Address"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.Address`,
+			"MessagingBinding.Address",
 			createConversationParticipantBody["MessagingBinding.Address"],
 		);
 	}
@@ -3950,25 +3950,25 @@ export const createConversationParticipant = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProxyAddress`,
+			"MessagingBinding.ProxyAddress",
 			createConversationParticipantBody["MessagingBinding.ProxyAddress"],
 		);
 	}
 	if (createConversationParticipantBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			createConversationParticipantBody.DateCreated,
 		);
 	}
 	if (createConversationParticipantBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			createConversationParticipantBody.DateUpdated,
 		);
 	}
 	if (createConversationParticipantBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			createConversationParticipantBody.Attributes,
 		);
 	}
@@ -3977,12 +3977,12 @@ export const createConversationParticipant = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProjectedAddress`,
+			"MessagingBinding.ProjectedAddress",
 			createConversationParticipantBody["MessagingBinding.ProjectedAddress"],
 		);
 	}
 	if (createConversationParticipantBody.RoleSid !== undefined) {
-		formUrlEncoded.append(`RoleSid`, createConversationParticipantBody.RoleSid);
+		formUrlEncoded.append("RoleSid", createConversationParticipantBody.RoleSid);
 	}
 
 	const res = await fetch(
@@ -4352,31 +4352,31 @@ export const updateConversationParticipant = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateConversationParticipantBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			updateConversationParticipantBody.DateCreated,
 		);
 	}
 	if (updateConversationParticipantBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			updateConversationParticipantBody.DateUpdated,
 		);
 	}
 	if (updateConversationParticipantBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			updateConversationParticipantBody.Attributes,
 		);
 	}
 	if (updateConversationParticipantBody.RoleSid !== undefined) {
-		formUrlEncoded.append(`RoleSid`, updateConversationParticipantBody.RoleSid);
+		formUrlEncoded.append("RoleSid", updateConversationParticipantBody.RoleSid);
 	}
 	if (
 		updateConversationParticipantBody["MessagingBinding.ProxyAddress"] !==
 		undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProxyAddress`,
+			"MessagingBinding.ProxyAddress",
 			updateConversationParticipantBody["MessagingBinding.ProxyAddress"],
 		);
 	}
@@ -4385,13 +4385,13 @@ export const updateConversationParticipant = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProjectedAddress`,
+			"MessagingBinding.ProjectedAddress",
 			updateConversationParticipantBody["MessagingBinding.ProjectedAddress"],
 		);
 	}
 	if (updateConversationParticipantBody.Identity !== undefined) {
 		formUrlEncoded.append(
-			`Identity`,
+			"Identity",
 			updateConversationParticipantBody.Identity,
 		);
 	}
@@ -4400,13 +4400,13 @@ export const updateConversationParticipant = async (
 		updateConversationParticipantBody.LastReadMessageIndex !== null
 	) {
 		formUrlEncoded.append(
-			`LastReadMessageIndex`,
+			"LastReadMessageIndex",
 			updateConversationParticipantBody.LastReadMessageIndex.toString(),
 		);
 	}
 	if (updateConversationParticipantBody.LastReadTimestamp !== undefined) {
 		formUrlEncoded.append(
-			`LastReadTimestamp`,
+			"LastReadTimestamp",
 			updateConversationParticipantBody.LastReadTimestamp,
 		);
 	}
@@ -4540,7 +4540,7 @@ export const useUpdateConversationParticipant = <
  * @summary Remove a participant from the conversation
  */
 export type deleteConversationParticipantResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -5143,10 +5143,10 @@ export const createConversationScopedWebhook = async (
 	options?: RequestInit,
 ): Promise<createConversationScopedWebhookResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Target`, createConversationScopedWebhookBody.Target);
+	formUrlEncoded.append("Target", createConversationScopedWebhookBody.Target);
 	if (createConversationScopedWebhookBody["Configuration.Url"] !== undefined) {
 		formUrlEncoded.append(
-			`Configuration.Url`,
+			"Configuration.Url",
 			createConversationScopedWebhookBody["Configuration.Url"],
 		);
 	}
@@ -5154,7 +5154,7 @@ export const createConversationScopedWebhook = async (
 		createConversationScopedWebhookBody["Configuration.Method"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.Method`,
+			"Configuration.Method",
 			createConversationScopedWebhookBody["Configuration.Method"],
 		);
 	}
@@ -5162,21 +5162,21 @@ export const createConversationScopedWebhook = async (
 		createConversationScopedWebhookBody["Configuration.Filters"] !== undefined
 	) {
 		createConversationScopedWebhookBody["Configuration.Filters"].forEach(
-			(value) => formUrlEncoded.append(`Configuration.Filters`, value),
+			(value) => formUrlEncoded.append("Configuration.Filters", value),
 		);
 	}
 	if (
 		createConversationScopedWebhookBody["Configuration.Triggers"] !== undefined
 	) {
 		createConversationScopedWebhookBody["Configuration.Triggers"].forEach(
-			(value) => formUrlEncoded.append(`Configuration.Triggers`, value),
+			(value) => formUrlEncoded.append("Configuration.Triggers", value),
 		);
 	}
 	if (
 		createConversationScopedWebhookBody["Configuration.FlowSid"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.FlowSid`,
+			"Configuration.FlowSid",
 			createConversationScopedWebhookBody["Configuration.FlowSid"],
 		);
 	}
@@ -5185,7 +5185,7 @@ export const createConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.ReplayAfter`,
+			"Configuration.ReplayAfter",
 			createConversationScopedWebhookBody[
 				"Configuration.ReplayAfter"
 			].toString(),
@@ -5546,7 +5546,7 @@ export const updateConversationScopedWebhook = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateConversationScopedWebhookBody["Configuration.Url"] !== undefined) {
 		formUrlEncoded.append(
-			`Configuration.Url`,
+			"Configuration.Url",
 			updateConversationScopedWebhookBody["Configuration.Url"],
 		);
 	}
@@ -5554,7 +5554,7 @@ export const updateConversationScopedWebhook = async (
 		updateConversationScopedWebhookBody["Configuration.Method"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.Method`,
+			"Configuration.Method",
 			updateConversationScopedWebhookBody["Configuration.Method"],
 		);
 	}
@@ -5562,21 +5562,21 @@ export const updateConversationScopedWebhook = async (
 		updateConversationScopedWebhookBody["Configuration.Filters"] !== undefined
 	) {
 		updateConversationScopedWebhookBody["Configuration.Filters"].forEach(
-			(value) => formUrlEncoded.append(`Configuration.Filters`, value),
+			(value) => formUrlEncoded.append("Configuration.Filters", value),
 		);
 	}
 	if (
 		updateConversationScopedWebhookBody["Configuration.Triggers"] !== undefined
 	) {
 		updateConversationScopedWebhookBody["Configuration.Triggers"].forEach(
-			(value) => formUrlEncoded.append(`Configuration.Triggers`, value),
+			(value) => formUrlEncoded.append("Configuration.Triggers", value),
 		);
 	}
 	if (
 		updateConversationScopedWebhookBody["Configuration.FlowSid"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.FlowSid`,
+			"Configuration.FlowSid",
 			updateConversationScopedWebhookBody["Configuration.FlowSid"],
 		);
 	}
@@ -5710,7 +5710,7 @@ export const useUpdateConversationScopedWebhook = <
  * @summary Remove an existing webhook scoped to the conversation
  */
 export type deleteConversationScopedWebhookResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -5852,7 +5852,7 @@ export type createConversationWithParticipantsResponse =
 	createConversationWithParticipantsResponseSuccess;
 
 export const getCreateConversationWithParticipantsUrl = () => {
-	return `https://conversations.twilio.com/v1/ConversationWithParticipants`;
+	return "https://conversations.twilio.com/v1/ConversationWithParticipants";
 };
 
 export const createConversationWithParticipants = async (
@@ -5862,25 +5862,25 @@ export const createConversationWithParticipants = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (createConversationWithParticipantsBody.FriendlyName !== undefined) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			createConversationWithParticipantsBody.FriendlyName,
 		);
 	}
 	if (createConversationWithParticipantsBody.UniqueName !== undefined) {
 		formUrlEncoded.append(
-			`UniqueName`,
+			"UniqueName",
 			createConversationWithParticipantsBody.UniqueName,
 		);
 	}
 	if (createConversationWithParticipantsBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			createConversationWithParticipantsBody.DateCreated,
 		);
 	}
 	if (createConversationWithParticipantsBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			createConversationWithParticipantsBody.DateUpdated,
 		);
 	}
@@ -5888,31 +5888,31 @@ export const createConversationWithParticipants = async (
 		createConversationWithParticipantsBody.MessagingServiceSid !== undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingServiceSid`,
+			"MessagingServiceSid",
 			createConversationWithParticipantsBody.MessagingServiceSid,
 		);
 	}
 	if (createConversationWithParticipantsBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			createConversationWithParticipantsBody.Attributes,
 		);
 	}
 	if (createConversationWithParticipantsBody.State !== undefined) {
 		formUrlEncoded.append(
-			`State`,
+			"State",
 			createConversationWithParticipantsBody.State,
 		);
 	}
 	if (createConversationWithParticipantsBody["Timers.Inactive"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Inactive`,
+			"Timers.Inactive",
 			createConversationWithParticipantsBody["Timers.Inactive"],
 		);
 	}
 	if (createConversationWithParticipantsBody["Timers.Closed"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Closed`,
+			"Timers.Closed",
 			createConversationWithParticipantsBody["Timers.Closed"],
 		);
 	}
@@ -5921,7 +5921,7 @@ export const createConversationWithParticipants = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Bindings.Email.Address`,
+			"Bindings.Email.Address",
 			createConversationWithParticipantsBody["Bindings.Email.Address"],
 		);
 	}
@@ -5929,13 +5929,13 @@ export const createConversationWithParticipants = async (
 		createConversationWithParticipantsBody["Bindings.Email.Name"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`Bindings.Email.Name`,
+			"Bindings.Email.Name",
 			createConversationWithParticipantsBody["Bindings.Email.Name"],
 		);
 	}
 	if (createConversationWithParticipantsBody.Participant !== undefined) {
 		createConversationWithParticipantsBody.Participant.forEach((value) =>
-			formUrlEncoded.append(`Participant`, value),
+			formUrlEncoded.append("Participant", value),
 		);
 	}
 
@@ -6051,7 +6051,7 @@ export type createCredentialResponseSuccess = createCredentialResponse201 & {
 export type createCredentialResponse = createCredentialResponseSuccess;
 
 export const getCreateCredentialUrl = () => {
-	return `https://conversations.twilio.com/v1/Credentials`;
+	return "https://conversations.twilio.com/v1/Credentials";
 };
 
 export const createCredential = async (
@@ -6059,24 +6059,24 @@ export const createCredential = async (
 	options?: RequestInit,
 ): Promise<createCredentialResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Type`, createCredentialBody.Type);
+	formUrlEncoded.append("Type", createCredentialBody.Type);
 	if (createCredentialBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, createCredentialBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", createCredentialBody.FriendlyName);
 	}
 	if (createCredentialBody.Certificate !== undefined) {
-		formUrlEncoded.append(`Certificate`, createCredentialBody.Certificate);
+		formUrlEncoded.append("Certificate", createCredentialBody.Certificate);
 	}
 	if (createCredentialBody.PrivateKey !== undefined) {
-		formUrlEncoded.append(`PrivateKey`, createCredentialBody.PrivateKey);
+		formUrlEncoded.append("PrivateKey", createCredentialBody.PrivateKey);
 	}
 	if (createCredentialBody.Sandbox !== undefined) {
-		formUrlEncoded.append(`Sandbox`, createCredentialBody.Sandbox.toString());
+		formUrlEncoded.append("Sandbox", createCredentialBody.Sandbox.toString());
 	}
 	if (createCredentialBody.ApiKey !== undefined) {
-		formUrlEncoded.append(`ApiKey`, createCredentialBody.ApiKey);
+		formUrlEncoded.append("ApiKey", createCredentialBody.ApiKey);
 	}
 	if (createCredentialBody.Secret !== undefined) {
-		formUrlEncoded.append(`Secret`, createCredentialBody.Secret);
+		formUrlEncoded.append("Secret", createCredentialBody.Secret);
 	}
 
 	const res = await fetch(getCreateCredentialUrl(), {
@@ -6196,7 +6196,7 @@ export const getListCredentialUrl = (params?: ListCredentialParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://conversations.twilio.com/v1/Credentials?${stringifiedParams}`
-		: `https://conversations.twilio.com/v1/Credentials`;
+		: "https://conversations.twilio.com/v1/Credentials";
 };
 
 export const listCredential = async (
@@ -6220,7 +6220,7 @@ export const listCredential = async (
 
 export const getListCredentialQueryKey = (params?: ListCredentialParams) => {
 	return [
-		`https://conversations.twilio.com/v1/Credentials`,
+		"https://conversations.twilio.com/v1/Credentials",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -6375,25 +6375,25 @@ export const updateCredential = async (
 ): Promise<updateCredentialResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateCredentialBody.Type !== undefined) {
-		formUrlEncoded.append(`Type`, updateCredentialBody.Type);
+		formUrlEncoded.append("Type", updateCredentialBody.Type);
 	}
 	if (updateCredentialBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, updateCredentialBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", updateCredentialBody.FriendlyName);
 	}
 	if (updateCredentialBody.Certificate !== undefined) {
-		formUrlEncoded.append(`Certificate`, updateCredentialBody.Certificate);
+		formUrlEncoded.append("Certificate", updateCredentialBody.Certificate);
 	}
 	if (updateCredentialBody.PrivateKey !== undefined) {
-		formUrlEncoded.append(`PrivateKey`, updateCredentialBody.PrivateKey);
+		formUrlEncoded.append("PrivateKey", updateCredentialBody.PrivateKey);
 	}
 	if (updateCredentialBody.Sandbox !== undefined) {
-		formUrlEncoded.append(`Sandbox`, updateCredentialBody.Sandbox.toString());
+		formUrlEncoded.append("Sandbox", updateCredentialBody.Sandbox.toString());
 	}
 	if (updateCredentialBody.ApiKey !== undefined) {
-		formUrlEncoded.append(`ApiKey`, updateCredentialBody.ApiKey);
+		formUrlEncoded.append("ApiKey", updateCredentialBody.ApiKey);
 	}
 	if (updateCredentialBody.Secret !== undefined) {
-		formUrlEncoded.append(`Secret`, updateCredentialBody.Secret);
+		formUrlEncoded.append("Secret", updateCredentialBody.Secret);
 	}
 
 	const res = await fetch(getUpdateCredentialUrl(sid), {
@@ -6490,7 +6490,7 @@ export const useUpdateCredential = <TError = unknown, TContext = unknown>(
  * @summary Remove a push notification credential from your account
  */
 export type deleteCredentialResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -6815,7 +6815,7 @@ export const getListParticipantConversationUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://conversations.twilio.com/v1/ParticipantConversations?${stringifiedParams}`
-		: `https://conversations.twilio.com/v1/ParticipantConversations`;
+		: "https://conversations.twilio.com/v1/ParticipantConversations";
 };
 
 export const listParticipantConversation = async (
@@ -6843,7 +6843,7 @@ export const getListParticipantConversationQueryKey = (
 	params?: ListParticipantConversationParams,
 ) => {
 	return [
-		`https://conversations.twilio.com/v1/ParticipantConversations`,
+		"https://conversations.twilio.com/v1/ParticipantConversations",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -7013,7 +7013,7 @@ export type createRoleResponseSuccess = createRoleResponse201 & {
 export type createRoleResponse = createRoleResponseSuccess;
 
 export const getCreateRoleUrl = () => {
-	return `https://conversations.twilio.com/v1/Roles`;
+	return "https://conversations.twilio.com/v1/Roles";
 };
 
 export const createRole = async (
@@ -7021,10 +7021,10 @@ export const createRole = async (
 	options?: RequestInit,
 ): Promise<createRoleResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`FriendlyName`, createRoleBody.FriendlyName);
-	formUrlEncoded.append(`Type`, createRoleBody.Type);
+	formUrlEncoded.append("FriendlyName", createRoleBody.FriendlyName);
+	formUrlEncoded.append("Type", createRoleBody.Type);
 	createRoleBody.Permission.forEach((value) =>
-		formUrlEncoded.append(`Permission`, value),
+		formUrlEncoded.append("Permission", value),
 	);
 
 	const res = await fetch(getCreateRoleUrl(), {
@@ -7144,7 +7144,7 @@ export const getListRoleUrl = (params?: ListRoleParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://conversations.twilio.com/v1/Roles?${stringifiedParams}`
-		: `https://conversations.twilio.com/v1/Roles`;
+		: "https://conversations.twilio.com/v1/Roles";
 };
 
 export const listRole = async (
@@ -7164,7 +7164,7 @@ export const listRole = async (
 
 export const getListRoleQueryKey = (params?: ListRoleParams) => {
 	return [
-		`https://conversations.twilio.com/v1/Roles`,
+		"https://conversations.twilio.com/v1/Roles",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -7319,7 +7319,7 @@ export const updateRole = async (
 ): Promise<updateRoleResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	updateRoleBody.Permission.forEach((value) =>
-		formUrlEncoded.append(`Permission`, value),
+		formUrlEncoded.append("Permission", value),
 	);
 
 	const res = await fetch(getUpdateRoleUrl(sid), {
@@ -7416,7 +7416,7 @@ export const useUpdateRole = <TError = unknown, TContext = unknown>(
  * @summary Remove a user role from your account's default service
  */
 export type deleteRoleResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -7703,7 +7703,7 @@ export type createServiceResponseSuccess = createServiceResponse201 & {
 export type createServiceResponse = createServiceResponseSuccess;
 
 export const getCreateServiceUrl = () => {
-	return `https://conversations.twilio.com/v1/Services`;
+	return "https://conversations.twilio.com/v1/Services";
 };
 
 export const createService = async (
@@ -7711,7 +7711,7 @@ export const createService = async (
 	options?: RequestInit,
 ): Promise<createServiceResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`FriendlyName`, createServiceBody.FriendlyName);
+	formUrlEncoded.append("FriendlyName", createServiceBody.FriendlyName);
 
 	const res = await fetch(getCreateServiceUrl(), {
 		...options,
@@ -7830,7 +7830,7 @@ export const getListServiceUrl = (params?: ListServiceParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://conversations.twilio.com/v1/Services?${stringifiedParams}`
-		: `https://conversations.twilio.com/v1/Services`;
+		: "https://conversations.twilio.com/v1/Services";
 };
 
 export const listService = async (
@@ -7854,7 +7854,7 @@ export const listService = async (
 
 export const getListServiceQueryKey = (params?: ListServiceParams) => {
 	return [
-		`https://conversations.twilio.com/v1/Services`,
+		"https://conversations.twilio.com/v1/Services",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -7988,7 +7988,7 @@ export function useListService<
  * @summary Remove a conversation service with all its nested resources from your account
  */
 export type deleteServiceResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -8266,7 +8266,7 @@ export function useFetchService<
  * @summary Remove a push notification binding from the conversation service
  */
 export type deleteServiceBindingResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -9062,25 +9062,25 @@ export const updateServiceConfiguration = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`DefaultConversationCreatorRoleSid`,
+			"DefaultConversationCreatorRoleSid",
 			updateServiceConfigurationBody.DefaultConversationCreatorRoleSid,
 		);
 	}
 	if (updateServiceConfigurationBody.DefaultConversationRoleSid !== undefined) {
 		formUrlEncoded.append(
-			`DefaultConversationRoleSid`,
+			"DefaultConversationRoleSid",
 			updateServiceConfigurationBody.DefaultConversationRoleSid,
 		);
 	}
 	if (updateServiceConfigurationBody.DefaultChatServiceRoleSid !== undefined) {
 		formUrlEncoded.append(
-			`DefaultChatServiceRoleSid`,
+			"DefaultChatServiceRoleSid",
 			updateServiceConfigurationBody.DefaultChatServiceRoleSid,
 		);
 	}
 	if (updateServiceConfigurationBody.ReachabilityEnabled !== undefined) {
 		formUrlEncoded.append(
-			`ReachabilityEnabled`,
+			"ReachabilityEnabled",
 			updateServiceConfigurationBody.ReachabilityEnabled.toString(),
 		);
 	}
@@ -9209,64 +9209,64 @@ export const createServiceConversation = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (createServiceConversationBody.FriendlyName !== undefined) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			createServiceConversationBody.FriendlyName,
 		);
 	}
 	if (createServiceConversationBody.UniqueName !== undefined) {
 		formUrlEncoded.append(
-			`UniqueName`,
+			"UniqueName",
 			createServiceConversationBody.UniqueName,
 		);
 	}
 	if (createServiceConversationBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			createServiceConversationBody.Attributes,
 		);
 	}
 	if (createServiceConversationBody.MessagingServiceSid !== undefined) {
 		formUrlEncoded.append(
-			`MessagingServiceSid`,
+			"MessagingServiceSid",
 			createServiceConversationBody.MessagingServiceSid,
 		);
 	}
 	if (createServiceConversationBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			createServiceConversationBody.DateCreated,
 		);
 	}
 	if (createServiceConversationBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			createServiceConversationBody.DateUpdated,
 		);
 	}
 	if (createServiceConversationBody.State !== undefined) {
-		formUrlEncoded.append(`State`, createServiceConversationBody.State);
+		formUrlEncoded.append("State", createServiceConversationBody.State);
 	}
 	if (createServiceConversationBody["Timers.Inactive"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Inactive`,
+			"Timers.Inactive",
 			createServiceConversationBody["Timers.Inactive"],
 		);
 	}
 	if (createServiceConversationBody["Timers.Closed"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Closed`,
+			"Timers.Closed",
 			createServiceConversationBody["Timers.Closed"],
 		);
 	}
 	if (createServiceConversationBody["Bindings.Email.Address"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Address`,
+			"Bindings.Email.Address",
 			createServiceConversationBody["Bindings.Email.Address"],
 		);
 	}
 	if (createServiceConversationBody["Bindings.Email.Name"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Name`,
+			"Bindings.Email.Name",
 			createServiceConversationBody["Bindings.Email.Name"],
 		);
 	}
@@ -9634,64 +9634,64 @@ export const updateServiceConversation = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceConversationBody.FriendlyName !== undefined) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			updateServiceConversationBody.FriendlyName,
 		);
 	}
 	if (updateServiceConversationBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			updateServiceConversationBody.DateCreated,
 		);
 	}
 	if (updateServiceConversationBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			updateServiceConversationBody.DateUpdated,
 		);
 	}
 	if (updateServiceConversationBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			updateServiceConversationBody.Attributes,
 		);
 	}
 	if (updateServiceConversationBody.MessagingServiceSid !== undefined) {
 		formUrlEncoded.append(
-			`MessagingServiceSid`,
+			"MessagingServiceSid",
 			updateServiceConversationBody.MessagingServiceSid,
 		);
 	}
 	if (updateServiceConversationBody.State !== undefined) {
-		formUrlEncoded.append(`State`, updateServiceConversationBody.State);
+		formUrlEncoded.append("State", updateServiceConversationBody.State);
 	}
 	if (updateServiceConversationBody["Timers.Inactive"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Inactive`,
+			"Timers.Inactive",
 			updateServiceConversationBody["Timers.Inactive"],
 		);
 	}
 	if (updateServiceConversationBody["Timers.Closed"] !== undefined) {
 		formUrlEncoded.append(
-			`Timers.Closed`,
+			"Timers.Closed",
 			updateServiceConversationBody["Timers.Closed"],
 		);
 	}
 	if (updateServiceConversationBody.UniqueName !== undefined) {
 		formUrlEncoded.append(
-			`UniqueName`,
+			"UniqueName",
 			updateServiceConversationBody.UniqueName,
 		);
 	}
 	if (updateServiceConversationBody["Bindings.Email.Address"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Address`,
+			"Bindings.Email.Address",
 			updateServiceConversationBody["Bindings.Email.Address"],
 		);
 	}
 	if (updateServiceConversationBody["Bindings.Email.Name"] !== undefined) {
 		formUrlEncoded.append(
-			`Bindings.Email.Name`,
+			"Bindings.Email.Name",
 			updateServiceConversationBody["Bindings.Email.Name"],
 		);
 	}
@@ -9807,7 +9807,7 @@ export const useUpdateServiceConversation = <
  * @summary Remove a conversation from your service
  */
 export type deleteServiceConversationResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -10172,52 +10172,52 @@ export const createServiceConversationMessage = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (createServiceConversationMessageBody.Author !== undefined) {
 		formUrlEncoded.append(
-			`Author`,
+			"Author",
 			createServiceConversationMessageBody.Author,
 		);
 	}
 	if (createServiceConversationMessageBody.Body !== undefined) {
-		formUrlEncoded.append(`Body`, createServiceConversationMessageBody.Body);
+		formUrlEncoded.append("Body", createServiceConversationMessageBody.Body);
 	}
 	if (createServiceConversationMessageBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			createServiceConversationMessageBody.DateCreated,
 		);
 	}
 	if (createServiceConversationMessageBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			createServiceConversationMessageBody.DateUpdated,
 		);
 	}
 	if (createServiceConversationMessageBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			createServiceConversationMessageBody.Attributes,
 		);
 	}
 	if (createServiceConversationMessageBody.MediaSid !== undefined) {
 		formUrlEncoded.append(
-			`MediaSid`,
+			"MediaSid",
 			createServiceConversationMessageBody.MediaSid,
 		);
 	}
 	if (createServiceConversationMessageBody.ContentSid !== undefined) {
 		formUrlEncoded.append(
-			`ContentSid`,
+			"ContentSid",
 			createServiceConversationMessageBody.ContentSid,
 		);
 	}
 	if (createServiceConversationMessageBody.ContentVariables !== undefined) {
 		formUrlEncoded.append(
-			`ContentVariables`,
+			"ContentVariables",
 			createServiceConversationMessageBody.ContentVariables,
 		);
 	}
 	if (createServiceConversationMessageBody.Subject !== undefined) {
 		formUrlEncoded.append(
-			`Subject`,
+			"Subject",
 			createServiceConversationMessageBody.Subject,
 		);
 	}
@@ -10633,34 +10633,34 @@ export const updateServiceConversationMessage = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceConversationMessageBody.Author !== undefined) {
 		formUrlEncoded.append(
-			`Author`,
+			"Author",
 			updateServiceConversationMessageBody.Author,
 		);
 	}
 	if (updateServiceConversationMessageBody.Body !== undefined) {
-		formUrlEncoded.append(`Body`, updateServiceConversationMessageBody.Body);
+		formUrlEncoded.append("Body", updateServiceConversationMessageBody.Body);
 	}
 	if (updateServiceConversationMessageBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			updateServiceConversationMessageBody.DateCreated,
 		);
 	}
 	if (updateServiceConversationMessageBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			updateServiceConversationMessageBody.DateUpdated,
 		);
 	}
 	if (updateServiceConversationMessageBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			updateServiceConversationMessageBody.Attributes,
 		);
 	}
 	if (updateServiceConversationMessageBody.Subject !== undefined) {
 		formUrlEncoded.append(
-			`Subject`,
+			"Subject",
 			updateServiceConversationMessageBody.Subject,
 		);
 	}
@@ -10804,7 +10804,7 @@ export const useUpdateServiceConversationMessage = <
  * @summary Remove a message from the conversation
  */
 export type deleteServiceConversationMessageResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -11719,7 +11719,7 @@ export const createServiceConversationParticipant = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (createServiceConversationParticipantBody.Identity !== undefined) {
 		formUrlEncoded.append(
-			`Identity`,
+			"Identity",
 			createServiceConversationParticipantBody.Identity,
 		);
 	}
@@ -11728,7 +11728,7 @@ export const createServiceConversationParticipant = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.Address`,
+			"MessagingBinding.Address",
 			createServiceConversationParticipantBody["MessagingBinding.Address"],
 		);
 	}
@@ -11738,25 +11738,25 @@ export const createServiceConversationParticipant = async (
 		] !== undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProxyAddress`,
+			"MessagingBinding.ProxyAddress",
 			createServiceConversationParticipantBody["MessagingBinding.ProxyAddress"],
 		);
 	}
 	if (createServiceConversationParticipantBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			createServiceConversationParticipantBody.DateCreated,
 		);
 	}
 	if (createServiceConversationParticipantBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			createServiceConversationParticipantBody.DateUpdated,
 		);
 	}
 	if (createServiceConversationParticipantBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			createServiceConversationParticipantBody.Attributes,
 		);
 	}
@@ -11766,7 +11766,7 @@ export const createServiceConversationParticipant = async (
 		] !== undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProjectedAddress`,
+			"MessagingBinding.ProjectedAddress",
 			createServiceConversationParticipantBody[
 				"MessagingBinding.ProjectedAddress"
 			],
@@ -11774,7 +11774,7 @@ export const createServiceConversationParticipant = async (
 	}
 	if (createServiceConversationParticipantBody.RoleSid !== undefined) {
 		formUrlEncoded.append(
-			`RoleSid`,
+			"RoleSid",
 			createServiceConversationParticipantBody.RoleSid,
 		);
 	}
@@ -12192,31 +12192,31 @@ export const updateServiceConversationParticipant = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceConversationParticipantBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			updateServiceConversationParticipantBody.DateCreated,
 		);
 	}
 	if (updateServiceConversationParticipantBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			updateServiceConversationParticipantBody.DateUpdated,
 		);
 	}
 	if (updateServiceConversationParticipantBody.Identity !== undefined) {
 		formUrlEncoded.append(
-			`Identity`,
+			"Identity",
 			updateServiceConversationParticipantBody.Identity,
 		);
 	}
 	if (updateServiceConversationParticipantBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			updateServiceConversationParticipantBody.Attributes,
 		);
 	}
 	if (updateServiceConversationParticipantBody.RoleSid !== undefined) {
 		formUrlEncoded.append(
-			`RoleSid`,
+			"RoleSid",
 			updateServiceConversationParticipantBody.RoleSid,
 		);
 	}
@@ -12226,7 +12226,7 @@ export const updateServiceConversationParticipant = async (
 		] !== undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProxyAddress`,
+			"MessagingBinding.ProxyAddress",
 			updateServiceConversationParticipantBody["MessagingBinding.ProxyAddress"],
 		);
 	}
@@ -12236,7 +12236,7 @@ export const updateServiceConversationParticipant = async (
 		] !== undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingBinding.ProjectedAddress`,
+			"MessagingBinding.ProjectedAddress",
 			updateServiceConversationParticipantBody[
 				"MessagingBinding.ProjectedAddress"
 			],
@@ -12248,7 +12248,7 @@ export const updateServiceConversationParticipant = async (
 		updateServiceConversationParticipantBody.LastReadMessageIndex !== null
 	) {
 		formUrlEncoded.append(
-			`LastReadMessageIndex`,
+			"LastReadMessageIndex",
 			updateServiceConversationParticipantBody.LastReadMessageIndex.toString(),
 		);
 	}
@@ -12256,7 +12256,7 @@ export const updateServiceConversationParticipant = async (
 		updateServiceConversationParticipantBody.LastReadTimestamp !== undefined
 	) {
 		formUrlEncoded.append(
-			`LastReadTimestamp`,
+			"LastReadTimestamp",
 			updateServiceConversationParticipantBody.LastReadTimestamp,
 		);
 	}
@@ -12400,7 +12400,7 @@ export const useUpdateServiceConversationParticipant = <
  * @summary Remove a participant from the conversation
  */
 export type deleteServiceConversationParticipantResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -12799,7 +12799,7 @@ export const createServiceConversationScopedWebhook = async (
 ): Promise<createServiceConversationScopedWebhookResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	formUrlEncoded.append(
-		`Target`,
+		"Target",
 		createServiceConversationScopedWebhookBody.Target,
 	);
 	if (
@@ -12807,7 +12807,7 @@ export const createServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.Url`,
+			"Configuration.Url",
 			createServiceConversationScopedWebhookBody["Configuration.Url"],
 		);
 	}
@@ -12816,7 +12816,7 @@ export const createServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.Method`,
+			"Configuration.Method",
 			createServiceConversationScopedWebhookBody["Configuration.Method"],
 		);
 	}
@@ -12825,7 +12825,7 @@ export const createServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		createServiceConversationScopedWebhookBody["Configuration.Filters"].forEach(
-			(value) => formUrlEncoded.append(`Configuration.Filters`, value),
+			(value) => formUrlEncoded.append("Configuration.Filters", value),
 		);
 	}
 	if (
@@ -12835,7 +12835,7 @@ export const createServiceConversationScopedWebhook = async (
 		createServiceConversationScopedWebhookBody[
 			"Configuration.Triggers"
 		].forEach((value) =>
-			formUrlEncoded.append(`Configuration.Triggers`, value),
+			formUrlEncoded.append("Configuration.Triggers", value),
 		);
 	}
 	if (
@@ -12843,7 +12843,7 @@ export const createServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.FlowSid`,
+			"Configuration.FlowSid",
 			createServiceConversationScopedWebhookBody["Configuration.FlowSid"],
 		);
 	}
@@ -12852,7 +12852,7 @@ export const createServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.ReplayAfter`,
+			"Configuration.ReplayAfter",
 			createServiceConversationScopedWebhookBody[
 				"Configuration.ReplayAfter"
 			].toString(),
@@ -13278,7 +13278,7 @@ export const updateServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.Url`,
+			"Configuration.Url",
 			updateServiceConversationScopedWebhookBody["Configuration.Url"],
 		);
 	}
@@ -13287,7 +13287,7 @@ export const updateServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.Method`,
+			"Configuration.Method",
 			updateServiceConversationScopedWebhookBody["Configuration.Method"],
 		);
 	}
@@ -13296,7 +13296,7 @@ export const updateServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		updateServiceConversationScopedWebhookBody["Configuration.Filters"].forEach(
-			(value) => formUrlEncoded.append(`Configuration.Filters`, value),
+			(value) => formUrlEncoded.append("Configuration.Filters", value),
 		);
 	}
 	if (
@@ -13306,7 +13306,7 @@ export const updateServiceConversationScopedWebhook = async (
 		updateServiceConversationScopedWebhookBody[
 			"Configuration.Triggers"
 		].forEach((value) =>
-			formUrlEncoded.append(`Configuration.Triggers`, value),
+			formUrlEncoded.append("Configuration.Triggers", value),
 		);
 	}
 	if (
@@ -13314,7 +13314,7 @@ export const updateServiceConversationScopedWebhook = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Configuration.FlowSid`,
+			"Configuration.FlowSid",
 			updateServiceConversationScopedWebhookBody["Configuration.FlowSid"],
 		);
 	}
@@ -13458,7 +13458,7 @@ export const useUpdateServiceConversationScopedWebhook = <
  * @summary Remove an existing webhook scoped to the conversation
  */
 export type deleteServiceConversationScopedWebhookResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -13867,25 +13867,25 @@ export const createServiceConversationWithParticipants = async (
 		createServiceConversationWithParticipantsBody.FriendlyName !== undefined
 	) {
 		formUrlEncoded.append(
-			`FriendlyName`,
+			"FriendlyName",
 			createServiceConversationWithParticipantsBody.FriendlyName,
 		);
 	}
 	if (createServiceConversationWithParticipantsBody.UniqueName !== undefined) {
 		formUrlEncoded.append(
-			`UniqueName`,
+			"UniqueName",
 			createServiceConversationWithParticipantsBody.UniqueName,
 		);
 	}
 	if (createServiceConversationWithParticipantsBody.DateCreated !== undefined) {
 		formUrlEncoded.append(
-			`DateCreated`,
+			"DateCreated",
 			createServiceConversationWithParticipantsBody.DateCreated,
 		);
 	}
 	if (createServiceConversationWithParticipantsBody.DateUpdated !== undefined) {
 		formUrlEncoded.append(
-			`DateUpdated`,
+			"DateUpdated",
 			createServiceConversationWithParticipantsBody.DateUpdated,
 		);
 	}
@@ -13894,19 +13894,19 @@ export const createServiceConversationWithParticipants = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`MessagingServiceSid`,
+			"MessagingServiceSid",
 			createServiceConversationWithParticipantsBody.MessagingServiceSid,
 		);
 	}
 	if (createServiceConversationWithParticipantsBody.Attributes !== undefined) {
 		formUrlEncoded.append(
-			`Attributes`,
+			"Attributes",
 			createServiceConversationWithParticipantsBody.Attributes,
 		);
 	}
 	if (createServiceConversationWithParticipantsBody.State !== undefined) {
 		formUrlEncoded.append(
-			`State`,
+			"State",
 			createServiceConversationWithParticipantsBody.State,
 		);
 	}
@@ -13915,7 +13915,7 @@ export const createServiceConversationWithParticipants = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Timers.Inactive`,
+			"Timers.Inactive",
 			createServiceConversationWithParticipantsBody["Timers.Inactive"],
 		);
 	}
@@ -13923,7 +13923,7 @@ export const createServiceConversationWithParticipants = async (
 		createServiceConversationWithParticipantsBody["Timers.Closed"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`Timers.Closed`,
+			"Timers.Closed",
 			createServiceConversationWithParticipantsBody["Timers.Closed"],
 		);
 	}
@@ -13932,7 +13932,7 @@ export const createServiceConversationWithParticipants = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Bindings.Email.Address`,
+			"Bindings.Email.Address",
 			createServiceConversationWithParticipantsBody["Bindings.Email.Address"],
 		);
 	}
@@ -13941,13 +13941,13 @@ export const createServiceConversationWithParticipants = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`Bindings.Email.Name`,
+			"Bindings.Email.Name",
 			createServiceConversationWithParticipantsBody["Bindings.Email.Name"],
 		);
 	}
 	if (createServiceConversationWithParticipantsBody.Participant !== undefined) {
 		createServiceConversationWithParticipantsBody.Participant.forEach((value) =>
-			formUrlEncoded.append(`Participant`, value),
+			formUrlEncoded.append("Participant", value),
 		);
 	}
 
@@ -14099,25 +14099,25 @@ export const updateServiceNotification = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceNotificationBody.LogEnabled !== undefined) {
 		formUrlEncoded.append(
-			`LogEnabled`,
+			"LogEnabled",
 			updateServiceNotificationBody.LogEnabled.toString(),
 		);
 	}
 	if (updateServiceNotificationBody["NewMessage.Enabled"] !== undefined) {
 		formUrlEncoded.append(
-			`NewMessage.Enabled`,
+			"NewMessage.Enabled",
 			updateServiceNotificationBody["NewMessage.Enabled"].toString(),
 		);
 	}
 	if (updateServiceNotificationBody["NewMessage.Template"] !== undefined) {
 		formUrlEncoded.append(
-			`NewMessage.Template`,
+			"NewMessage.Template",
 			updateServiceNotificationBody["NewMessage.Template"],
 		);
 	}
 	if (updateServiceNotificationBody["NewMessage.Sound"] !== undefined) {
 		formUrlEncoded.append(
-			`NewMessage.Sound`,
+			"NewMessage.Sound",
 			updateServiceNotificationBody["NewMessage.Sound"],
 		);
 	}
@@ -14125,7 +14125,7 @@ export const updateServiceNotification = async (
 		updateServiceNotificationBody["NewMessage.BadgeCountEnabled"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`NewMessage.BadgeCountEnabled`,
+			"NewMessage.BadgeCountEnabled",
 			updateServiceNotificationBody["NewMessage.BadgeCountEnabled"].toString(),
 		);
 	}
@@ -14133,7 +14133,7 @@ export const updateServiceNotification = async (
 		updateServiceNotificationBody["AddedToConversation.Enabled"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`AddedToConversation.Enabled`,
+			"AddedToConversation.Enabled",
 			updateServiceNotificationBody["AddedToConversation.Enabled"].toString(),
 		);
 	}
@@ -14141,7 +14141,7 @@ export const updateServiceNotification = async (
 		updateServiceNotificationBody["AddedToConversation.Template"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`AddedToConversation.Template`,
+			"AddedToConversation.Template",
 			updateServiceNotificationBody["AddedToConversation.Template"],
 		);
 	}
@@ -14149,7 +14149,7 @@ export const updateServiceNotification = async (
 		updateServiceNotificationBody["AddedToConversation.Sound"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`AddedToConversation.Sound`,
+			"AddedToConversation.Sound",
 			updateServiceNotificationBody["AddedToConversation.Sound"],
 		);
 	}
@@ -14158,7 +14158,7 @@ export const updateServiceNotification = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`RemovedFromConversation.Enabled`,
+			"RemovedFromConversation.Enabled",
 			updateServiceNotificationBody[
 				"RemovedFromConversation.Enabled"
 			].toString(),
@@ -14169,7 +14169,7 @@ export const updateServiceNotification = async (
 		undefined
 	) {
 		formUrlEncoded.append(
-			`RemovedFromConversation.Template`,
+			"RemovedFromConversation.Template",
 			updateServiceNotificationBody["RemovedFromConversation.Template"],
 		);
 	}
@@ -14177,7 +14177,7 @@ export const updateServiceNotification = async (
 		updateServiceNotificationBody["RemovedFromConversation.Sound"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`RemovedFromConversation.Sound`,
+			"RemovedFromConversation.Sound",
 			updateServiceNotificationBody["RemovedFromConversation.Sound"],
 		);
 	}
@@ -14185,7 +14185,7 @@ export const updateServiceNotification = async (
 		updateServiceNotificationBody["NewMessage.WithMedia.Enabled"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`NewMessage.WithMedia.Enabled`,
+			"NewMessage.WithMedia.Enabled",
 			updateServiceNotificationBody["NewMessage.WithMedia.Enabled"].toString(),
 		);
 	}
@@ -14193,7 +14193,7 @@ export const updateServiceNotification = async (
 		updateServiceNotificationBody["NewMessage.WithMedia.Template"] !== undefined
 	) {
 		formUrlEncoded.append(
-			`NewMessage.WithMedia.Template`,
+			"NewMessage.WithMedia.Template",
 			updateServiceNotificationBody["NewMessage.WithMedia.Template"],
 		);
 	}
@@ -14758,10 +14758,10 @@ export const createServiceRole = async (
 	options?: RequestInit,
 ): Promise<createServiceRoleResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`FriendlyName`, createServiceRoleBody.FriendlyName);
-	formUrlEncoded.append(`Type`, createServiceRoleBody.Type);
+	formUrlEncoded.append("FriendlyName", createServiceRoleBody.FriendlyName);
+	formUrlEncoded.append("Type", createServiceRoleBody.Type);
 	createServiceRoleBody.Permission.forEach((value) =>
-		formUrlEncoded.append(`Permission`, value),
+		formUrlEncoded.append("Permission", value),
 	);
 
 	const res = await fetch(getCreateServiceRoleUrl(chatServiceSid), {
@@ -15107,7 +15107,7 @@ export const updateServiceRole = async (
 ): Promise<updateServiceRoleResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	updateServiceRoleBody.Permission.forEach((value) =>
-		formUrlEncoded.append(`Permission`, value),
+		formUrlEncoded.append("Permission", value),
 	);
 
 	const res = await fetch(getUpdateServiceRoleUrl(chatServiceSid, sid), {
@@ -15204,7 +15204,7 @@ export const useUpdateServiceRole = <TError = unknown, TContext = unknown>(
  * @summary Remove a user role from your service
  */
 export type deleteServiceRoleResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -15543,15 +15543,15 @@ export const createServiceUser = async (
 	options?: RequestInit,
 ): Promise<createServiceUserResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Identity`, createServiceUserBody.Identity);
+	formUrlEncoded.append("Identity", createServiceUserBody.Identity);
 	if (createServiceUserBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, createServiceUserBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", createServiceUserBody.FriendlyName);
 	}
 	if (createServiceUserBody.Attributes !== undefined) {
-		formUrlEncoded.append(`Attributes`, createServiceUserBody.Attributes);
+		formUrlEncoded.append("Attributes", createServiceUserBody.Attributes);
 	}
 	if (createServiceUserBody.RoleSid !== undefined) {
-		formUrlEncoded.append(`RoleSid`, createServiceUserBody.RoleSid);
+		formUrlEncoded.append("RoleSid", createServiceUserBody.RoleSid);
 	}
 
 	const res = await fetch(getCreateServiceUserUrl(chatServiceSid), {
@@ -15897,13 +15897,13 @@ export const updateServiceUser = async (
 ): Promise<updateServiceUserResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceUserBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, updateServiceUserBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", updateServiceUserBody.FriendlyName);
 	}
 	if (updateServiceUserBody.Attributes !== undefined) {
-		formUrlEncoded.append(`Attributes`, updateServiceUserBody.Attributes);
+		formUrlEncoded.append("Attributes", updateServiceUserBody.Attributes);
 	}
 	if (updateServiceUserBody.RoleSid !== undefined) {
-		formUrlEncoded.append(`RoleSid`, updateServiceUserBody.RoleSid);
+		formUrlEncoded.append("RoleSid", updateServiceUserBody.RoleSid);
 	}
 
 	const res = await fetch(getUpdateServiceUserUrl(chatServiceSid, sid), {
@@ -16000,7 +16000,7 @@ export const useUpdateServiceUser = <TError = unknown, TContext = unknown>(
  * @summary Remove a conversation user from your service
  */
 export type deleteServiceUserResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -16349,13 +16349,13 @@ export const updateServiceUserConversation = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceUserConversationBody.NotificationLevel !== undefined) {
 		formUrlEncoded.append(
-			`NotificationLevel`,
+			"NotificationLevel",
 			updateServiceUserConversationBody.NotificationLevel,
 		);
 	}
 	if (updateServiceUserConversationBody.LastReadTimestamp !== undefined) {
 		formUrlEncoded.append(
-			`LastReadTimestamp`,
+			"LastReadTimestamp",
 			updateServiceUserConversationBody.LastReadTimestamp,
 		);
 	}
@@ -16364,7 +16364,7 @@ export const updateServiceUserConversation = async (
 		updateServiceUserConversationBody.LastReadMessageIndex !== null
 	) {
 		formUrlEncoded.append(
-			`LastReadMessageIndex`,
+			"LastReadMessageIndex",
 			updateServiceUserConversationBody.LastReadMessageIndex.toString(),
 		);
 	}
@@ -16508,7 +16508,7 @@ export const useUpdateServiceUserConversation = <
  * @summary Delete a specific User Conversation.
  */
 export type deleteServiceUserConversationResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -17150,24 +17150,24 @@ export const updateServiceWebhookConfiguration = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateServiceWebhookConfigurationBody.PreWebhookUrl !== undefined) {
 		formUrlEncoded.append(
-			`PreWebhookUrl`,
+			"PreWebhookUrl",
 			updateServiceWebhookConfigurationBody.PreWebhookUrl,
 		);
 	}
 	if (updateServiceWebhookConfigurationBody.PostWebhookUrl !== undefined) {
 		formUrlEncoded.append(
-			`PostWebhookUrl`,
+			"PostWebhookUrl",
 			updateServiceWebhookConfigurationBody.PostWebhookUrl,
 		);
 	}
 	if (updateServiceWebhookConfigurationBody.Filters !== undefined) {
 		updateServiceWebhookConfigurationBody.Filters.forEach((value) =>
-			formUrlEncoded.append(`Filters`, value),
+			formUrlEncoded.append("Filters", value),
 		);
 	}
 	if (updateServiceWebhookConfigurationBody.Method !== undefined) {
 		formUrlEncoded.append(
-			`Method`,
+			"Method",
 			updateServiceWebhookConfigurationBody.Method,
 		);
 	}
@@ -17504,7 +17504,7 @@ export type createUserResponseSuccess = createUserResponse201 & {
 export type createUserResponse = createUserResponseSuccess;
 
 export const getCreateUserUrl = () => {
-	return `https://conversations.twilio.com/v1/Users`;
+	return "https://conversations.twilio.com/v1/Users";
 };
 
 export const createUser = async (
@@ -17512,15 +17512,15 @@ export const createUser = async (
 	options?: RequestInit,
 ): Promise<createUserResponse> => {
 	const formUrlEncoded = new URLSearchParams();
-	formUrlEncoded.append(`Identity`, createUserBody.Identity);
+	formUrlEncoded.append("Identity", createUserBody.Identity);
 	if (createUserBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, createUserBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", createUserBody.FriendlyName);
 	}
 	if (createUserBody.Attributes !== undefined) {
-		formUrlEncoded.append(`Attributes`, createUserBody.Attributes);
+		formUrlEncoded.append("Attributes", createUserBody.Attributes);
 	}
 	if (createUserBody.RoleSid !== undefined) {
-		formUrlEncoded.append(`RoleSid`, createUserBody.RoleSid);
+		formUrlEncoded.append("RoleSid", createUserBody.RoleSid);
 	}
 
 	const res = await fetch(getCreateUserUrl(), {
@@ -17640,7 +17640,7 @@ export const getListUserUrl = (params?: ListUserParams) => {
 
 	return stringifiedParams.length > 0
 		? `https://conversations.twilio.com/v1/Users?${stringifiedParams}`
-		: `https://conversations.twilio.com/v1/Users`;
+		: "https://conversations.twilio.com/v1/Users";
 };
 
 export const listUser = async (
@@ -17660,7 +17660,7 @@ export const listUser = async (
 
 export const getListUserQueryKey = (params?: ListUserParams) => {
 	return [
-		`https://conversations.twilio.com/v1/Users`,
+		"https://conversations.twilio.com/v1/Users",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -17815,13 +17815,13 @@ export const updateUser = async (
 ): Promise<updateUserResponse> => {
 	const formUrlEncoded = new URLSearchParams();
 	if (updateUserBody.FriendlyName !== undefined) {
-		formUrlEncoded.append(`FriendlyName`, updateUserBody.FriendlyName);
+		formUrlEncoded.append("FriendlyName", updateUserBody.FriendlyName);
 	}
 	if (updateUserBody.Attributes !== undefined) {
-		formUrlEncoded.append(`Attributes`, updateUserBody.Attributes);
+		formUrlEncoded.append("Attributes", updateUserBody.Attributes);
 	}
 	if (updateUserBody.RoleSid !== undefined) {
-		formUrlEncoded.append(`RoleSid`, updateUserBody.RoleSid);
+		formUrlEncoded.append("RoleSid", updateUserBody.RoleSid);
 	}
 
 	const res = await fetch(getUpdateUserUrl(sid), {
@@ -17918,7 +17918,7 @@ export const useUpdateUser = <TError = unknown, TContext = unknown>(
  * @summary Remove a conversation user from your account's default service
  */
 export type deleteUserResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 
@@ -18222,13 +18222,13 @@ export const updateUserConversation = async (
 	const formUrlEncoded = new URLSearchParams();
 	if (updateUserConversationBody.NotificationLevel !== undefined) {
 		formUrlEncoded.append(
-			`NotificationLevel`,
+			"NotificationLevel",
 			updateUserConversationBody.NotificationLevel,
 		);
 	}
 	if (updateUserConversationBody.LastReadTimestamp !== undefined) {
 		formUrlEncoded.append(
-			`LastReadTimestamp`,
+			"LastReadTimestamp",
 			updateUserConversationBody.LastReadTimestamp,
 		);
 	}
@@ -18237,7 +18237,7 @@ export const updateUserConversation = async (
 		updateUserConversationBody.LastReadMessageIndex !== null
 	) {
 		formUrlEncoded.append(
-			`LastReadMessageIndex`,
+			"LastReadMessageIndex",
 			updateUserConversationBody.LastReadMessageIndex.toString(),
 		);
 	}
@@ -18361,7 +18361,7 @@ export const useUpdateUserConversation = <TError = unknown, TContext = unknown>(
  * @summary Delete a specific User Conversation.
  */
 export type deleteUserConversationResponse204 = {
-	data: void;
+	data: undefined;
 	status: 204;
 };
 

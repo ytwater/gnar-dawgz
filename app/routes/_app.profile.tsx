@@ -1,4 +1,5 @@
-import { Bell, PaperPlaneTilt, User } from "@phosphor-icons/react";
+import { Bell, PaperPlaneTilt, Scales, User } from "@phosphor-icons/react";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { PhoneNumberForm } from "~/app/components/phone-number-form";
 import { Alert, AlertDescription } from "~/app/components/ui/alert";
@@ -7,6 +8,7 @@ import {
 	AvatarFallback,
 	AvatarImage,
 } from "~/app/components/ui/avatar";
+import { Badge } from "~/app/components/ui/badge";
 import { Button } from "~/app/components/ui/button";
 import {
 	Card,
@@ -19,6 +21,7 @@ import { Skeleton } from "~/app/components/ui/skeleton";
 import { Switch } from "~/app/components/ui/switch";
 import { authClient } from "~/app/lib/auth-client";
 import { orpcClient } from "~/app/lib/orpc/client";
+import { useUserDemerits } from "~/app/lib/orpc/hooks/use-demerit";
 import {
 	getCurrentPushSubscription,
 	getNotificationPermissionStatus,
@@ -247,9 +250,10 @@ export default function Profile() {
 	}
 
 	const user = session.data.user;
+	const { data: demerits, isLoading: demeritsLoading } = useUserDemerits();
 
 	return (
-		<div className="space-y-8">
+		<div className="space-y-8 animate-in fade-in duration-500">
 			<div>
 				<h1 className="text-4xl font-extrabold tracking-tight">Profile</h1>
 				<p className="mt-2 text-muted-foreground">
@@ -257,119 +261,185 @@ export default function Profile() {
 				</p>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle className="flex items-center gap-2">
-						<User className="w-6 h-6" />
-						User Information
-					</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-6">
-					<div className="flex items-center gap-4">
-						<Avatar className="w-16 h-16">
-							{user.image && <AvatarImage src={user.image} alt={user.name} />}
-							<AvatarFallback>
-								{user.name
-									?.split(" ")
-									.map((n) => n[0])
-									.join("")
-									.toUpperCase() || "U"}
-							</AvatarFallback>
-						</Avatar>
-						<div>
-							<CardDescription>Name</CardDescription>
-							<CardTitle className="text-lg">{user.name}</CardTitle>
-						</div>
-					</div>
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+				<div className="space-y-8">
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<User className="w-6 h-6" />
+								User Information
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-6">
+							<div className="flex items-center gap-4">
+								<Avatar className="w-16 h-16">
+									{user.image && (
+										<AvatarImage src={user.image} alt={user.name} />
+									)}
+									<AvatarFallback>
+										{user.name
+											?.split(" ")
+											.map((n) => n[0])
+											.join("")
+											.toUpperCase() || "U"}
+									</AvatarFallback>
+								</Avatar>
+								<div>
+									<CardDescription>Name</CardDescription>
+									<CardTitle className="text-lg">{user.name}</CardTitle>
+								</div>
+							</div>
 
-					<div>
-						<CardDescription>Email</CardDescription>
-						<p className="text-lg font-medium">{user.email}</p>
-					</div>
+							<div>
+								<CardDescription>Email</CardDescription>
+								<p className="text-lg font-medium">{user.email}</p>
+							</div>
 
-					{user.role && (
-						<div>
-							<CardDescription>Role</CardDescription>
-							<p className="text-lg font-medium capitalize">{user.role}</p>
-						</div>
-					)}
-				</CardContent>
-			</Card>
+							{user.role && (
+								<div>
+									<CardDescription>Role</CardDescription>
+									<p className="text-lg font-medium capitalize">{user.role}</p>
+								</div>
+							)}
+						</CardContent>
+					</Card>
 
-			<PhoneNumberForm
-				initialPhoneNumber={user.phoneNumber}
-				phoneNumberVerified={user.phoneNumberVerified}
-			/>
+					<PhoneNumberForm
+						initialPhoneNumber={user.phoneNumber}
+						phoneNumberVerified={user.phoneNumberVerified}
+					/>
+				</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle className="flex items-center gap-2">
-						<Bell className="w-6 h-6" />
-						Notification Settings
-					</CardTitle>
-					<CardDescription>
-						Manage your browser push notification preferences
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="space-y-6">
-					{!pushSupported && (
-						<Alert variant="default">
-							<AlertDescription>
-								Push notifications are not supported in your browser.
-							</AlertDescription>
-						</Alert>
-					)}
-
-					{error && (
-						<Alert variant="destructive">
-							<AlertDescription>{error}</AlertDescription>
-						</Alert>
-					)}
-
-					{success && (
-						<Alert variant="default">
-							<AlertDescription>{success}</AlertDescription>
-						</Alert>
-					)}
-
-					<div className="flex items-center justify-between">
-						<div>
-							<CardTitle className="text-lg">Browser Notifications</CardTitle>
+				<div className="space-y-8">
+					{/* Demerit History */}
+					<Card className="border-2 border-red-50 dark:border-red-950/20">
+						<CardHeader className="bg-red-50/50 dark:bg-red-950/10 border-b border-red-50 dark:border-red-950/20">
+							<CardTitle className="flex items-center gap-2">
+								<Scales className="w-6 h-6 text-red-600 dark:text-red-400" />
+								Demerit History
+							</CardTitle>
 							<CardDescription>
-								Receive push notifications in your browser
+								Your track record with the Gnar Dawgs collective.
 							</CardDescription>
-						</div>
-						<Switch
-							checked={notificationsEnabled}
-							disabled={isLoading || !pushSupported}
-							onCheckedChange={handleNotificationToggle}
-						/>
-					</div>
+						</CardHeader>
+						<CardContent className="p-0">
+							{demeritsLoading ? (
+								<div className="p-6 space-y-4">
+									<Skeleton className="h-10 w-full" />
+									<Skeleton className="h-10 w-full" />
+								</div>
+							) : (
+								<div className="divide-y divide-red-50 dark:divide-red-950/20">
+									{!demerits || demerits.length === 0 ? (
+										<div className="p-12 text-center text-muted-foreground italic">
+											No demerits. You're a clean dawg! 🐾
+										</div>
+									) : (
+										demerits.map((demerit) => (
+											<div
+												key={demerit.id}
+												className="p-4 flex flex-col gap-1 hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors"
+											>
+												<div className="flex items-center justify-between">
+													<p className="font-bold text-sm">{demerit.reason}</p>
+													<Badge
+														variant={
+															demerit.status === "active"
+																? "destructive"
+																: "secondary"
+														}
+														className="text-[10px] h-5"
+													>
+														{demerit.status}
+													</Badge>
+												</div>
+												<div className="flex items-center justify-between text-[11px] text-muted-foreground">
+													<span>From: {demerit.fromUserName}</span>
+													<span>
+														{format(new Date(demerit.createdAt), "MMM d, yyyy")}
+													</span>
+												</div>
+											</div>
+										))
+									)}
+								</div>
+							)}
+						</CardContent>
+					</Card>
 
-					{notificationsEnabled && (
-						<div className="pt-4 border-t">
-							<Button
-								type="button"
-								disabled={isSendingTest}
-								onClick={handleSendTestNotification}
-								className="w-full"
-							>
-								{isSendingTest ? (
-									<>
-										<div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent" />
-										Sending...
-									</>
-								) : (
-									<>
-										<PaperPlaneTilt className="w-5 h-5" />
-										Send Test Notification
-									</>
-								)}
-							</Button>
-						</div>
-					)}
-				</CardContent>
-			</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<Bell className="w-6 h-6" />
+								Notification Settings
+							</CardTitle>
+							<CardDescription>
+								Manage your browser push notification preferences
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-6">
+							{!pushSupported && (
+								<Alert variant="default">
+									<AlertDescription>
+										Push notifications are not supported in your browser.
+									</AlertDescription>
+								</Alert>
+							)}
+
+							{error && (
+								<Alert variant="destructive">
+									<AlertDescription>{error}</AlertDescription>
+								</Alert>
+							)}
+
+							{success && (
+								<Alert variant="default">
+									<AlertDescription>{success}</AlertDescription>
+								</Alert>
+							)}
+
+							<div className="flex items-center justify-between">
+								<div>
+									<CardTitle className="text-lg">
+										Browser Notifications
+									</CardTitle>
+									<CardDescription>
+										Receive push notifications in your browser
+									</CardDescription>
+								</div>
+								<Switch
+									checked={notificationsEnabled}
+									disabled={isLoading || !pushSupported}
+									onCheckedChange={handleNotificationToggle}
+								/>
+							</div>
+
+							{notificationsEnabled && (
+								<div className="pt-4 border-t">
+									<Button
+										type="button"
+										disabled={isSendingTest}
+										onClick={handleSendTestNotification}
+										className="w-full"
+									>
+										{isSendingTest ? (
+											<>
+												<div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent" />
+												Sending...
+											</>
+										) : (
+											<>
+												<PaperPlaneTilt className="w-5 h-5" />
+												Send Test Notification
+											</>
+										)}
+									</Button>
+								</div>
+							)}
+						</CardContent>
+					</Card>
+				</div>
+			</div>
 		</div>
 	);
 }

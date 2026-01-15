@@ -9,7 +9,6 @@ import {
 } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { authClient } from "~/app/lib/auth-client";
 import { Badge } from "~/app/components/ui/badge";
 import { Button } from "~/app/components/ui/button";
 import {
@@ -35,6 +34,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/app/components/ui/table";
+import { authClient } from "~/app/lib/auth-client";
 
 type AdminUser = {
 	id: string;

@@ -103,7 +103,7 @@ export async function fetchSwellcloudForecast({
 			}) => {
 				// Parse ISO string timestamp
 				const timestamp = new Date(p.time);
-				if (isNaN(timestamp.getTime())) {
+				if (Number.isNaN(timestamp.getTime())) {
 					console.warn(`Invalid timestamp: ${p.time}`);
 					return null;
 				}

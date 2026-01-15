@@ -40,7 +40,7 @@ export type rootGetResponseSuccess = rootGetResponse200 & {
 export type rootGetResponse = rootGetResponseSuccess;
 
 export const getRootGetUrl = () => {
-	return `https://api.swellcloud.net/`;
+	return "https://api.swellcloud.net/";
 };
 
 export const rootGet = async (
@@ -58,7 +58,7 @@ export const rootGet = async (
 };
 
 export const getRootGetQueryKey = () => {
-	return [`https://api.swellcloud.net/`] as const;
+	return ["https://api.swellcloud.net/"] as const;
 };
 
 export const getRootGetQueryOptions = <
@@ -194,7 +194,7 @@ export type healthCheckHealthGetResponseSuccess =
 export type healthCheckHealthGetResponse = healthCheckHealthGetResponseSuccess;
 
 export const getHealthCheckHealthGetUrl = () => {
-	return `https://api.swellcloud.net/health`;
+	return "https://api.swellcloud.net/health";
 };
 
 export const healthCheckHealthGet = async (
@@ -218,7 +218,7 @@ export const healthCheckHealthGet = async (
 };
 
 export const getHealthCheckHealthGetQueryKey = () => {
-	return [`https://api.swellcloud.net/health`] as const;
+	return ["https://api.swellcloud.net/health"] as const;
 };
 
 export const getHealthCheckHealthGetQueryOptions = <
@@ -381,7 +381,7 @@ export type getEsp32CaEsp32CaPemGetResponse =
 	getEsp32CaEsp32CaPemGetResponseSuccess;
 
 export const getGetEsp32CaEsp32CaPemGetUrl = () => {
-	return `https://api.swellcloud.net/esp32/ca.pem`;
+	return "https://api.swellcloud.net/esp32/ca.pem";
 };
 
 export const getEsp32CaEsp32CaPemGet = async (
@@ -405,7 +405,7 @@ export const getEsp32CaEsp32CaPemGet = async (
 };
 
 export const getGetEsp32CaEsp32CaPemGetQueryKey = () => {
-	return [`https://api.swellcloud.net/esp32/ca.pem`] as const;
+	return ["https://api.swellcloud.net/esp32/ca.pem"] as const;
 };
 
 export const getGetEsp32CaEsp32CaPemGetQueryOptions = <
@@ -568,7 +568,7 @@ export type getEsp32CaCaPemGetResponseSuccess =
 export type getEsp32CaCaPemGetResponse = getEsp32CaCaPemGetResponseSuccess;
 
 export const getGetEsp32CaCaPemGetUrl = () => {
-	return `https://api.swellcloud.net/ca.pem`;
+	return "https://api.swellcloud.net/ca.pem";
 };
 
 export const getEsp32CaCaPemGet = async (
@@ -590,7 +590,7 @@ export const getEsp32CaCaPemGet = async (
 };
 
 export const getGetEsp32CaCaPemGetQueryKey = () => {
-	return [`https://api.swellcloud.net/ca.pem`] as const;
+	return ["https://api.swellcloud.net/ca.pem"] as const;
 };
 
 export const getGetEsp32CaCaPemGetQueryOptions = <
@@ -752,7 +752,7 @@ export type getEsp32CaV1CaPemGetResponseSuccess =
 export type getEsp32CaV1CaPemGetResponse = getEsp32CaV1CaPemGetResponseSuccess;
 
 export const getGetEsp32CaV1CaPemGetUrl = () => {
-	return `https://api.swellcloud.net/v1/ca.pem`;
+	return "https://api.swellcloud.net/v1/ca.pem";
 };
 
 export const getEsp32CaV1CaPemGet = async (
@@ -776,7 +776,7 @@ export const getEsp32CaV1CaPemGet = async (
 };
 
 export const getGetEsp32CaV1CaPemGetQueryKey = () => {
-	return [`https://api.swellcloud.net/v1/ca.pem`] as const;
+	return ["https://api.swellcloud.net/v1/ca.pem"] as const;
 };
 
 export const getGetEsp32CaV1CaPemGetQueryOptions = <
@@ -934,7 +934,7 @@ export type listModelsV1ModelsGetResponse =
 	listModelsV1ModelsGetResponseSuccess;
 
 export const getListModelsV1ModelsGetUrl = () => {
-	return `https://api.swellcloud.net/v1/models`;
+	return "https://api.swellcloud.net/v1/models";
 };
 
 export const listModelsV1ModelsGet = async (
@@ -958,7 +958,7 @@ export const listModelsV1ModelsGet = async (
 };
 
 export const getListModelsV1ModelsGetQueryKey = () => {
-	return [`https://api.swellcloud.net/v1/models`] as const;
+	return ["https://api.swellcloud.net/v1/models"] as const;
 };
 
 export const getListModelsV1ModelsGetQueryOptions = <
@@ -1146,7 +1146,7 @@ export const getListChartsV1ChartsGetUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://api.swellcloud.net/v1/charts?${stringifiedParams}`
-		: `https://api.swellcloud.net/v1/charts`;
+		: "https://api.swellcloud.net/v1/charts";
 };
 
 export const listChartsV1ChartsGet = async (
@@ -1174,7 +1174,7 @@ export const getListChartsV1ChartsGetQueryKey = (
 	params?: ListChartsV1ChartsGetParams,
 ) => {
 	return [
-		`https://api.swellcloud.net/v1/charts`,
+		"https://api.swellcloud.net/v1/charts",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -1615,7 +1615,7 @@ export type getChartsMetadataV1ChartsMetadataGetResponse =
 	getChartsMetadataV1ChartsMetadataGetResponseSuccess;
 
 export const getGetChartsMetadataV1ChartsMetadataGetUrl = () => {
-	return `https://api.swellcloud.net/v1/charts/metadata`;
+	return "https://api.swellcloud.net/v1/charts/metadata";
 };
 
 export const getChartsMetadataV1ChartsMetadataGet = async (
@@ -1639,7 +1639,7 @@ export const getChartsMetadataV1ChartsMetadataGet = async (
 };
 
 export const getGetChartsMetadataV1ChartsMetadataGetQueryKey = () => {
-	return [`https://api.swellcloud.net/v1/charts/metadata`] as const;
+	return ["https://api.swellcloud.net/v1/charts/metadata"] as const;
 };
 
 export const getGetChartsMetadataV1ChartsMetadataGetQueryOptions = <
@@ -2019,7 +2019,7 @@ export type wmtsCapabilitiesV1WmtsCapabilitiesGetResponse =
 	wmtsCapabilitiesV1WmtsCapabilitiesGetResponseSuccess;
 
 export const getWmtsCapabilitiesV1WmtsCapabilitiesGetUrl = () => {
-	return `https://api.swellcloud.net/v1/wmts-capabilities`;
+	return "https://api.swellcloud.net/v1/wmts-capabilities";
 };
 
 export const wmtsCapabilitiesV1WmtsCapabilitiesGet = async (
@@ -2043,7 +2043,7 @@ export const wmtsCapabilitiesV1WmtsCapabilitiesGet = async (
 };
 
 export const getWmtsCapabilitiesV1WmtsCapabilitiesGetQueryKey = () => {
-	return [`https://api.swellcloud.net/v1/wmts-capabilities`] as const;
+	return ["https://api.swellcloud.net/v1/wmts-capabilities"] as const;
 };
 
 export const getWmtsCapabilitiesV1WmtsCapabilitiesGetQueryOptions = <
@@ -2495,7 +2495,7 @@ export const getGetPointForecastV1PointGetUrl = (
 
 	return stringifiedParams.length > 0
 		? `https://api.swellcloud.net/v1/point?${stringifiedParams}`
-		: `https://api.swellcloud.net/v1/point`;
+		: "https://api.swellcloud.net/v1/point";
 };
 
 export const getPointForecastV1PointGet = async (
@@ -2523,7 +2523,7 @@ export const getGetPointForecastV1PointGetQueryKey = (
 	params?: GetPointForecastV1PointGetParams,
 ) => {
 	return [
-		`https://api.swellcloud.net/v1/point`,
+		"https://api.swellcloud.net/v1/point",
 		...(params ? [params] : []),
 	] as const;
 };
@@ -2695,7 +2695,7 @@ export type getApiStatusV1StatusGetResponse =
 	getApiStatusV1StatusGetResponseSuccess;
 
 export const getGetApiStatusV1StatusGetUrl = () => {
-	return `https://api.swellcloud.net/v1/status`;
+	return "https://api.swellcloud.net/v1/status";
 };
 
 export const getApiStatusV1StatusGet = async (
@@ -2719,7 +2719,7 @@ export const getApiStatusV1StatusGet = async (
 };
 
 export const getGetApiStatusV1StatusGetQueryKey = () => {
-	return [`https://api.swellcloud.net/v1/status`] as const;
+	return ["https://api.swellcloud.net/v1/status"] as const;
 };
 
 export const getGetApiStatusV1StatusGetQueryOptions = <
