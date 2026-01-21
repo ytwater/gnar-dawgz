@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, bearer, phoneNumber } from "better-auth/plugins";
+import { admin, phoneNumber } from "better-auth/plugins";
 import {
 	ADMIN_USER_IDS,
 	TWILIO_WHATSAPP_NUMBER,
@@ -51,10 +51,6 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 				// 		}
 				// 	: {},
 				plugins: [
-					bearer({
-						// Enable bearer token authentication for 3rd party websites
-						// Tokens are sent in Authorization: Bearer <token> header
-					}),
 					phoneNumber({
 						sendOTP: async ({ phoneNumber, code }, ctx) => {
 							console.log(

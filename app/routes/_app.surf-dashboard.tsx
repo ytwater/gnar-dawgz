@@ -68,6 +68,10 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 	console.log("LOADING SPOTS");
 	// Get active spots via ORPC routes
 	const allSpots = await getActiveSpots(orpcContext);
+	console.log(
+		"🚀 ~ _app.surf-dashboard.tsx:71 ~ loader ~ allSpots:",
+		JSON.stringify(allSpots),
+	);
 
 	// Determine default spot: try Torrey Pines by name or id, otherwise first active spot
 	let defaultSpotId: string | null = null;
@@ -104,6 +108,10 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 
 	// Get dashboard data via ORPC routes
 	const dashboardData = await getDashboardData(orpcContext, selectedSpotId);
+	console.log(
+		"🚀 ~ _app.surf-dashboard.tsx:108 ~ loader ~ dashboardData:",
+		JSON.stringify(dashboardData),
+	);
 
 	// Create query client and pre-populate
 	const queryClient = createQueryClient();

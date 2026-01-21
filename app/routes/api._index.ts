@@ -18,6 +18,20 @@ export async function loader({ request }: Route.LoaderArgs) {
 			description: "API for Gnar Dawgs surf community",
 		},
 		servers: [{ url: `${baseUrl}/api/orpc` }],
+		filter: ({ contract, path }) => {
+			console.log("🚀 ~ api._index.ts:22 ~ loader ~ path:", path);
+			// Example: exclude routes with "internal" tag
+			// return !contract["~orpc"].route.tags?.includes("internal");
+
+			// Example: only include specific routers
+			// return path.startsWith("surfForecast") || path.startsWith("demerit");
+
+			// Example: exclude specific paths
+			return (
+				(path[0] === "surfForecast" && path[1] === "getDashboardData") ||
+				(path[0] === "surfForecast" && path[1] === "getForecasts")
+			);
+		},
 	});
 
 	return Response.json(spec, {

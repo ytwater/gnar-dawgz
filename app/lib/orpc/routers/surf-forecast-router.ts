@@ -11,6 +11,74 @@ import {
 import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 import { adminProcedure, publicProcedure } from "../server";
 
+// Output schemas
+const surfForecastSchema = z.object({
+	id: z.string(),
+	source: z.string(),
+	spotId: z.string(),
+	timestamp: z.date(),
+	waveHeightMin: z.number().nullable(),
+	waveHeightMax: z.number().nullable(),
+	wavePeriod: z.number().nullable(),
+	waveDirection: z.number().nullable(),
+	windSpeed: z.number().nullable(),
+	windDirection: z.number().nullable(),
+	temperature: z.number().nullable(),
+	rating: z.string().nullable(),
+	swells: z.string().nullable(),
+	fetchedAt: z.date(),
+	createdAt: z.date(),
+});
+
+const tideForecastSchema = z.object({
+	id: z.string(),
+	source: z.string(),
+	spotId: z.string(),
+	timestamp: z.date(),
+	type: z.string().nullable(),
+	height: z.number().nullable(),
+	fetchedAt: z.date(),
+	createdAt: z.date(),
+});
+
+const dailyForecastSchema = z.object({
+	date: z.string(),
+	dateObj: z.date(),
+	surfline: z.object({
+		heightMin: z.number().nullable(),
+		heightMax: z.number().nullable(),
+		heightAvg: z.number().nullable(),
+		period: z.number().nullable(),
+		rating: z.string().nullable(),
+	}),
+	swellcloud: z.object({
+		heightMin: z.number().nullable(),
+		heightMax: z.number().nullable(),
+		heightAvg: z.number().nullable(),
+		period: z.number().nullable(),
+	}),
+	weather: z.object({
+		temperature: z.number().nullable(),
+		precipitation: z.number().nullable(),
+		cloudCover: z.number().nullable(),
+		weatherCode: z.number().nullable(),
+	}),
+});
+
+const combinedDataSchema = z.object({
+	timestamp: z.number(),
+	dateStr: z.string(),
+	surflineHeight: z.number().nullable(),
+	swellcloudHeight: z.number().nullable(),
+	surflinePeriod: z.number().nullable(),
+	swellcloudPeriod: z.number().nullable(),
+	surflineWindSpeed: z.number().nullable(),
+	swellcloudWindSpeed: z.number().nullable(),
+	surflineWindDirection: z.number().nullable(),
+	swellcloudWindDirection: z.number().nullable(),
+	rating: z.string().nullable(),
+});
+
 export const surfForecastRouter = {
 	// Get all active spots
 	getActiveSpots: publicProcedure.handler(async ({ context }) => {
@@ -29,6 +97,12 @@ export const surfForecastRouter = {
 		.input(
 			z.object({
 				spotId: z.string(),
+			}),
+		)
+		.output(
+			z.object({
+				waves: z.array(surfForecastSchema),
+				tides: z.array(tideForecastSchema),
 			}),
 		)
 		.handler(async ({ input, context }) => {
@@ -67,6 +141,13 @@ export const surfForecastRouter = {
 		.input(
 			z.object({
 				spotId: z.string(),
+			}),
+		)
+		.output(
+			z.object({
+				combinedData: z.array(combinedDataSchema),
+				allTides: z.array(tideForecastSchema),
+				dailyForecasts: z.array(dailyForecastSchema),
 			}),
 		)
 		.handler(async ({ input, context }) => {
