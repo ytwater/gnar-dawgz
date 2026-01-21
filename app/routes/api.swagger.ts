@@ -1,7 +1,7 @@
 import { OpenAPIGenerator } from "@orpc/openapi";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { appRouter } from "~/app/lib/orpc/router";
-import type { Route } from "./+types/api._index";
+import type { Route } from "./+types/api.swagger";
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const url = new URL(request.url);
@@ -17,7 +17,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 			version: "1.0.0",
 			description: "API for Gnar Dawgs surf community",
 		},
-		servers: [{ url: `${baseUrl}/api/orpc` }],
+		servers: [{ url: `${baseUrl}/api/openapi` }],
 		filter: ({ contract, path }) => {
 			console.log("🚀 ~ api._index.ts:22 ~ loader ~ path:", path);
 			// Example: exclude routes with "internal" tag

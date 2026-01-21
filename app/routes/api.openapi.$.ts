@@ -1,8 +1,9 @@
-import { RPCHandler } from "@orpc/server/fetch";
+import { OpenAPIHandler } from "@orpc/openapi/fetch";
+import { CORSPlugin } from "@orpc/server/plugins";
 import { createAuth } from "~/app/lib/auth";
 import { getDb } from "~/app/lib/db";
 import { appRouter } from "~/app/lib/orpc/router";
-import type { Route } from "./+types/api.orpc.$";
+import type { Route } from "./+types/api.openapi.$";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
 	return handle(request, context);
@@ -20,9 +21,11 @@ async function handle(request: Request, context: Route.LoaderArgs["context"]) {
 
 	// Get the session
 	const session = await auth.api.getSession({ headers: request.headers });
-	const handler = new RPCHandler(appRouter);
+	const handler = new OpenAPIHandler(appRouter, {
+		plugins: [new CORSPlugin()],
+	});
 	const { response } = await handler.handle(request, {
-		prefix: "/api/orpc",
+		prefix: "/api/openapi",
 		context: {
 			env,
 			db,

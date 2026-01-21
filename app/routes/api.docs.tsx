@@ -34,7 +34,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	<script>
 		window.onload = function() {
 			window.ui = SwaggerUIBundle({
-				url: "${baseUrl}/api",
+				url: "${baseUrl}/api/swagger",
 				dom_id: '#swagger-ui',
 				presets: [
 					SwaggerUIBundle.presets.apis,
