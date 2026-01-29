@@ -24,7 +24,7 @@ export function getBearerTokenFromResponse(response: Response): string | null {
 
 /**
  * Sign in with email/password and get bearer token
- * 
+ *
  * Example:
  * ```ts
  * const { token, error } = await signInAndGetToken('user@example.com', 'password');

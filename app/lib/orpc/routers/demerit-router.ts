@@ -96,10 +96,7 @@ export const demeritRouter = {
 				.from(demerits)
 				.leftJoin(users, eq(demerits.fromUserId, users.id))
 				.where(
-					and(
-						eq(demerits.toUserId, userId),
-						eq(demerits.status, "active"),
-					),
+					and(eq(demerits.toUserId, userId), eq(demerits.status, "active")),
 				)
 				.orderBy(desc(demerits.createdAt));
 		}),
