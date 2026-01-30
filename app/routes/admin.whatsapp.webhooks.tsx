@@ -13,6 +13,7 @@ import {
 	CardTitle,
 } from "~/app/components/ui/card";
 import { Input } from "~/app/components/ui/input";
+import { getAppUrl } from "~/app/config/constants";
 import type { SessionInfo, WebhookConfig } from "~/app/lib/whatsapp/models";
 import {
 	sessionsControllerGet,
@@ -47,7 +48,11 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 			sessionName,
 			fetchOptions,
 		);
-		return { session: sessionRes.data as SessionInfo };
+		const appUrl = getAppUrl(env);
+		return {
+			session: sessionRes.data as SessionInfo,
+			recommendedUrl: `${appUrl}/api/waha/webhook`,
+		};
 	} catch (error) {
 		console.error("Webhooks Loader Error:", error);
 		return { error: "Failed to fetch session" };
@@ -139,18 +144,60 @@ export default function AdminWhatsAppWebhooks() {
 	}, [actionData]);
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Webhook Configuration</CardTitle>
-				<CardDescription>
-					Configure where WAHA should send incoming message events. You can add
-					multiple webhook URLs; each will receive the same events.
-				</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<WebhookForm initialUrls={initialUrls} isSubmitting={isSubmitting} />
-			</CardContent>
-		</Card>
+		<div className="space-y-6">
+			<Card>
+				<CardHeader>
+					<CardTitle>Webhook Configuration</CardTitle>
+					<CardDescription>
+						Configure where WAHA should send incoming message events. You can
+						add multiple webhook URLs; each will receive the same events.
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<WebhookForm initialUrls={initialUrls} isSubmitting={isSubmitting} />
+				</CardContent>
+			</Card>
+
+			{dataRaw.recommendedUrl &&
+				!initialUrls.includes(dataRaw.recommendedUrl) && (
+					<Card className="border-primary/50 bg-primary/5">
+						<CardHeader>
+							<CardTitle className="text-sm font-medium">
+								Recommended Webhook
+							</CardTitle>
+							<CardDescription>
+								The Gnar Dawgs bot logic is now served at a new endpoint.
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="flex items-center justify-between gap-4">
+							<code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
+								{dataRaw.recommendedUrl}
+							</code>
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => {
+									const input = document.querySelector(
+										'input[placeholder="https://your-app.com/api/whatsapp/webhook"]',
+									) as HTMLInputElement;
+									if (input && !input.value) {
+										input.value = dataRaw.recommendedUrl || "";
+										// Trigger React state update by dispatching an event
+										const event = new Event("input", { bubbles: true });
+										input.dispatchEvent(event);
+									} else {
+										// If first one is filled, toast the recommendation or just tell them to copy
+										navigator.clipboard.writeText(dataRaw.recommendedUrl || "");
+										toast.info("Copied to clipboard! Add it manually.");
+									}
+								}}
+							>
+								Use This
+							</Button>
+						</CardContent>
+					</Card>
+				)}
+		</div>
 	);
 }
 
