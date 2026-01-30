@@ -4,6 +4,7 @@ import {
 	Key,
 	Scales,
 	Users,
+	WhatsappLogo,
 } from "@phosphor-icons/react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router";
@@ -56,6 +57,14 @@ const menuItems = [
 		href: "/admin/surf-spots",
 		color: "text-primary",
 		bgColor: "bg-primary/10",
+	},
+	{
+		title: "WhatsApp Integration",
+		description: "Manage WhatsApp session, profile, webhooks, and view chats.",
+		icon: WhatsappLogo,
+		href: "/admin/whatsapp",
+		color: "text-green-600",
+		bgColor: "bg-green-50",
 	},
 	{
 		title: "Global Charter",
