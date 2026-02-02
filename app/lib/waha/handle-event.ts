@@ -136,7 +136,7 @@ export async function handleWahaMessage(
 
 	// Use the WhatsAppAgent to generate a response
 	const agent = new WhatsAppAgent(env, user);
-	const responseText = await agent.onMessage(senderId, messageText);
+	const responseText = await agent.onMessage(senderId, messageText, isGroup);
 
 	// Send the response back via WAHA
 	const finalResponse = isDev ? `dev: ${responseText}` : responseText;

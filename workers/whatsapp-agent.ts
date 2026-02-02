@@ -78,8 +78,16 @@ export class WhatsAppAgent {
 	/**
 	 * Handles incoming WhatsApp messages and returns AI-generated responses
 	 */
-	async onMessage(senderNumber: string, text: string): Promise<string> {
-		console.log("WhatsAppAgent.onMessage called", { senderNumber, text });
+	async onMessage(
+		senderNumber: string,
+		text: string,
+		isGroup = false,
+	): Promise<string> {
+		console.log("WhatsAppAgent.onMessage called", {
+			senderNumber,
+			text,
+			isGroup,
+		});
 
 		// Load history if not already loaded
 		if (this.messages.length === 0) {
@@ -128,8 +136,12 @@ export class WhatsAppAgent {
 					getDemeritLeaderboard,
 				};
 
+		const loginInfo = isGroup
+			? ""
+			: " You can tell the user they can login to the webpage at https://gnardawgs.surf by messaging 'login' here to get a login code.";
+
 		const systemPrompt = isOnboarding
-			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach and that they can assign or clear demerits. Make sure you tell them that they can login to the webpage at https://gnardawgs.surf or message 'login' here to get a login code. Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
+			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach and that they can assign or clear demerits.${isGroup ? "" : " Make sure you tell them that they can login to the webpage at https://gnardawgs.surf or message 'login' here to get a login code."} Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
 			: `You are a helpful assistant for the Gnar Dawgs surf collective. Keep responses concise and friendly.
 You manage the Gnar Dawgs demerit tracker:
 - If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.
@@ -137,7 +149,7 @@ You manage the Gnar Dawgs demerit tracker:
 - You can use the 'getCharter' tool to see the current rules if anyone asks.
 - You can use the 'getDemeritLeaderboard' tool to show who has the most demerits when asked.
 - You can also provide surf forecasts using 'getSurfForecast' (default is Torrey Pines) and 'getSurfSpots'.
-Be concise. Search for users by name when assigning or clearing demerits.  You can tell the user they can login to the webpage at https://gnardawgs.surf by messaging 'login' here to get a login code. Always reply using WhatsApp formatted text.`;
+Be concise. Search for users by name when assigning or clearing demerits.${loginInfo} Always reply using WhatsApp formatted text.`;
 		console.log(
 			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",
 			systemPrompt,

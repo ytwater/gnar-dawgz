@@ -102,7 +102,11 @@ export async function handleIncomingMessage(
 		const agent = new WhatsAppAgent(env, user);
 
 		// Get AI response from the agent
-		const responseText = await agent.onMessage(senderNumber, messageText);
+		const responseText = await agent.onMessage(
+			senderNumber,
+			messageText,
+			false,
+		);
 
 		// Send response back via Twilio
 		const payload: CreateMessageBody = {
