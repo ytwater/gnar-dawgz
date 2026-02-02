@@ -140,5 +140,5 @@ export async function handleWahaMessage(
 
 	// Send the response back via WAHA
 	const finalResponse = isDev ? `dev: ${responseText}` : responseText;
-	await sendWahaMessage(env, senderId, finalResponse, payload.id);
+	await sendWahaMessage(env, senderId, finalResponse, { replyTo: payload.id });
 }

@@ -222,16 +222,6 @@ export async function action({ request, context }: Route.ActionArgs) {
 				}
 
 				// Offload processing to Cloudflare Queue
-				const thinkingMessage = isOnboarding
-					? "Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾"
-					: "Thinking...";
-				const payload: CreateMessageBody = {
-					From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
-					To: senderNumber,
-					Body: isDev ? `dev: ${thinkingMessage}` : thinkingMessage,
-				};
-
-				eventPromises.push(createMessage(env, payload));
 				eventPromises.push(env.WHATSAPP_QUEUE.send(event));
 			}
 		}

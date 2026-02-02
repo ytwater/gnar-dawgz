@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { Badge } from "~/app/components/ui/badge";
 import {
 	Card,
@@ -111,9 +111,17 @@ export default function AdminWhatsAppChats() {
 							</TableRow>
 						) : (
 							chats.map((chat) => (
-								<TableRow key={chatIdDisplay(chat.id)}>
+								<TableRow
+									key={chatIdDisplay(chat.id)}
+									className="cursor-pointer hover:bg-muted/50 transition-colors"
+								>
 									<TableCell className="font-medium">
-										{chat.name || "Unknown"}
+										<Link
+											to={`/admin/whatsapp/chats/${encodeURIComponent(chatIdDisplay(chat.id))}`}
+											className="block hover:underline"
+										>
+											{chat.name || "Unknown"}
+										</Link>
 									</TableCell>
 									<TableCell
 										className="font-mono text-xs truncate"
