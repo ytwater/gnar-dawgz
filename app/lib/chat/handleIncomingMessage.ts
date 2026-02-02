@@ -8,7 +8,7 @@ import {
 	createMessage,
 } from "../twilio/classic-messages-api";
 
-type TwilioInboundMessageEvent = {
+export type TwilioInboundMessageEvent = {
 	specversion: string;
 	type: string;
 	source: string;

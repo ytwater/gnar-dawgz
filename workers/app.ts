@@ -1,7 +1,13 @@
 import { routeAgentRequest } from "agents";
 import { createRequestHandler } from "react-router";
 import { REQUIRED_ENV_VARS } from "~/app/config/constants";
-import { handleIncomingMessage } from "~/app/lib/chat/handleIncomingMessage";
+import {
+	type TwilioInboundMessageEvent,
+	handleIncomingMessage,
+} from "~/app/lib/chat/handleIncomingMessage";
+import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
+import { handleWahaMessage } from "~/app/lib/waha/handle-event";
+import type { WahaMessageEvent } from "~/app/lib/waha/types";
 import { Chat } from "./chat-agent";
 import { WhatsAppAgent } from "./whatsapp-agent";
 
@@ -18,8 +24,6 @@ const requestHandler = createRequestHandler(
 	() => import("virtual:react-router/server-build"),
 	import.meta.env.MODE,
 );
-
-import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 
 export { Chat, WhatsAppAgent };
 
@@ -78,7 +82,6 @@ export default {
 					method: request.method,
 					headers: request.headers,
 					body: request.body,
-					duplex: request.body ? "half" : undefined,
 				});
 				agentResponse = await routeAgentRequest(rewrittenRequest, env);
 				if (agentResponse) {
@@ -137,12 +140,28 @@ export default {
 	},
 
 	async queue(
-		batch: MessageBatch<unknown>,
+		batch: MessageBatch<Record<string, unknown>>,
 		env: CloudflareBindings,
 	): Promise<void> {
 		for (const message of batch.messages) {
 			try {
-				await handleIncomingMessage(message.body, env);
+				const body = message.body;
+				if (
+					"event" in body &&
+					(body.event === "message" || body.event === "message.any")
+				) {
+					await handleWahaMessage(body as unknown as WahaMessageEvent, env);
+				} else if (
+					"type" in body &&
+					body.type === "com.twilio.messaging.inbound-message.received"
+				) {
+					await handleIncomingMessage(
+						body as unknown as TwilioInboundMessageEvent,
+						env,
+					);
+				} else {
+					console.warn("Unknown message type in queue", body);
+				}
 				message.ack();
 			} catch (error) {
 				console.error("Error processing queue message:", error);
@@ -152,7 +171,7 @@ export default {
 	},
 
 	async scheduled(
-		event: ScheduledEvent,
+		_event: ScheduledEvent,
 		env: CloudflareBindings,
 		ctx: ExecutionContext,
 	): Promise<void> {
