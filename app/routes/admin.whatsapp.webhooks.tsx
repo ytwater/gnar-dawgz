@@ -1,8 +1,14 @@
 import * as React from "react";
 import { useEffect } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { useActionData, useLoaderData, useNavigation } from "react-router";
+import {
+	useActionData,
+	useLoaderData,
+	useNavigation,
+	useSubmit,
+} from "react-router";
 import { toast } from "sonner";
 import { Button } from "~/app/components/ui/button";
 import {
@@ -13,23 +19,25 @@ import {
 	CardTitle,
 } from "~/app/components/ui/card";
 import { Input } from "~/app/components/ui/input";
-import { getAppUrl } from "~/app/config/constants";
+import { WAHA_SESSION_NAME, getAppUrl } from "~/app/config/constants";
 import type { SessionInfo, WebhookConfig } from "~/app/lib/whatsapp/models";
 import {
 	sessionsControllerGet,
 	sessionsControllerUpdate,
 } from "~/app/lib/whatsapp/whatsapp-api";
 
+// WAHA valid events (no group.upsert/group.update); see API validation
 const DEFAULT_EVENTS = [
 	"message",
 	"message.any",
-	"group.upsert",
-	"group.update",
+	"group.v2.join",
+	"group.v2.leave",
+	"group.v2.update",
+	"group.v2.participants",
 ];
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {
 	const env = context.cloudflare.env;
-	const sessionName = env.WAHA_SESSION_ID || "default";
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {
@@ -43,14 +51,23 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 	};
 
 	try {
+		console.log("[Webhooks Loader] GET session", {
+			sessionName: WAHA_SESSION_NAME,
+		});
 		const sessionRes = await sessionsControllerGet(
 			{},
-			sessionName,
+			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
+		const session = sessionRes.data as SessionInfo;
+		console.log("[Webhooks Loader] GET session result", {
+			status: sessionRes.status,
+			data: session,
+			webhooks: session?.config?.webhooks,
+		});
 		const appUrl = getAppUrl(env);
 		return {
-			session: sessionRes.data as SessionInfo,
+			session,
 			recommendedUrl: `${appUrl}/api/waha/webhook`,
 		};
 	} catch (error) {
@@ -61,7 +78,6 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 
 export const action = async ({ request, context }: ActionFunctionArgs) => {
 	const env = context.cloudflare.env;
-	const sessionName = env.WAHA_SESSION_ID || "default";
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {
@@ -75,37 +91,50 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 	};
 
 	const formData = await request.formData();
-	const webhookUrlsJson = formData.get("webhookUrlsJson") as string | null;
-	let urls: string[] = [];
-	if (webhookUrlsJson) {
-		try {
-			const parsed = JSON.parse(webhookUrlsJson) as string[];
-			urls = Array.isArray(parsed)
-				? parsed.map((u) => String(u).trim()).filter(Boolean)
-				: [];
-		} catch {
-			// ignore invalid JSON
-		}
-	}
-	if (urls.length === 0) {
-		// fallback: single webhookUrl field (legacy or no JS)
-		const single = (formData.get("webhookUrl") as string)?.trim();
-		if (single) urls = [single];
-	}
+	// Read URLs from named inputs so payload comes from DOM, not React state
+	const urls = (formData.getAll("webhookUrl") as string[])
+		.map((u) => String(u).trim())
+		.filter(Boolean);
+
+	const webhooks = urls.map((url) => ({
+		url,
+		events: DEFAULT_EVENTS as unknown as WebhookConfig["events"],
+	}));
 
 	try {
-		await sessionsControllerUpdate(
-			{
-				config: {
-					webhooks: urls.map((url) => ({
-						url,
-						events: DEFAULT_EVENTS as unknown as WebhookConfig["events"],
-					})),
-				},
-			},
-			sessionName,
+		console.log("[Webhooks Action] GET session (before update)", {
+			sessionName: WAHA_SESSION_NAME,
+			webhooksToSave: webhooks,
+		});
+		const sessionRes = await sessionsControllerGet(
+			{},
+			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
+		const existing = (sessionRes.data as SessionInfo)?.config;
+		console.log("[Webhooks Action] GET session result", {
+			status: sessionRes.status,
+			existingConfig: existing,
+		});
+		const updatePayload = {
+			config: {
+				...(existing && typeof existing === "object" ? existing : {}),
+				webhooks,
+			},
+		};
+		console.log("[Webhooks Action] PUT session", {
+			sessionName: WAHA_SESSION_NAME,
+			payload: updatePayload,
+		});
+		const updateRes = await sessionsControllerUpdate(
+			updatePayload,
+			WAHA_SESSION_NAME,
+			fetchOptions,
+		);
+		console.log("[Webhooks Action] PUT session result", {
+			status: updateRes.status,
+			data: updateRes.data,
+		});
 		return { success: "Webhooks updated successfully" };
 	} catch (error) {
 		console.error("Webhooks Action Error:", error);
@@ -135,6 +164,8 @@ export default function AdminWhatsAppWebhooks() {
 	const initialUrls =
 		existingWebhooks.length > 0 ? existingWebhooks.map((w) => w.url) : [""];
 
+	const fillRecommendedRef = React.useRef<((url: string) => void) | null>(null);
+
 	useEffect(() => {
 		if (actionData && "success" in actionData) {
 			toast.success(actionData.success);
@@ -154,7 +185,12 @@ export default function AdminWhatsAppWebhooks() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<WebhookForm initialUrls={initialUrls} isSubmitting={isSubmitting} />
+					<WebhookForm
+						key={JSON.stringify(initialUrls)}
+						initialUrls={initialUrls}
+						isSubmitting={isSubmitting}
+						onFillRecommendedRef={fillRecommendedRef}
+					/>
 				</CardContent>
 			</Card>
 
@@ -177,17 +213,11 @@ export default function AdminWhatsAppWebhooks() {
 								variant="outline"
 								size="sm"
 								onClick={() => {
-									const input = document.querySelector(
-										'input[placeholder="https://your-app.com/api/whatsapp/webhook"]',
-									) as HTMLInputElement;
-									if (input && !input.value) {
-										input.value = dataRaw.recommendedUrl || "";
-										// Trigger React state update by dispatching an event
-										const event = new Event("input", { bubbles: true });
-										input.dispatchEvent(event);
+									const url = dataRaw.recommendedUrl ?? "";
+									if (fillRecommendedRef.current) {
+										fillRecommendedRef.current(url);
 									} else {
-										// If first one is filled, toast the recommendation or just tell them to copy
-										navigator.clipboard.writeText(dataRaw.recommendedUrl || "");
+										navigator.clipboard.writeText(url);
 										toast.info("Copied to clipboard! Add it manually.");
 									}
 								}}
@@ -201,47 +231,62 @@ export default function AdminWhatsAppWebhooks() {
 	);
 }
 
+type WebhookFormValues = { urls: { value: string }[] };
+
 function WebhookForm({
 	initialUrls,
 	isSubmitting,
+	onFillRecommendedRef,
 }: {
 	initialUrls: string[];
 	isSubmitting: boolean;
+	onFillRecommendedRef?: React.MutableRefObject<((url: string) => void) | null>;
 }) {
-	const [urls, setUrls] = React.useState<string[]>(initialUrls);
-	const [rowIds, setRowIds] = React.useState<number[]>(() =>
-		initialUrls.map((_, i) => i),
-	);
-	const nextIdRef = React.useRef(initialUrls.length);
-
-	const addRow = () => {
-		setUrls((prev) => [...prev, ""]);
-		setRowIds((prev) => [...prev, nextIdRef.current++]);
-	};
-	const removeRow = (index: number) => {
-		setUrls((prev) => prev.filter((_, i) => i !== index));
-		setRowIds((prev) => prev.filter((_, i) => i !== index));
-	};
-	const setUrl = (index: number, value: string) =>
-		setUrls((prev) => {
-			const next = [...prev];
-			next[index] = value;
-			return next;
+	const submit = useSubmit();
+	const { control, handleSubmit, setValue, getValues } =
+		useForm<WebhookFormValues>({
+			defaultValues: {
+				urls:
+					initialUrls.length > 0
+						? initialUrls.map((value) => ({ value }))
+						: [{ value: "" }],
+			},
 		});
+	const { fields, append, remove } = useFieldArray({ control, name: "urls" });
+
+	React.useEffect(() => {
+		if (!onFillRecommendedRef) return;
+		onFillRecommendedRef.current = (url: string) => {
+			const urls = getValues("urls");
+			const i = urls.findIndex((u) => !u?.value?.trim());
+			if (i >= 0) {
+				setValue(`urls.${i}.value`, url);
+			} else {
+				append({ value: "" });
+				setValue(`urls.${urls.length}.value`, url);
+			}
+		};
+		return () => {
+			onFillRecommendedRef.current = null;
+		};
+	}, [onFillRecommendedRef, setValue, getValues, append]);
+
+	const onSubmit = handleSubmit((values) => {
+		const fd = new FormData();
+		for (const { value } of values.urls) {
+			const trimmed = String(value ?? "").trim();
+			if (trimmed) fd.append("webhookUrl", trimmed);
+		}
+		submit(fd, { method: "post" });
+	});
 
 	return (
-		<form method="post" className="space-y-6">
-			<input
-				type="hidden"
-				name="webhookUrlsJson"
-				value={JSON.stringify(urls)}
-			/>
+		<form onSubmit={onSubmit} className="space-y-6">
 			<div className="space-y-4">
-				{urls.map((url, index) => (
-					<div key={rowIds[index]} className="flex items-center gap-2">
+				{fields.map((field, index) => (
+					<div key={field.id} className="flex items-center gap-2">
 						<Input
-							value={url}
-							onChange={(e) => setUrl(index, e.target.value)}
+							{...control.register(`urls.${index}.value`)}
 							placeholder="https://your-app.com/api/whatsapp/webhook"
 							className="flex-1"
 						/>
@@ -249,15 +294,20 @@ function WebhookForm({
 							type="button"
 							variant="outline"
 							size="icon"
-							onClick={() => removeRow(index)}
-							disabled={urls.length <= 1}
+							onClick={() => remove(index)}
+							disabled={fields.length <= 1}
 							aria-label="Remove webhook"
 						>
 							−
 						</Button>
 					</div>
 				))}
-				<Button type="button" variant="outline" size="sm" onClick={addRow}>
+				<Button
+					type="button"
+					variant="outline"
+					size="sm"
+					onClick={() => append({ value: "" })}
+				>
 					+ Add webhook URL
 				</Button>
 			</div>

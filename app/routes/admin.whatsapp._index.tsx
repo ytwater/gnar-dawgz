@@ -14,6 +14,7 @@ import {
 } from "~/app/components/ui/card";
 import { Input } from "~/app/components/ui/input";
 import { Label } from "~/app/components/ui/label";
+import { WAHA_SESSION_NAME } from "~/app/config/constants";
 import type { MyProfile } from "~/app/lib/whatsapp/models";
 import {
 	profileControllerGetMyProfile,
@@ -28,7 +29,6 @@ interface LocalMyProfile extends MyProfile {
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {
 	const env = context.cloudflare.env;
-	const sessionName = env.WAHA_SESSION_ID || "default";
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {
@@ -43,7 +43,7 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 
 	try {
 		const profileRes = await profileControllerGetMyProfile(
-			sessionName,
+			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
 		return { profile: profileRes.data as LocalMyProfile };
@@ -55,7 +55,6 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 
 export const action = async ({ request, context }: ActionFunctionArgs) => {
 	const env = context.cloudflare.env;
-	const sessionName = env.WAHA_SESSION_ID || "default";
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {
@@ -77,14 +76,14 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 		if (name) {
 			await profileControllerSetProfileName(
 				{ name },
-				sessionName,
+				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
 		}
 		if (about) {
 			await profileControllerSetProfileStatus(
 				{ status: about },
-				sessionName,
+				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
 		}
@@ -100,7 +99,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 						filename: pictureFile.name,
 					},
 				},
-				sessionName,
+				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
 		}

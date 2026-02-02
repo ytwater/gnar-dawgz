@@ -178,7 +178,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				</SheetContent>
 			</Sheet>
 
-			<main className="py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex-1 w-full flex flex-col">
+			<main className="py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex-1 w-full min-w-0 flex flex-col overflow-x-hidden">
 				{children}
 			</main>
 

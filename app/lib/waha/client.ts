@@ -1,3 +1,4 @@
+import { WAHA_SESSION_NAME } from "~/app/config/constants";
 import { chattingControllerSendText } from "../whatsapp/whatsapp-api";
 
 /**
@@ -9,7 +10,7 @@ export async function sendWahaMessage(
 	text: string,
 	replyTo?: string,
 ) {
-	const sessionId = env.WAHA_SESSION_ID || "default";
+	const sessionId = WAHA_SESSION_NAME;
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {

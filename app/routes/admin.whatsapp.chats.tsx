@@ -16,6 +16,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/app/components/ui/table";
+import { WAHA_SESSION_NAME } from "~/app/config/constants";
 import type { ChatSummary } from "~/app/lib/whatsapp/models";
 import { chatsControllerGetChats } from "~/app/lib/whatsapp/whatsapp-api";
 
@@ -23,9 +24,16 @@ interface ExtendedChatSummary extends ChatSummary {
 	unreadCount?: number;
 }
 
+/** WAHA can return id as object { server, user, _serialized }; normalize to string. */
+function chatIdDisplay(
+	id: string | { server?: string; user?: string; _serialized?: string },
+): string {
+	if (typeof id === "string") return id;
+	return (id as { _serialized?: string })._serialized ?? JSON.stringify(id);
+}
+
 export const loader = async ({ context }: LoaderFunctionArgs) => {
 	const env = context.cloudflare.env;
-	const sessionName = env.WAHA_SESSION_ID || "default";
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {
@@ -41,7 +49,7 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 	try {
 		const chatsRes = await chatsControllerGetChats(
 			{},
-			sessionName,
+			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
 		const raw = chatsRes.data as unknown;
@@ -88,7 +96,7 @@ export default function AdminWhatsAppChats() {
 						<TableRow>
 							<TableHead className="w-[50%]">Chat Name</TableHead>
 							<TableHead className="w-[200px]">ID (JID)</TableHead>
-							<TableHead className="text-center w-20">Unread</TableHead>
+							<TableHead className="w-24 text-center">Unread</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -103,15 +111,15 @@ export default function AdminWhatsAppChats() {
 							</TableRow>
 						) : (
 							chats.map((chat) => (
-								<TableRow key={chat.id}>
+								<TableRow key={chatIdDisplay(chat.id)}>
 									<TableCell className="font-medium">
 										{chat.name || "Unknown"}
 									</TableCell>
 									<TableCell
 										className="font-mono text-xs truncate"
-										title={chat.id}
+										title={chatIdDisplay(chat.id)}
 									>
-										{chat.id}
+										{chatIdDisplay(chat.id)}
 									</TableCell>
 									<TableCell className="text-center">
 										{(chat.unreadCount ?? 0) > 0 ? (

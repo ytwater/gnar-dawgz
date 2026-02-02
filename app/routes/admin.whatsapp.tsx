@@ -15,6 +15,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/app/components/ui/card";
+import { WAHA_SESSION_NAME } from "~/app/config/constants";
 import type { SessionInfo } from "~/app/lib/whatsapp/models";
 import { sessionsControllerGet } from "~/app/lib/whatsapp/whatsapp-api";
 
@@ -32,7 +33,6 @@ const navItems = [
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {
 	const env = context.cloudflare.env;
-	const sessionName = env.WAHA_SESSION_ID || "default";
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {
@@ -47,13 +47,13 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 
 	try {
 		const sessionRes = await Promise.allSettled([
-			sessionsControllerGet({}, sessionName, fetchOptions),
+			sessionsControllerGet({}, WAHA_SESSION_NAME, fetchOptions),
 		]);
 		const session =
 			sessionRes[0].status === "fulfilled"
 				? (sessionRes[0].value.data as SessionInfo)
 				: null;
-		return { session, sessionName };
+		return { session, sessionName: WAHA_SESSION_NAME };
 	} catch (error) {
 		console.error("WhatsApp Loader Error:", error);
 		return { error: "Failed to fetch WhatsApp data" };
@@ -83,7 +83,7 @@ export default function AdminWhatsAppLayout() {
 	const { session, sessionName } = data;
 
 	return (
-		<div className="space-y-8 p-6 max-w-7xl mx-auto w-full min-w-0">
+		<div className="space-y-8 p-6 max-w-7xl mx-auto w-full min-w-0 overflow-x-hidden">
 			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 				<div>
 					<h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">

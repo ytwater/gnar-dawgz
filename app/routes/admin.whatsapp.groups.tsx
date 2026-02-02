@@ -15,12 +15,12 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/app/components/ui/table";
+import { WAHA_SESSION_NAME } from "~/app/config/constants";
 import type { GroupInfo } from "~/app/lib/whatsapp/models";
 import { groupsControllerGetGroups } from "~/app/lib/whatsapp/whatsapp-api";
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {
 	const env = context.cloudflare.env;
-	const sessionName = env.WAHA_SESSION_ID || "default";
 	const apiKey = env.WAHA_API_KEY;
 
 	if (!apiKey) {
@@ -36,7 +36,7 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 	try {
 		const groupsRes = await groupsControllerGetGroups(
 			{},
-			sessionName,
+			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
 		const raw = groupsRes.data as unknown;

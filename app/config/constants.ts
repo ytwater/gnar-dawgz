@@ -16,6 +16,9 @@ export const getAppUrl = (env: CloudflareBindings) => {
 export const SURFLINE_TORREY_PINES_SPOT_ID =
 	"584204204e65fad6a7709994" as const;
 
+/** WAHA Core supports only this session; WAHA Plus supports multiple. Use for all WAHA API calls. */
+export const WAHA_SESSION_NAME = "default" as const;
+
 export const VALID_WHATSAPP_INCOMING_NUMBERS = [
 	"whatsapp:+16198064334",
 ] as const;
