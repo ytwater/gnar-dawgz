@@ -8,7 +8,7 @@ import {
 	stepCountIs,
 } from "ai";
 import { getDb } from "app/lib/db";
-import { whatsappMessages } from "app/lib/schema";
+import { charter, whatsappMessages } from "app/lib/schema";
 import type { User } from "better-auth";
 import { and, eq, gte } from "drizzle-orm";
 import { executions } from "./tools";
@@ -82,11 +82,13 @@ export class WhatsAppAgent {
 		senderNumber: string,
 		text: string,
 		isGroup = false,
+		skipSave = false,
 	): Promise<string> {
 		console.log("WhatsAppAgent.onMessage called", {
 			senderNumber,
 			text,
 			isGroup,
+			skipSave,
 		});
 
 		// Load history if not already loaded
@@ -94,14 +96,24 @@ export class WhatsAppAgent {
 			await this.loadHistory();
 		}
 
-		// Add the user's message to the conversation history
-		this.messages.push({
-			role: "user",
-			content: text,
-		});
+		// Check if the message is already in history to avoid duplication
+		const lastMessage = this.messages[this.messages.length - 1];
+		if (
+			!lastMessage ||
+			lastMessage.content !== text ||
+			lastMessage.role !== "user"
+		) {
+			// Add the user's message to the conversation history
+			this.messages.push({
+				role: "user",
+				content: text,
+			});
 
-		// Save user message to database
-		await this.saveMessage("user", text);
+			// Save user message to database
+			if (!skipSave) {
+				await this.saveMessage("user", text);
+			}
+		}
 
 		const useSwellCloud = (this.env.ENABLE_SWELL_CLOUD as string) !== "false";
 		const useSurfline = (this.env.ENABLE_SURFLINE as string) !== "false";
@@ -121,6 +133,11 @@ export class WhatsAppAgent {
 		const getDemeritLeaderboard = createGetDemeritLeaderboardTool(this.env);
 
 		const isOnboarding = this.user.name === "Guest";
+
+		const db = getDb(this.env.DB);
+		const charterResults = await db.select().from(charter).limit(1);
+		const charterContent =
+			charterResults[0]?.content || "No rules established yet.";
 
 		// Collect all tools
 		const tools: ToolSet = isOnboarding
@@ -145,6 +162,9 @@ export class WhatsAppAgent {
 			: `You are a helpful assistant for the Gnar Dawgs surf collective. Keep responses concise and friendly.
 You manage the Gnar Dawgs demerit tracker:
 - If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.
+Here is the Global Charter:
+${charterContent}
+If you notice a violation of these rules in the conversation history, proactively suggest that someone should assign a demerit to the violator.
 - If a member buys a beer for someone, you can clear a specific active demerit using the 'clearDemerits' tool. You must specify which demerit to clear by its reason text. If the user doesn't specify which demerit, ask them which one they want to clear or use the 'getDemeritLeaderboard' tool to show available demerits.
 - You can use the 'getCharter' tool to see the current rules if anyone asks.
 - You can use the 'getDemeritLeaderboard' tool to show who has the most demerits when asked.
