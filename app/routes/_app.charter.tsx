@@ -36,6 +36,7 @@ import {
 import { Label } from "~/app/components/ui/label";
 import { Skeleton } from "~/app/components/ui/skeleton";
 import { Textarea } from "~/app/components/ui/textarea";
+import { authClient } from "~/app/lib/auth-client";
 import { orpcClient } from "~/app/lib/orpc/client";
 import {
 	demeritKeys,
