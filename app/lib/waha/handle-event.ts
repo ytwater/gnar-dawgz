@@ -235,23 +235,9 @@ export async function handleWahaMessage(
 
 	// Decide if we should respond
 	if (isGroup) {
-		const shouldReply = await shouldReplyToGroup(
-			messageText,
-			me?.id,
-			env,
-			history,
-		);
-		if (!shouldReply) {
-			console.log(`Skipping group message: ${messageText}`);
-			return;
-		}
-
-		// Login/website request when bot is mentioned: DM the participant with login link, reply in group that we'll reach out.
-		if (
-			participantId &&
-			isDirectMention(messageText, me?.id) &&
-			isLoginOrWebsiteRequest(messageText)
-		) {
+		// Login/website request in group: reply in group that we'll help in DMs, then DM the participant with login link.
+		// Check this before shouldReplyToGroup so "login" (and similar) always get the DM flow even without @ mention.
+		if (participantId && isLoginOrWebsiteRequest(messageText)) {
 			const participantPhone = participantId.replace(
 				/@c\.us|@s\.whatsapp\.net/,
 				"",
@@ -272,11 +258,23 @@ export async function handleWahaMessage(
 				simulateTyping: false,
 				sendSeen: true,
 			});
-			const groupReply = "I’ll reach out to you directly.";
+			const groupReply =
+				"I'll help you login in a direct chat — check your DMs.";
 			await sendWahaMessage(env, senderId, groupReply, {
 				replyTo: payload.id,
 				simulateTyping: true,
 			});
+			return;
+		}
+
+		const shouldReply = await shouldReplyToGroup(
+			messageText,
+			me?.id,
+			env,
+			history,
+		);
+		if (!shouldReply) {
+			console.log(`Skipping group message: ${messageText}`);
 			return;
 		}
 	}
