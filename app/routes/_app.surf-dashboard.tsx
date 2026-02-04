@@ -159,12 +159,23 @@ const CHART_CONFIG = {
 	},
 } satisfies ChartConfig;
 
+const SHORT_LABELS: Record<string, string> = {
+	surflineHeight: "Height (ft)",
+	swellcloudHeight: "Height (ft)",
+	surflinePeriod: "Period (s)",
+	swellcloudPeriod: "Period (s)",
+	surflineWindSpeed: "Wind Speed (mph)",
+	swellcloudWindSpeed: "Wind Speed (mph)",
+};
+
 function CustomTooltipContent({
 	active,
 	payload,
 	label,
 	showSurfline,
 	showSwellcloud,
+	enableSwellCloud,
+	chartConfig,
 }: {
 	active?: boolean;
 	payload?: Array<{
@@ -177,6 +188,8 @@ function CustomTooltipContent({
 	label?: string;
 	showSurfline: boolean;
 	showSwellcloud: boolean;
+	enableSwellCloud: boolean;
+	chartConfig: ChartConfig;
 }) {
 	if (!active || !payload?.length) return null;
 
@@ -221,8 +234,7 @@ function CustomTooltipContent({
 					.map((item) => {
 						const nameStr = String(item.dataKey || item.name || "");
 						const label =
-							CHART_CONFIG[nameStr as keyof typeof CHART_CONFIG]?.label ||
-							nameStr;
+							(chartConfig[nameStr]?.label as string | undefined) ?? nameStr;
 						const value =
 							typeof item.value === "number"
 								? item.value
@@ -263,11 +275,13 @@ function CustomTooltipContent({
 								Surfline: {getDirectionLabel(data.surflineWindDirection)}
 							</div>
 						)}
-						{data.swellcloudWindDirection !== null && showSwellcloud && (
-							<div className="text-[10px]">
-								Swellcloud: {getDirectionLabel(data.swellcloudWindDirection)}
-							</div>
-						)}
+						{data.swellcloudWindDirection !== null &&
+							enableSwellCloud &&
+							showSwellcloud && (
+								<div className="text-[10px]">
+									Swellcloud: {getDirectionLabel(data.swellcloudWindDirection)}
+								</div>
+							)}
 					</div>
 				)}
 			</div>
@@ -351,7 +365,7 @@ export function SurfDashboardContent({
 		}
 	};
 
-	// Filter data based on checkboxes
+	// Filter data based on checkboxes and enabled providers
 	const filteredData = combinedData.map((item) => ({
 		...item,
 		surflineHeight: enableSurfline && showSurfline ? item.surflineHeight : null,
@@ -365,6 +379,30 @@ export function SurfDashboardContent({
 		swellcloudWindSpeed:
 			enableSwellCloud && showSwellcloud ? item.swellcloudWindSpeed : null,
 	}));
+
+	// Chart config: exclude disabled provider; use short labels when only one source
+	const showSurflineInChart = enableSurfline && showSurfline;
+	const showSwellcloudInChart = enableSwellCloud && showSwellcloud;
+	const chartConfigEntries = Object.entries(CHART_CONFIG).filter(([key]) => {
+		if (key.startsWith("surfline")) return showSurflineInChart;
+		if (key.startsWith("swellcloud")) return showSwellcloudInChart;
+		return true;
+	});
+	const onlyOneSource =
+		(chartConfigEntries.some(([k]) => k.startsWith("surfline")) &&
+			!chartConfigEntries.some(([k]) => k.startsWith("swellcloud"))) ||
+		(!chartConfigEntries.some(([k]) => k.startsWith("surfline")) &&
+			chartConfigEntries.some(([k]) => k.startsWith("swellcloud")));
+	const chartConfig = Object.fromEntries(
+		chartConfigEntries.map(([key, val]) => [
+			key,
+			{
+				...val,
+				label:
+					onlyOneSource && SHORT_LABELS[key] ? SHORT_LABELS[key] : val.label,
+			},
+		]),
+	) as ChartConfig;
 
 	return (
 		<div className="container mx-auto py-8 space-y-8">
@@ -638,13 +676,7 @@ export function SurfDashboardContent({
 							</CardHeader>
 							<CardContent>
 								<ChartContainer
-									config={Object.fromEntries(
-										Object.entries(CHART_CONFIG).filter(([key]) => {
-											if (key.startsWith("surfline")) return showSurfline;
-											if (key.startsWith("swellcloud")) return showSwellcloud;
-											return true;
-										}),
-									)}
+									config={chartConfig}
 									className="min-h-[400px] w-full"
 								>
 									<ComposedChart accessibilityLayer data={filteredData}>
@@ -681,12 +713,14 @@ export function SurfDashboardContent({
 												<CustomTooltipContent
 													showSurfline={showSurfline}
 													showSwellcloud={showSwellcloud}
+													enableSwellCloud={enableSwellCloud}
+													chartConfig={chartConfig}
 												/>
 											}
 										/>
 										<ChartLegend content={<ChartLegendContent />} />
 										{/* Wave Heights */}
-										{showSurfline && (
+										{showSurflineInChart && (
 											<Line
 												yAxisId="left"
 												type="monotone"
@@ -698,7 +732,7 @@ export function SurfDashboardContent({
 												activeDot={{ r: 4 }}
 											/>
 										)}
-										{showSwellcloud && (
+										{showSwellcloudInChart && (
 											<Line
 												yAxisId="left"
 												type="monotone"
@@ -711,7 +745,7 @@ export function SurfDashboardContent({
 											/>
 										)}
 										{/* Wave Periods */}
-										{showSurfline && (
+										{showSurflineInChart && (
 											<Line
 												yAxisId="left"
 												type="monotone"
@@ -724,7 +758,7 @@ export function SurfDashboardContent({
 												activeDot={{ r: 4 }}
 											/>
 										)}
-										{showSwellcloud && (
+										{showSwellcloudInChart && (
 											<Line
 												yAxisId="left"
 												type="monotone"
@@ -738,7 +772,7 @@ export function SurfDashboardContent({
 											/>
 										)}
 										{/* Wind Speeds */}
-										{showSurfline && (
+										{showSurflineInChart && (
 											<Line
 												yAxisId="right"
 												type="monotone"
@@ -751,7 +785,7 @@ export function SurfDashboardContent({
 												activeDot={{ r: 4 }}
 											/>
 										)}
-										{showSwellcloud && (
+										{showSwellcloudInChart && (
 											<Line
 												yAxisId="right"
 												type="monotone"

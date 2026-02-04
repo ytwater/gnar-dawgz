@@ -5,7 +5,6 @@
  */
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateText, tool } from "ai";
-import { add, set } from "date-fns";
 import { and, asc, eq, gte, lte } from "drizzle-orm";
 import { z } from "zod";
 import { SURFLINE_TORREY_PINES_SPOT_ID } from "~/app/config/constants";
@@ -15,6 +14,16 @@ import {
 	surfSpots,
 	weatherForecasts,
 } from "~/app/lib/surf-forecast-schema";
+import { getPstDayBounds, getPstNowString } from "../utils";
+
+function defaultSurfDates() {
+	const now = new Date();
+	const { startOfTodayPst, startOfDayAfterTomorrowPst } = getPstDayBounds(now);
+	return {
+		startDate: startOfTodayPst.toISOString(),
+		endDate: startOfDayAfterTomorrowPst.toISOString(),
+	};
+}
 
 export const createSurfForecastTool = (
 	env: CloudflareBindings,
@@ -22,30 +31,20 @@ export const createSurfForecastTool = (
 ) =>
 	tool({
 		description:
-			"get the surf forecast for a specified location.  It will default to tomorrows forecast if no start or end date is provided.",
+			"get the surf forecast for a specified location. Users are in Pacific time (America/Los_Angeles). Default is today and tomorrow in PST (start of today through end of tomorrow). Pass startDate and endDate as ISO strings if you need a specific range.",
 		inputSchema: z.object({
-			startDate: z.string().default(
-				add(
-					set(new Date(), {
-						hours: 0,
-						minutes: 0,
-						seconds: 0,
-						milliseconds: 0,
-					}),
-					{ days: 1 },
-				).toISOString(),
-			),
-			endDate: z.string().default(
-				add(
-					set(new Date(), {
-						hours: 0,
-						minutes: 0,
-						seconds: 0,
-						milliseconds: 0,
-					}),
-					{ days: 2 },
-				).toISOString(),
-			),
+			startDate: z
+				.string()
+				.describe(
+					"Start of range in ISO format (UTC). Use today in PST for 'today'.",
+				)
+				.default(() => defaultSurfDates().startDate),
+			endDate: z
+				.string()
+				.describe(
+					"End of range in ISO format (UTC). Use day-after-tomorrow in PST for 'today and tomorrow'.",
+				)
+				.default(() => defaultSurfDates().endDate),
 		}),
 		execute: async ({ startDate, endDate }) => {
 			const db = getDb(env.DB);
@@ -125,14 +124,12 @@ export const createSurfForecastTool = (
 				weatherCode: w.weatherCode,
 			}));
 
-			const today = set(new Date(), {
-				hours: 0,
-				minutes: 0,
-				seconds: 0,
-				milliseconds: 0,
-			}).toISOString();
-
-			const FORECAST_PROMPT = `Given the following JSON of surf forecast data for the following start and end dates: ${startDate} to ${endDate} at Torrey Pines beach, today is ${today} (all dates are in UTC - .toISOString() format), can you rate the surf quality for each day?  If the duration is a single day, give us a forecast for morning and afternoon for the local time. Can you write it as a concise WhatsApp message with details for the next couple of days? Just output the text of the message.  Feel free to use WhatsApp formatting.
+			const todayPst = getPstNowString(new Date())
+				.split(",")
+				.slice(0, 3)
+				.join(",")
+				.trim(); // e.g. "Wednesday, February 4, 2026"
+			const FORECAST_PROMPT = `Given the following JSON of surf forecast data for the following start and end dates: ${startDate} to ${endDate} at Torrey Pines beach. All users are in Pacific time (America/Los_Angeles). Today in PST is: ${todayPst}. Timestamps in the data are in UTC (ISO format). Can you rate the surf quality for each day?  If the duration is a single day, give us a forecast for morning and afternoon for the local time. Can you write it as a concise WhatsApp message with details for the next couple of days? Just output the text of the message.  Feel free to use WhatsApp formatting.
 
 Variables:
 - timestamp - Forecast timestamp (ISO string)

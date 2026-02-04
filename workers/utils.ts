@@ -1,5 +1,59 @@
 // via https://github.com/vercel/ai/blob/main/examples/next-openai/app/api/use-chat-human-in-the-loop/utils.ts
 
+const PST_TZ = "America/Los_Angeles";
+
+/** Get the UTC Date for midnight on the given calendar date in PST */
+function midnightPstUtc(year: number, month: number, day: number): Date {
+	// PST = UTC-8, PDT = UTC-7. Try 8 first (PST).
+	let d = new Date(Date.UTC(year, month - 1, day, 8, 0, 0, 0));
+	const hour = new Intl.DateTimeFormat("en-US", {
+		timeZone: PST_TZ,
+		hour: "numeric",
+		hour12: false,
+	}).format(d);
+	if (hour !== "0") d = new Date(Date.UTC(year, month - 1, day, 7, 0, 0, 0));
+	return d;
+}
+
+/** Start of today (midnight) and start of tomorrow in PST, as UTC Dates */
+export function getPstDayBounds(now: Date): {
+	startOfTodayPst: Date;
+	startOfTomorrowPst: Date;
+	startOfDayAfterTomorrowPst: Date;
+} {
+	const parts = new Intl.DateTimeFormat("en-CA", {
+		timeZone: PST_TZ,
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+	}).formatToParts(now);
+	const y = Number(parts.find((p) => p.type === "year")?.value ?? 0);
+	const m = Number(parts.find((p) => p.type === "month")?.value ?? 1);
+	const day = Number(parts.find((p) => p.type === "day")?.value ?? 1);
+	const startOfTodayPst = midnightPstUtc(y, m, day);
+	const startOfTomorrowPst = new Date(
+		startOfTodayPst.getTime() + 24 * 60 * 60 * 1000,
+	);
+	const startOfDayAfterTomorrowPst = new Date(
+		startOfTodayPst.getTime() + 2 * 24 * 60 * 60 * 1000,
+	);
+	return { startOfTodayPst, startOfTomorrowPst, startOfDayAfterTomorrowPst };
+}
+
+/** Current date and time in PST for display to the LLM */
+export function getPstNowString(now: Date = new Date()): string {
+	return new Intl.DateTimeFormat("en-US", {
+		timeZone: PST_TZ,
+		weekday: "long",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		hour: "numeric",
+		minute: "2-digit",
+		hour12: true,
+	}).format(now);
+}
+
 import type {
 	CoreMessage,
 	ToolSet,
