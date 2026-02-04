@@ -65,3 +65,28 @@ export const demerits = sqliteTable(
 		toUserIdIdx: index("demerits_to_user_id_idx").on(table.toUserId),
 	}),
 );
+
+export const charterProposals = sqliteTable(
+	"charter_proposals",
+	{
+		id: text("id").primaryKey(),
+		proposerId: text("proposer_id")
+			.notNull()
+			.references(() => users.id, { onDelete: "cascade" }),
+		approverId: text("approver_id").references(() => users.id),
+		proposedContent: text("proposed_content").notNull(),
+		originalContent: text("original_content").notNull(),
+		reason: text("reason").notNull(),
+		status: text("status").notNull().default("pending"), // "pending" | "approved" | "rejected"
+		createdAt: integer("created_at", { mode: "timestamp_ms" })
+			.default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+			.notNull(),
+		resolvedAt: integer("resolved_at", { mode: "timestamp_ms" }),
+	},
+	(table) => ({
+		proposerIdIdx: index("charter_proposals_proposer_id_idx").on(
+			table.proposerId,
+		),
+		statusIdx: index("charter_proposals_status_idx").on(table.status),
+	}),
+);

@@ -13,7 +13,11 @@ import {
 	CardTitle,
 } from "~/app/components/ui/card";
 import { orpcClient } from "~/app/lib/orpc/client";
-import { useCharter } from "~/app/lib/orpc/hooks/use-demerit";
+import {
+	demeritKeys,
+	useCharter,
+	usePendingCharterProposals,
+} from "~/app/lib/orpc/hooks/use-demerit";
 import type { Route } from "./+types/admin.charter";
 
 export function meta(_: Route.MetaArgs) {
@@ -24,6 +28,8 @@ export default function AdminCharterPage() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const { data: charterData, isLoading } = useCharter();
+	const { data: proposals, isLoading: isLoadingProposals } =
+		usePendingCharterProposals();
 	const [content, setContent] = useState("");
 
 	useEffect(() => {
@@ -49,6 +55,34 @@ export default function AdminCharterPage() {
 	const handleSave = () => {
 		updateMutation.mutate(content);
 	};
+
+	const approveMutation = useMutation({
+		mutationFn: (proposalId: string) =>
+			orpcClient.demerit.approveCharterProposal({ proposalId }),
+		onSuccess: () => {
+			toast.success("Proposal approved and charter updated! 🐾");
+			queryClient.invalidateQueries({ queryKey: demeritKeys.all });
+		},
+		onError: (error) => {
+			toast.error(
+				`Failed to approve proposal: ${error instanceof Error ? error.message : "Unknown error"}`,
+			);
+		},
+	});
+
+	const rejectMutation = useMutation({
+		mutationFn: (proposalId: string) =>
+			orpcClient.demerit.rejectCharterProposal({ proposalId }),
+		onSuccess: () => {
+			toast.success("Proposal rejected.");
+			queryClient.invalidateQueries({ queryKey: demeritKeys.proposals() });
+		},
+		onError: (error) => {
+			toast.error(
+				`Failed to reject proposal: ${error instanceof Error ? error.message : "Unknown error"}`,
+			);
+		},
+	});
 
 	return (
 		<div className="container mx-auto py-8 px-4 space-y-8 animate-in fade-in duration-500">
@@ -104,6 +138,81 @@ export default function AdminCharterPage() {
 								visibleDragbar={false}
 							/>
 						</div>
+					</CardContent>
+				</Card>
+
+				{/* Pending Proposals */}
+				<Card className="shadow-xl border-2 border-slate-200 dark:border-slate-800 flex flex-col">
+					<CardHeader className="border-b bg-slate-50 dark:bg-slate-900/50">
+						<CardTitle className="text-xs uppercase tracking-widest font-black text-slate-500 dark:text-slate-400">
+							Pending Proposals
+						</CardTitle>
+						<CardDescription>
+							Proposals from members that need approval.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="p-0 flex-1 overflow-auto">
+						{isLoadingProposals ? (
+							<div className="p-8 text-center text-muted-foreground italic">
+								Loading proposals...
+							</div>
+						) : !proposals || proposals.length === 0 ? (
+							<div className="p-8 text-center text-muted-foreground italic">
+								No pending proposals.
+							</div>
+						) : (
+							<div className="divide-y divide-slate-100 dark:divide-slate-800">
+								{proposals.map((proposal) => (
+									<div key={proposal.id} className="p-6 space-y-4">
+										<div className="flex items-start justify-between gap-4">
+											<div className="space-y-1">
+												<p className="font-bold text-slate-900 dark:text-white">
+													Proposed by {proposal.proposerName}
+												</p>
+												<p className="text-sm text-muted-foreground">
+													{new Date(proposal.createdAt).toLocaleString()}
+												</p>
+											</div>
+											<div className="flex items-center gap-2">
+												<Button
+													size="sm"
+													variant="outline"
+													className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+													onClick={() => rejectMutation.mutate(proposal.id)}
+													disabled={rejectMutation.isPending}
+												>
+													Reject
+												</Button>
+												<Button
+													size="sm"
+													className="bg-green-600 hover:bg-green-700 text-white"
+													onClick={() => approveMutation.mutate(proposal.id)}
+													disabled={approveMutation.isPending}
+												>
+													Approve
+												</Button>
+											</div>
+										</div>
+										<div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 space-y-3">
+											<div>
+												<p className="text-[10px] uppercase font-black text-slate-400 mb-1">
+													Reason
+												</p>
+												<p className="text-sm italic">{proposal.reason}</p>
+											</div>
+											<div>
+												<p className="text-[10px] uppercase font-black text-slate-400 mb-1">
+													Proposed Change
+												</p>
+												<div className="text-sm font-mono whitespace-pre-wrap p-3 bg-white dark:bg-black rounded border border-slate-200 dark:border-slate-800 max-h-[300px] overflow-auto">
+													{proposal.proposedContent}
+												</div>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						)}
 					</CardContent>
 				</Card>
 			</div>

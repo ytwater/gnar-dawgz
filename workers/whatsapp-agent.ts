@@ -20,10 +20,15 @@ import { createGetSurfSpotsTool } from "./tools/createGetSurfSpotsTool";
 import { createSurfForecastTool } from "./tools/createSurfForecastTool";
 import { createUserNameTool } from "./tools/createUserNameTool";
 
+import { createApproveCharterUpdateTool } from "./tools/createApproveCharterUpdateTool";
+import { createGetPendingProposalsTool } from "./tools/createGetPendingProposalsTool";
 /**
  * WhatsApp Agent implementation that handles WhatsApp messages via Twilio
  * Uses AI SDK directly without Durable Objects for simpler webhook handling
  */
+import { createProposeCharterUpdateTool } from "./tools/createProposeCharterUpdateTool";
+import { createRejectCharterUpdateTool } from "./tools/createRejectCharterUpdateTool";
+
 export class WhatsAppAgent {
 	private messages: CoreMessage[] = [];
 	private env: CloudflareBindings;
@@ -125,12 +130,28 @@ export class WhatsAppAgent {
 			getSurfForecast = createSurfForecastTool(this.env, "surfline");
 		}
 
+		// ... existing imports
+
 		const getSurfSpots = createGetSurfSpotsTool(this.env);
 		const updateUserName = createUserNameTool(this.env, this.user.id);
 		const assignDemerit = createAssignDemeritTool(this.env, this.user.id);
 		const clearDemerits = createClearDemeritsTool(this.env);
 		const getCharter = createGetCharterTool(this.env);
 		const getDemeritLeaderboard = createGetDemeritLeaderboardTool(this.env);
+
+		const proposeCharterUpdate = createProposeCharterUpdateTool(
+			this.env,
+			this.user.id,
+		);
+		const getPendingProposals = createGetPendingProposalsTool(this.env);
+		const approveCharterUpdate = createApproveCharterUpdateTool(
+			this.env,
+			this.user.id,
+		);
+		const rejectCharterUpdate = createRejectCharterUpdateTool(
+			this.env,
+			this.user.id,
+		);
 
 		const isOnboarding = this.user.name === "Guest";
 
@@ -151,6 +172,10 @@ export class WhatsAppAgent {
 					clearDemerits,
 					getCharter,
 					getDemeritLeaderboard,
+					proposeCharterUpdate,
+					getPendingProposals,
+					approveCharterUpdate,
+					rejectCharterUpdate,
 				};
 
 		const loginRule =
@@ -159,15 +184,30 @@ export class WhatsAppAgent {
 		const systemPrompt = isOnboarding
 			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach and that they can assign or clear demerits.${loginRule} Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
 			: `You are a helpful assistant for the Gnar Dawgs surf collective. Keep responses concise and friendly.
-You manage the Gnar Dawgs demerit tracker:
-- If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.
+You manage the Gnar Dawgs demerit tracker and the Global Charter.
+
 Here is the Global Charter:
 ${charterContent}
-If you notice a violation of these rules in the conversation history, proactively suggest that someone should assign a demerit to the violator.
+
+### Charter Updates
+- If a member wants to modify, add to, or remove from the Charter, they must PROPOSE a change.
+- **CRITICAL**: Read the current charter CAREFULLY. Before proposing any changes, ensure that the proposal does not duplicate existing rules and that it DOES NOT CONFLICT with existing rules unless explicitly intended to replace them.
+- If the user's request is vague, ask for clarification or propose what you think they mean but explicitly state what you are proposing.
+- Use the 'proposeCharterUpdate' tool to create a proposal. You must generate the *full new text* of the charter for the 'proposedContent' argument.
+- A proposal requires approval from *another* member (not the proposer) to take effect.
+- Use 'getPendingProposals' to see what's waiting for approval.
+- Use 'approveCharterUpdate' or 'rejectCharterUpdate' to handle pending proposals. You cannot approve your own proposals.
+
+### Demerit Tracker
+- If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.
+- If you notice a violation of these rules in the conversation history, proactively suggest that someone should assign a demerit to the violator.
 - If a member buys a beer for someone, you can clear a specific active demerit using the 'clearDemerits' tool. You must specify which demerit to clear by its reason text. If the user doesn't specify which demerit, ask them which one they want to clear or use the 'getDemeritLeaderboard' tool to show available demerits.
 - You can use the 'getCharter' tool to see the current rules if anyone asks.
 - You can use the 'getDemeritLeaderboard' tool to show who has the most demerits when asked.
+
+### Surf Checks
 - You can also provide surf forecasts using 'getSurfForecast' (default is Torrey Pines) and 'getSurfSpots'.
+
 Be concise. Search for users by name when assigning or clearing demerits.${loginRule} Always reply using WhatsApp formatted text.`;
 		console.log(
 			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",

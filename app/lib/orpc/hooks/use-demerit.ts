@@ -5,6 +5,7 @@ export const demeritKeys = {
 	all: ["demerit"] as const,
 	charter: () => [...demeritKeys.all, "charter"] as const,
 	leaderboard: () => [...demeritKeys.all, "leaderboard"] as const,
+	proposals: () => [...demeritKeys.all, "proposals"] as const,
 };
 
 export function useCharter() {
@@ -36,5 +37,11 @@ export function useDemeritsByUserId(userId: string | undefined) {
 			return orpcClient.demerit.getDemeritsByUserId({ userId });
 		},
 		enabled: !!userId,
+	});
+}
+export function usePendingCharterProposals() {
+	return useQuery({
+		queryKey: demeritKeys.proposals(),
+		queryFn: () => orpcClient.demerit.getPendingCharterProposals(),
 	});
 }
