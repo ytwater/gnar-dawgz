@@ -2,9 +2,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "gnar-dawgs",
 	"compatibility_date": "2025-08-03",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
+	"compatibility_flags": ["nodejs_compat"],
 	"main": "./workers/app.ts",
 	"routes": [
 		{
@@ -41,9 +39,7 @@
 	"migrations": [
 		{
 			"tag": "v1",
-			"new_sqlite_classes": [
-				"Chat"
-			]
+			"new_sqlite_classes": ["Chat"]
 		}
 	],
 	"d1_databases": [
@@ -77,8 +73,6 @@
 		]
 	},
 	"triggers": {
-		"crons": [
-			"0 */1 * * *"
-		]
+		"crons": ["0 */1 * * *"]
 	}
 }

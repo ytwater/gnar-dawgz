@@ -3,7 +3,7 @@ import { generateText } from "ai";
 import { generateId } from "ai";
 import { desc, eq } from "drizzle-orm";
 import { WhatsAppAgent } from "../../../workers/whatsapp-agent";
-import { getAppUrl } from "../config/constants";
+import { getAppUrl } from "../../config/constants";
 import { getDb } from "../db";
 import { charter, users, verifications, whatsappMessages } from "../schema";
 import { sendWahaMessage } from "./client";
