@@ -3,10 +3,35 @@ import { generateText } from "ai";
 import { generateId } from "ai";
 import { desc, eq } from "drizzle-orm";
 import { WhatsAppAgent } from "../../../workers/whatsapp-agent";
+import { getAppUrl } from "../config/constants";
 import { getDb } from "../db";
-import { charter, users, whatsappMessages } from "../schema";
+import { charter, users, verifications, whatsappMessages } from "../schema";
 import { sendWahaMessage } from "./client";
 import type { WahaMessageEvent } from "./types";
+
+/** Whether the message text is a direct mention of the bot (e.g. @bot, gnar dawgs, or me id). */
+export function isDirectMention(
+	body: string,
+	meId: string | undefined,
+): boolean {
+	const text = body.toLowerCase();
+	if (meId && text.includes(meId.split("@")[0])) return true;
+	return (
+		text.includes("@bot") ||
+		text.includes("gnar dawgs") ||
+		text.includes("gnardawgs")
+	);
+}
+
+/** Whether the message is asking for login or website info. */
+export function isLoginOrWebsiteRequest(text: string): boolean {
+	const t = text.toLowerCase();
+	return (
+		/\b(login|log in|sign in|website|site|web)\b/.test(t) ||
+		/how (do i |to )?(get )?in\b/.test(t) ||
+		/where (is |to )?(the )?(login|site|website)\b/.test(t)
+	);
+}
 
 /**
  * Determine if the bot should reply to a group message
@@ -17,23 +42,9 @@ export async function shouldReplyToGroup(
 	env: CloudflareBindings,
 	history: { role: string; content: string }[] = [],
 ): Promise<boolean> {
-	const text = body.toLowerCase();
+	if (isDirectMention(body, meId)) return true;
 
-	// 1. Direct mention (e.g. contains bot's ID or common bot names)
-	if (meId && text.includes(meId.split("@")[0])) {
-		return true;
-	}
-
-	// Also check for common mentions like "@bot" or "gnar dawgs"
-	if (
-		text.includes("@bot") ||
-		text.includes("gnar dawgs") ||
-		text.includes("gnardawgs")
-	) {
-		return true;
-	}
-
-	// 2. Use AI to classify if the content is relevant (surf forecast, demerits, or rule violations)
+	// Use AI to classify if the content is relevant (surf forecast, demerits, or rule violations)
 	const db = getDb(env.DB);
 	const charterResults = await db.select().from(charter).limit(1);
 	const charterContent =
@@ -123,27 +134,79 @@ export async function handleWahaMessage(
 	let user = userResult[0];
 
 	if (!user) {
-		console.log(
-			`Creating record for ${isGroup ? "group" : "user"}: ${senderId}`,
-		);
-		const name = isGroup ? `Group ${phoneNumber}` : `WAHA User ${phoneNumber}`;
-		const newUserId = generateId();
-		await db.insert(users).values({
-			id: newUserId,
-			name,
-			email: `${phoneNumber}@gnardawgs.surf`,
-			phoneNumber: phoneNumber,
-			phoneNumberVerified: true,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		});
+		if (isGroup) {
+			console.log(`Creating record for group: ${senderId}`);
+			const newUserId = generateId();
+			await db.insert(users).values({
+				id: newUserId,
+				name: `Group ${phoneNumber}`,
+				email: `${phoneNumber}@gnardawgs.surf`,
+				phoneNumber: phoneNumber,
+				phoneNumberVerified: true,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			});
+			userResult = await db
+				.select()
+				.from(users)
+				.where(eq(users.id, newUserId))
+				.limit(1);
+			user = userResult[0];
+		} else {
+			// Direct message from unknown user: same as Twilio — only create and process for onboarding passphrase
+			const onboardingPassphrase =
+				messageText === "woof woof" || messageText === "ruff ruff";
+			if (!onboardingPassphrase) {
+				console.log(`Ignoring message from unknown user ${phoneNumber}`);
+				return;
+			}
+			console.log(`Unlocking onboarding for ${phoneNumber}`);
+			const newUserId = generateId();
+			await db.insert(users).values({
+				id: newUserId,
+				name: "Guest",
+				email: `${phoneNumber}@gnardawgs.surf`,
+				phoneNumber: phoneNumber,
+				phoneNumberVerified: true,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			});
+			userResult = await db
+				.select()
+				.from(users)
+				.where(eq(users.id, newUserId))
+				.limit(1);
+			user = userResult[0];
+		}
+	}
 
-		userResult = await db
+	// In group chats, ensure the participant has a user record so they're provisioned.
+	// When they first DM the bot they'll be looked up by phone and go through onboarding (Guest → "what's your name").
+	if (isGroup && participantId) {
+		const participantPhone = participantId.replace(
+			/@c\.us|@s\.whatsapp\.net/g,
+			"",
+		);
+		const participantUserResult = await db
 			.select()
 			.from(users)
-			.where(eq(users.id, newUserId))
+			.where(eq(users.phoneNumber, participantPhone))
 			.limit(1);
-		user = userResult[0];
+		if (!participantUserResult[0]) {
+			const newUserId = generateId();
+			await db.insert(users).values({
+				id: newUserId,
+				name: "Guest",
+				email: `${participantPhone}@gnardawgs.surf`,
+				phoneNumber: participantPhone,
+				phoneNumberVerified: true,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			});
+			console.log(
+				`Provisioned user for group participant: ${participantPhone}`,
+			);
+		}
 	}
 
 	// Always save the message to history first (before decide if respond)
@@ -180,6 +243,40 @@ export async function handleWahaMessage(
 		);
 		if (!shouldReply) {
 			console.log(`Skipping group message: ${messageText}`);
+			return;
+		}
+
+		// Login/website request when bot is mentioned: DM the participant with login link, reply in group that we'll reach out.
+		if (
+			participantId &&
+			isDirectMention(messageText, me?.id) &&
+			isLoginOrWebsiteRequest(messageText)
+		) {
+			const participantPhone = participantId.replace(
+				/@c\.us|@s\.whatsapp\.net/,
+				"",
+			);
+			const code = Math.floor(100000 + Math.random() * 900000);
+			await db.insert(verifications).values({
+				id: generateId(),
+				identifier: participantPhone,
+				value: `${code}:0`,
+				expiresAt: new Date(Date.now() + 1000 * 60 * 5),
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			});
+			const host = getAppUrl(env);
+			const loginLink = `${host}/login?phone=${encodeURIComponent(participantPhone)}&code=${code}`;
+			const dmText = `Here’s your login link: ${loginLink}\n\nYou can also go to ${host}/login and enter the code: ${code}.`;
+			await sendWahaMessage(env, participantId, dmText, {
+				simulateTyping: false,
+				sendSeen: true,
+			});
+			const groupReply = "I’ll reach out to you directly.";
+			await sendWahaMessage(env, senderId, groupReply, {
+				replyTo: payload.id,
+				simulateTyping: true,
+			});
 			return;
 		}
 	}

@@ -153,12 +153,11 @@ export class WhatsAppAgent {
 					getDemeritLeaderboard,
 				};
 
-		const loginInfo = isGroup
-			? ""
-			: " You can tell the user they can login to the webpage at https://gnardawgs.surf by messaging 'login' here to get a login code.";
+		const loginRule =
+			" Do not mention login or the website unless the user explicitly asks you to introduce yourself or describe what you are / what you can do. When they do ask for an introduction, you may include that they can log in at https://www.gnardawgs.surf or message 'login' here for a code.";
 
 		const systemPrompt = isOnboarding
-			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach and that they can assign or clear demerits.${isGroup ? "" : " Make sure you tell them that they can login to the webpage at https://gnardawgs.surf or message 'login' here to get a login code."} Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
+			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach and that they can assign or clear demerits.${loginRule} Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
 			: `You are a helpful assistant for the Gnar Dawgs surf collective. Keep responses concise and friendly.
 You manage the Gnar Dawgs demerit tracker:
 - If a member violates the 'Global Charter', anyone can assign them a demerit using the 'assignDemerit' tool.
@@ -169,7 +168,7 @@ If you notice a violation of these rules in the conversation history, proactivel
 - You can use the 'getCharter' tool to see the current rules if anyone asks.
 - You can use the 'getDemeritLeaderboard' tool to show who has the most demerits when asked.
 - You can also provide surf forecasts using 'getSurfForecast' (default is Torrey Pines) and 'getSurfSpots'.
-Be concise. Search for users by name when assigning or clearing demerits.${loginInfo} Always reply using WhatsApp formatted text.`;
+Be concise. Search for users by name when assigning or clearing demerits.${loginRule} Always reply using WhatsApp formatted text.`;
 		console.log(
 			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",
 			systemPrompt,
