@@ -1,6 +1,16 @@
 import OpenAI, { toFile } from "openai";
-import { LOGO_COMPOSITE_PROMPT, STYLIZED_DOG_PROMPT } from "./prompts";
-import type { ImageGenerationProvider } from "./types";
+import {
+	type StyleMode,
+	getLogoCompositePrompt,
+	getStylizedDogPrompt,
+} from "./prompts";
+import type { ImageGenerationProvider, SupportedMimeType } from "./types";
+
+const MIME_TO_EXT: Record<SupportedMimeType, string> = {
+	"image/png": "png",
+	"image/jpeg": "jpg",
+	"image/webp": "webp",
+};
 
 export class OpenAIProvider implements ImageGenerationProvider {
 	private client: OpenAI;
@@ -11,23 +21,29 @@ export class OpenAIProvider implements ImageGenerationProvider {
 
 	async generateStylizedDog(
 		originalImage: ArrayBuffer,
+		originalMimeType: SupportedMimeType,
 		referenceImage: ArrayBuffer,
+		referenceMimeType: SupportedMimeType,
+		styleMode: StyleMode,
 	): Promise<ArrayBuffer> {
 		const dogFile = await toFile(
-			new Blob([originalImage], { type: "image/png" }),
-			"dog.png",
+			new Blob([originalImage], { type: originalMimeType }),
+			`dog.${MIME_TO_EXT[originalMimeType]}`,
+			{ type: originalMimeType },
 		);
 		const refFile = await toFile(
-			new Blob([referenceImage], { type: "image/png" }),
-			"reference.png",
+			new Blob([referenceImage], { type: referenceMimeType }),
+			`reference.${MIME_TO_EXT[referenceMimeType]}`,
+			{ type: referenceMimeType },
 		);
 
 		const response = await this.client.images.edit({
 			model: "gpt-image-1",
 			image: [dogFile, refFile],
-			prompt: STYLIZED_DOG_PROMPT,
+			prompt: getStylizedDogPrompt(styleMode),
 			size: "1024x1024",
 			quality: "high",
+			background: "transparent",
 		});
 
 		const imageData = response.data?.[0];
@@ -41,22 +57,27 @@ export class OpenAIProvider implements ImageGenerationProvider {
 	async compositeIntoLogo(
 		stylizedDog: ArrayBuffer,
 		referenceImage: ArrayBuffer,
+		referenceMimeType: SupportedMimeType,
+		styleMode: StyleMode,
 	): Promise<ArrayBuffer> {
 		const dogFile = await toFile(
 			new Blob([stylizedDog], { type: "image/png" }),
 			"stylized-dog.png",
+			{ type: "image/png" },
 		);
 		const refFile = await toFile(
-			new Blob([referenceImage], { type: "image/png" }),
-			"reference.png",
+			new Blob([referenceImage], { type: referenceMimeType }),
+			`reference.${MIME_TO_EXT[referenceMimeType]}`,
+			{ type: referenceMimeType },
 		);
 
 		const response = await this.client.images.edit({
 			model: "gpt-image-1",
 			image: [dogFile, refFile],
-			prompt: LOGO_COMPOSITE_PROMPT,
+			prompt: getLogoCompositePrompt(styleMode),
 			size: "1024x1024",
 			quality: "high",
+			background: "transparent",
 		});
 
 		const imageData = response.data?.[0];

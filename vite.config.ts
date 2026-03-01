@@ -5,6 +5,14 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+	resolve: {
+		dedupe: ["react", "react-dom", "react-router"],
+	},
+	optimizeDeps: {
+		// Force single bundle so react-router shares React instance
+		include: ["react", "react-dom", "react-router"],
+		ignoreOutdatedRequests: true,
+	},
 	plugins: [
 		cloudflare({
 			viteEnvironment: { name: "ssr" },

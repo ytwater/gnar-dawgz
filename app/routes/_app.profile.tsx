@@ -1,6 +1,13 @@
-import { Bell, PaperPlaneTilt, Scales, User } from "@phosphor-icons/react";
+import {
+	Bell,
+	PaintBrush,
+	PaperPlaneTilt,
+	Scales,
+	User,
+} from "@phosphor-icons/react";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { PhoneNumberForm } from "~/app/components/phone-number-form";
 import { ProfileImageGallery } from "~/app/components/profile-image-gallery";
 import { Alert, AlertDescription } from "~/app/components/ui/alert";
@@ -302,6 +309,15 @@ export default function Profile() {
 									<p className="text-lg font-medium capitalize">{user.role}</p>
 								</div>
 							)}
+
+							<div className="pt-2 border-t">
+								<Link to="/profile-creator">
+									<Button variant="outline" className="w-full">
+										<PaintBrush className="w-4 h-4" />
+										Create Your Gnar Dawg
+									</Button>
+								</Link>
+							</div>
 						</CardContent>
 					</Card>
 
@@ -309,6 +325,8 @@ export default function Profile() {
 						initialPhoneNumber={user.phoneNumber}
 						phoneNumberVerified={user.phoneNumberVerified}
 					/>
+
+					<ProfileImageGallery />
 				</div>
 
 				<div className="space-y-8">
@@ -441,8 +459,6 @@ export default function Profile() {
 					</Card>
 				</div>
 			</div>
-
-			<ProfileImageGallery />
 		</div>
 	);
 }

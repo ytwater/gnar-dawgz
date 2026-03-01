@@ -21,24 +21,49 @@ async function handle(request: Request, context: Route.LoaderArgs["context"]) {
 	// Get the session
 	const session = await auth.api.getSession({ headers: request.headers });
 	const handler = new RPCHandler(appRouter);
-	const { response } = await handler.handle(request, {
-		prefix: "/api/orpc",
-		context: {
-			env,
-			db,
-			auth,
-			session: session
-				? {
-						...session,
-						session: {
-							...session.session,
-							ipAddress: session.session.ipAddress ?? null,
-							userAgent: session.session.userAgent ?? null,
-						},
-					}
-				: null,
-		},
+
+	console.log("[api.orpc] Handling request", {
+		method: request.method,
+		url: request.url,
+		hasSession: !!session,
+		userId: session?.user?.id,
 	});
 
-	return response;
+	try {
+		const { response } = await handler.handle(request, {
+			prefix: "/api/orpc",
+			context: {
+				env,
+				db,
+				auth,
+				session: session
+					? {
+							...session,
+							session: {
+								...session.session,
+								ipAddress: session.session.ipAddress ?? null,
+								userAgent: session.session.userAgent ?? null,
+							},
+						}
+					: null,
+			},
+		});
+
+		if (response && response.status >= 400) {
+			const cloned = response.clone();
+			const body = await cloned.text();
+			console.error("[api.orpc] Error response", {
+				status: response.status,
+				body: body.substring(0, 500),
+			});
+		}
+
+		return response;
+	} catch (err) {
+		console.error("[api.orpc] Unhandled error", err);
+		return new Response(
+			JSON.stringify({ error: "Internal server error" }),
+			{ status: 500, headers: { "Content-Type": "application/json" } },
+		);
+	}
 }

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { authClient } from "../../auth-client";
 import { orpcClient } from "../client";
 
 export const profileImageKeys = {
@@ -50,7 +51,8 @@ export function useGenerateProfileImage() {
 	return useMutation({
 		mutationFn: (input: {
 			profileImageId: string;
-			provider: "openai" | "gemini";
+			provider?: "openai" | "gemini";
+			styleMode?: "head" | "full";
 		}) => orpcClient.profileImage.generate(input),
 		onSuccess: (_, variables) => {
 			queryClient.invalidateQueries({
@@ -67,10 +69,12 @@ export function useSetActiveProfileImage() {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: (id: string) => orpcClient.profileImage.setActive({ id }),
-		onSuccess: () => {
+		onSuccess: async () => {
 			queryClient.invalidateQueries({
 				queryKey: profileImageKeys.all,
 			});
+			// Refetch the session so the updated user.image is reflected
+			await authClient.getSession({ query: { disableCookieCache: true } });
 		},
 	});
 }

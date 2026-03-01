@@ -26,7 +26,7 @@
 		"TWILIO_EVENT_SYNC_ID_DEV": "DGbd9f47b1c0b9e4f7ce4222a2fdb9bfc2",
 		"TWILIO_EVENT_SYNC_ID_PROD": "DF2ebba80cc2694b7d743dcc6b346bebec",
 		"WAHA_SESSION_ID": "16195985494@c.us",
-		"IMAGE_PROVIDER": "openai"
+		"IMAGE_PROVIDER": "gemini"
 	},
 	"observability": {
 		"enabled": true

@@ -88,15 +88,14 @@ export function ProfileImageGallery() {
 							Custom profile images generated from your dog photos
 						</CardDescription>
 					</div>
-					<Link to="/profile/creator">
+					<Link to="/profile-creator">
 						<Button>Create Your Gnar Dawg</Button>
 					</Link>
 				</div>
 			</CardHeader>
 			<CardContent>
 				{isLoading ? (
-					<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-						<Skeleton className="aspect-square rounded-lg" />
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 						<Skeleton className="aspect-square rounded-lg" />
 						<Skeleton className="aspect-square rounded-lg" />
 					</div>
@@ -105,12 +104,12 @@ export function ProfileImageGallery() {
 						<p className="text-lg italic mb-4">
 							You haven't created a Gnar Dawg yet!
 						</p>
-						<Link to="/profile/creator">
+						<Link to="/profile-creator">
 							<Button variant="outline">Get Started</Button>
 						</Link>
 					</div>
 				) : (
-					<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 						{images.map((image) => (
 							<div key={image.id} className="relative group">
 								<div className="relative aspect-square rounded-lg overflow-hidden border bg-muted">
@@ -126,8 +125,38 @@ export function ProfileImageGallery() {
 											<div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
 										</div>
 									) : (
-										<div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
+										<div className="w-full h-full flex flex-col items-center justify-center gap-2 text-muted-foreground text-sm">
 											Failed
+											<AlertDialog>
+												<AlertDialogTrigger asChild>
+													<Button
+														size="sm"
+														variant="destructive"
+														className="h-7"
+														onClick={(e) => e.stopPropagation()}
+													>
+														<Trash className="w-4 h-4 mr-1" />
+														Delete
+													</Button>
+												</AlertDialogTrigger>
+												<AlertDialogContent>
+													<AlertDialogHeader>
+														<AlertDialogTitle>Delete failed image?</AlertDialogTitle>
+														<AlertDialogDescription>
+															This will remove the failed generation from your
+															gallery. You can try again with a new photo.
+														</AlertDialogDescription>
+													</AlertDialogHeader>
+													<AlertDialogFooter>
+														<AlertDialogCancel>Cancel</AlertDialogCancel>
+														<AlertDialogAction
+															onClick={() => handleDelete(image.id)}
+														>
+															Delete
+														</AlertDialogAction>
+													</AlertDialogFooter>
+												</AlertDialogContent>
+											</AlertDialog>
 										</div>
 									)}
 

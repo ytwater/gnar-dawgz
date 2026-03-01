@@ -2,7 +2,7 @@ import { generateId } from "ai";
 import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getProvider } from "../../profile-image/get-provider";
-import type { ProviderName } from "../../profile-image/types";
+import type { ProviderName, SupportedMimeType } from "../../profile-image/types";
 import { profileImages, users } from "../../schema";
 import { authedProcedure } from "../server";
 
@@ -19,29 +19,58 @@ export const profileImageRouter = {
 			const userId = context.session.user.id;
 			const id = generateId();
 
+			console.log("[profile-image:upload] Starting upload", {
+				userId,
+				id,
+				fileName: input.fileName,
+				mimeType: input.mimeType,
+				imageDataLength: input.imageData.length,
+			});
+
 			// Decode base64 to binary
-			const binaryString = atob(input.imageData);
-			const bytes = new Uint8Array(binaryString.length);
-			for (let i = 0; i < binaryString.length; i++) {
-				bytes[i] = binaryString.charCodeAt(i);
+			let bytes: Uint8Array;
+			try {
+				const binaryString = atob(input.imageData);
+				bytes = new Uint8Array(binaryString.length);
+				for (let i = 0; i < binaryString.length; i++) {
+					bytes[i] = binaryString.charCodeAt(i);
+				}
+				console.log("[profile-image:upload] Decoded base64", {
+					byteLength: bytes.length,
+				});
+			} catch (err) {
+				console.error("[profile-image:upload] Failed to decode base64", err);
+				throw new Error("Invalid image data");
 			}
 
 			// Store original in R2
 			const key = `profiles/${userId}/${id}/original.png`;
-			await context.env.PROFILE_IMAGES_BUCKET.put(key, bytes.buffer, {
-				httpMetadata: { contentType: input.mimeType },
-			});
+			try {
+				await context.env.PROFILE_IMAGES_BUCKET.put(key, bytes.buffer, {
+					httpMetadata: { contentType: input.mimeType },
+				});
+				console.log("[profile-image:upload] Stored in R2", { key });
+			} catch (err) {
+				console.error("[profile-image:upload] R2 put failed", err);
+				throw new Error("Failed to store image");
+			}
 
 			// Create DB record
-			await context.db.insert(profileImages).values({
-				id,
-				userId,
-				originalUrl: key,
-				provider: context.env.IMAGE_PROVIDER || "openai",
-				status: "pending",
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			});
+			try {
+				await context.db.insert(profileImages).values({
+					id,
+					userId,
+					originalUrl: key,
+					provider: context.env.IMAGE_PROVIDER || "openai",
+					status: "pending",
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				});
+				console.log("[profile-image:upload] DB record created", { id });
+			} catch (err) {
+				console.error("[profile-image:upload] DB insert failed", err);
+				throw new Error("Failed to create image record");
+			}
 
 			return { id };
 		}),
@@ -50,12 +79,20 @@ export const profileImageRouter = {
 		.input(
 			z.object({
 				profileImageId: z.string(),
-				provider: z.enum(["openai", "gemini"]),
+				provider: z.enum(["openai", "gemini"]).optional(),
+				styleMode: z.enum(["head", "full"]).default("head"),
 			}),
 		)
 		.handler(async ({ input, context }) => {
 			const userId = context.session.user.id;
-			const { profileImageId, provider: providerName } = input;
+			const providerName = input.provider || context.env.IMAGE_PROVIDER || "gemini";
+			const { profileImageId, styleMode } = input;
+
+			console.log("[profile-image:generate] Starting generation", {
+				userId,
+				profileImageId,
+				provider: providerName,
+			});
 
 			// Verify ownership
 			const [image] = await context.db
@@ -86,20 +123,28 @@ export const profileImageRouter = {
 
 			try {
 				// Get original image from R2
+				console.log("[profile-image:generate] Fetching original from R2", {
+					key: image.originalUrl,
+				});
 				const originalObj =
 					await context.env.PROFILE_IMAGES_BUCKET.get(image.originalUrl);
 				if (!originalObj) {
 					throw new Error("Original image not found in storage");
 				}
 				const originalBuffer = await originalObj.arrayBuffer();
+				const originalMimeType = (originalObj.httpMetadata?.contentType ||
+					"image/png") as SupportedMimeType;
 
 				// Get reference logo
 				const referenceObj =
-					await context.env.PROFILE_IMAGES_BUCKET.get("reference-logo.png");
+					await context.env.PROFILE_IMAGES_BUCKET.get("reference-logo.webp");
 				let referenceBuffer: ArrayBuffer;
+				let referenceMimeType: SupportedMimeType = "image/webp";
 
 				if (referenceObj) {
 					referenceBuffer = await referenceObj.arrayBuffer();
+					referenceMimeType = (referenceObj.httpMetadata?.contentType ||
+						"image/webp") as SupportedMimeType;
 				} else {
 					// Fetch from app origin and cache in R2
 					const logoResponse = await fetch(
@@ -110,26 +155,37 @@ export const profileImageRouter = {
 					}
 					referenceBuffer = await logoResponse.arrayBuffer();
 					await context.env.PROFILE_IMAGES_BUCKET.put(
-						"reference-logo.png",
+						"reference-logo.webp",
 						referenceBuffer,
 						{ httpMetadata: { contentType: "image/webp" } },
 					);
 				}
 
 				// Get AI provider
+				console.log("[profile-image:generate] Getting AI provider", {
+					provider: providerName,
+				});
 				const aiProvider = getProvider(
 					providerName as ProviderName,
 					context.env,
 				);
 
 				// Step 1: Generate stylized dog
+				console.log("[profile-image:generate] Step 1: Generating stylized dog");
 				const stylizedDogBuffer = await aiProvider.generateStylizedDog(
 					originalBuffer,
+					originalMimeType,
 					referenceBuffer,
+					referenceMimeType,
+					styleMode,
 				);
 
 				// Store stylized dog in R2
 				const stylizedDogKey = `profiles/${userId}/${profileImageId}/stylized-dog.png`;
+				console.log("[profile-image:generate] Storing stylized dog in R2", {
+					key: stylizedDogKey,
+					byteLength: stylizedDogBuffer.byteLength,
+				});
 				await context.env.PROFILE_IMAGES_BUCKET.put(
 					stylizedDogKey,
 					stylizedDogBuffer,
@@ -137,9 +193,12 @@ export const profileImageRouter = {
 				);
 
 				// Step 2: Composite into logo
+				console.log("[profile-image:generate] Step 2: Compositing into logo");
 				const fullLogoBuffer = await aiProvider.compositeIntoLogo(
 					stylizedDogBuffer,
 					referenceBuffer,
+					referenceMimeType,
+					styleMode,
 				);
 
 				// Store full logo in R2
@@ -150,7 +209,13 @@ export const profileImageRouter = {
 					{ httpMetadata: { contentType: "image/png" } },
 				);
 
+				console.log("[profile-image:generate] Stored full logo in R2", {
+					key: fullLogoKey,
+					byteLength: fullLogoBuffer.byteLength,
+				});
+
 				// Update DB with completed status
+				console.log("[profile-image:generate] Updating DB status to completed");
 				await context.db
 					.update(profileImages)
 					.set({
@@ -163,6 +228,7 @@ export const profileImageRouter = {
 
 				return { success: true };
 			} catch (error) {
+				console.error("[profile-image:generate] Generation failed", error);
 				const errorMessage =
 					error instanceof Error ? error.message : "Unknown error";
 

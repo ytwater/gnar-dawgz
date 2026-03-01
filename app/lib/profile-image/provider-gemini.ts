@@ -1,8 +1,13 @@
-import { LOGO_COMPOSITE_PROMPT, STYLIZED_DOG_PROMPT } from "./prompts";
-import type { ImageGenerationProvider } from "./types";
+import {
+	type StyleMode,
+	getLogoCompositePrompt,
+	getStylizedDogPrompt,
+} from "./prompts";
+import type { ImageGenerationProvider, SupportedMimeType } from "./types";
 
-const GEMINI_API_URL =
-	"https://generativelanguage.googleapis.com/v1beta/models/imagen-4:generateContent";
+const GEMINI_API_BASE =
+	"https://generativelanguage.googleapis.com/v1beta/models";
+const GEMINI_MODEL = "gemini-2.5-flash-image";
 
 export class GeminiProvider implements ImageGenerationProvider {
 	private apiKey: string;
@@ -13,30 +18,43 @@ export class GeminiProvider implements ImageGenerationProvider {
 
 	async generateStylizedDog(
 		originalImage: ArrayBuffer,
+		originalMimeType: SupportedMimeType,
 		referenceImage: ArrayBuffer,
+		referenceMimeType: SupportedMimeType,
+		styleMode: StyleMode,
 	): Promise<ArrayBuffer> {
-		return this.generate(STYLIZED_DOG_PROMPT, [originalImage, referenceImage]);
+		return this.generate(getStylizedDogPrompt(styleMode), [
+			{ data: originalImage, mimeType: originalMimeType },
+			{ data: referenceImage, mimeType: referenceMimeType },
+		]);
 	}
 
 	async compositeIntoLogo(
 		stylizedDog: ArrayBuffer,
 		referenceImage: ArrayBuffer,
+		referenceMimeType: SupportedMimeType,
+		styleMode: StyleMode,
 	): Promise<ArrayBuffer> {
-		return this.generate(LOGO_COMPOSITE_PROMPT, [stylizedDog, referenceImage]);
+		return this.generate(getLogoCompositePrompt(styleMode), [
+			{ data: stylizedDog, mimeType: "image/png" },
+			{ data: referenceImage, mimeType: referenceMimeType },
+		]);
 	}
 
 	private async generate(
 		prompt: string,
-		images: ArrayBuffer[],
+		images: Array<{ data: ArrayBuffer; mimeType: string }>,
 	): Promise<ArrayBuffer> {
 		const imageParts = images.map((img) => ({
 			inlineData: {
-				mimeType: "image/png",
-				data: arrayBufferToBase64(img),
+				mimeType: img.mimeType,
+				data: arrayBufferToBase64(img.data),
 			},
 		}));
 
-		const response = await fetch(`${GEMINI_API_URL}?key=${this.apiKey}`, {
+		const url = `${GEMINI_API_BASE}/${GEMINI_MODEL}:generateContent?key=${this.apiKey}`;
+
+		const response = await fetch(url, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
@@ -46,8 +64,7 @@ export class GeminiProvider implements ImageGenerationProvider {
 					},
 				],
 				generationConfig: {
-					responseModalities: ["IMAGE"],
-					imageMimeType: "image/png",
+					responseModalities: ["TEXT", "IMAGE"],
 				},
 			}),
 		});
@@ -61,21 +78,22 @@ export class GeminiProvider implements ImageGenerationProvider {
 			candidates?: Array<{
 				content?: {
 					parts?: Array<{
+						text?: string;
 						inlineData?: { data: string; mimeType: string };
 					}>;
 				};
 			}>;
 		};
 
-		const imageData =
-			data.candidates?.[0]?.content?.parts?.find((p) => p.inlineData)
-				?.inlineData?.data;
+		const imagePart = data.candidates?.[0]?.content?.parts?.find(
+			(p) => p.inlineData,
+		);
 
-		if (!imageData) {
+		if (!imagePart?.inlineData?.data) {
 			throw new Error("Gemini did not return image data");
 		}
 
-		return base64ToArrayBuffer(imageData);
+		return base64ToArrayBuffer(imagePart.inlineData.data);
 	}
 }
 

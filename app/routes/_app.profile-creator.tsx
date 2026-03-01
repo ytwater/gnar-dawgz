@@ -1,6 +1,6 @@
 import { ArrowLeft, Dog, SpinnerGap, Upload } from "@phosphor-icons/react";
 import { useCallback, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Button } from "~/app/components/ui/button";
 import {
@@ -17,9 +17,10 @@ import {
 	useSetActiveProfileImage,
 	useUploadProfileImage,
 } from "~/app/lib/orpc/hooks/use-profile-image";
-import type { Route } from "./+types/_app.profile.creator";
+import type { Route } from "./+types/_app.profile-creator";
 
-type FlowState = "upload" | "provider-select" | "generating" | "review" | "error";
+type FlowState = "upload" | "generating" | "review" | "error";
+type StyleMode = "head" | "full";
 
 export function meta(_: Route.MetaArgs) {
 	return [
@@ -37,8 +38,10 @@ export default function ProfileCreator() {
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [profileImageId, setProfileImageId] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [styleMode, setStyleMode] = useState<StyleMode>("head");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
+	const navigate = useNavigate();
 	const uploadMutation = useUploadProfileImage();
 	const generateMutation = useGenerateProfileImage();
 	const setActiveMutation = useSetActiveProfileImage();
@@ -84,7 +87,7 @@ export default function ProfileCreator() {
 		setPreviewUrl(url);
 	}, []);
 
-	const handleUpload = async () => {
+	const handleUploadAndGenerate = async () => {
 		if (!selectedFile) return;
 
 		try {
@@ -103,23 +106,17 @@ export default function ProfileCreator() {
 			});
 
 			setProfileImageId(result.id);
-			setFlowState("provider-select");
-		} catch {
-			toast.error("Failed to upload image");
-		}
-	};
+			setFlowState("generating");
 
-	const handleGenerate = async (provider: "openai" | "gemini") => {
-		if (!profileImageId) return;
-
-		setFlowState("generating");
-		try {
 			await generateMutation.mutateAsync({
-				profileImageId,
-				provider,
+				profileImageId: result.id,
+				styleMode,
 			});
-		} catch {
-			// Error handled by polling — the mutation itself just kicks off the process
+		} catch (err) {
+			const message =
+				err instanceof Error ? err.message : "Generation failed";
+			setErrorMessage(message);
+			setFlowState("error");
 		}
 	};
 
@@ -129,6 +126,7 @@ export default function ProfileCreator() {
 		try {
 			await setActiveMutation.mutateAsync(profileImageId);
 			toast.success("Profile picture updated!");
+			navigate("/profile");
 		} catch {
 			toast.error("Failed to set as profile picture");
 		}
@@ -142,8 +140,21 @@ export default function ProfileCreator() {
 		setErrorMessage(null);
 	};
 
-	const handleGenerateAgain = () => {
-		setFlowState("provider-select");
+	const handleGenerateAgain = async () => {
+		if (!profileImageId) return;
+
+		setFlowState("generating");
+		try {
+			await generateMutation.mutateAsync({
+				profileImageId,
+				styleMode,
+			});
+		} catch (err) {
+			const message =
+				err instanceof Error ? err.message : "Generation failed";
+			setErrorMessage(message);
+			setFlowState("error");
+		}
 	};
 
 	return (
@@ -220,60 +231,85 @@ export default function ProfileCreator() {
 						</div>
 
 						{selectedFile && (
-							<div className="flex justify-end gap-2">
-								<Button variant="outline" onClick={handleReset}>
-									Clear
-								</Button>
-								<Button
-									onClick={handleUpload}
-									disabled={uploadMutation.isPending}
-								>
-									{uploadMutation.isPending ? (
-										<>
-											<SpinnerGap className="w-4 h-4 animate-spin" />
-											Uploading...
-										</>
-									) : (
-										"Upload"
-									)}
-								</Button>
-							</div>
-						)}
-					</CardContent>
-				</Card>
-			)}
+							<>
+								<div className="space-y-3">
+									<p className="text-sm font-medium">Portrait Style</p>
+									<div className="grid grid-cols-2 gap-4">
+										<button
+											type="button"
+											onClick={() => setStyleMode("head")}
+											className={`relative rounded-xl border-2 p-4 text-left transition-all ${
+												styleMode === "head"
+													? "border-primary bg-primary/5 ring-2 ring-primary/20"
+													: "border-muted hover:border-muted-foreground/30"
+											}`}
+										>
+											<div className="flex flex-col items-center gap-3">
+												<div className="text-5xl">🐶</div>
+												<div className="text-center">
+													<p className="font-bold text-sm">Head Only</p>
+													<p className="text-xs text-muted-foreground mt-1">
+														Close-up face portrait, looking at the camera
+													</p>
+												</div>
+											</div>
+											{styleMode === "head" && (
+												<div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+													<svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+														<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+													</svg>
+												</div>
+											)}
+										</button>
+										<button
+											type="button"
+											onClick={() => setStyleMode("full")}
+											className={`relative rounded-xl border-2 p-4 text-left transition-all ${
+												styleMode === "full"
+													? "border-primary bg-primary/5 ring-2 ring-primary/20"
+													: "border-muted hover:border-muted-foreground/30"
+											}`}
+										>
+											<div className="flex flex-col items-center gap-3">
+												<div className="text-5xl">🐕</div>
+												<div className="text-center">
+													<p className="font-bold text-sm">Full Body</p>
+													<p className="text-xs text-muted-foreground mt-1">
+														Full dog on the paddleboard, riding the wave
+													</p>
+												</div>
+											</div>
+											{styleMode === "full" && (
+												<div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+													<svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+														<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+													</svg>
+												</div>
+											)}
+										</button>
+									</div>
+								</div>
 
-			{flowState === "provider-select" && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Choose AI Provider</CardTitle>
-						<CardDescription>
-							Select which AI model to use for generating your Gnar Dawg.
-							You'll get two images: a standalone dog portrait and a full logo.
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-							<Button
-								size="lg"
-								className="h-auto py-6 flex-col gap-2"
-								onClick={() => handleGenerate("openai")}
-								disabled={generateMutation.isPending}
-							>
-								<span className="text-lg font-bold">OpenAI</span>
-								<span className="text-sm opacity-80">GPT Image 1</span>
-							</Button>
-							<Button
-								size="lg"
-								variant="outline"
-								className="h-auto py-6 flex-col gap-2"
-								onClick={() => handleGenerate("gemini")}
-								disabled={generateMutation.isPending}
-							>
-								<span className="text-lg font-bold">Gemini</span>
-								<span className="text-sm opacity-80">Imagen 4</span>
-							</Button>
-						</div>
+								<div className="flex justify-end gap-2">
+									<Button variant="outline" onClick={handleReset}>
+										Clear
+									</Button>
+									<Button
+										onClick={handleUploadAndGenerate}
+										disabled={uploadMutation.isPending || generateMutation.isPending}
+									>
+										{uploadMutation.isPending || generateMutation.isPending ? (
+											<>
+												<SpinnerGap className="w-4 h-4 animate-spin" />
+												Uploading...
+											</>
+										) : (
+											"Generate"
+										)}
+									</Button>
+								</div>
+							</>
+						)}
 					</CardContent>
 				</Card>
 			)}
