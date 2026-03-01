@@ -43,6 +43,7 @@ import {
 	DropdownMenuTrigger,
 } from "~/app/components/ui/dropdown-menu";
 import { Skeleton } from "~/app/components/ui/skeleton";
+import { authClient } from "~/app/lib/auth-client";
 import {
 	useDeleteProfileImage,
 	useProfileImages,
@@ -57,10 +58,34 @@ export function ProfileImageGallery() {
 		NonNullable<typeof images>[0] | null
 	>(null);
 
-	const handleSetActive = async (id: string) => {
+	const handleSetActive = async (image: NonNullable<typeof images>[0]) => {
 		try {
-			await setActiveMutation.mutateAsync(id);
-			toast.success("Profile picture updated!");
+			await setActiveMutation.mutateAsync(image.id);
+
+			const cacheBuster = `?t=${Date.now()}`;
+			const imageUrl = `/api/profile-image/${image.stylizedDogUrl}${cacheBuster}`;
+
+			const updateRes = await authClient.updateUser({
+				image: imageUrl,
+			});
+
+			if (updateRes?.error) {
+				console.error(
+					"[ProfileImageGallery] updateUser error:",
+					updateRes.error,
+				);
+				toast.error(
+					`Session update failed: ${updateRes.error.message || "Unknown error"}`,
+				);
+			} else {
+				console.log(
+					"[ProfileImageGallery] updateUser success:",
+					updateRes.data,
+				);
+				toast.success("Profile picture updated!");
+			}
+
+			window.location.reload();
 		} catch {
 			toast.error("Failed to set as profile picture");
 		}
@@ -141,7 +166,9 @@ export function ProfileImageGallery() {
 												</AlertDialogTrigger>
 												<AlertDialogContent>
 													<AlertDialogHeader>
-														<AlertDialogTitle>Delete failed image?</AlertDialogTitle>
+														<AlertDialogTitle>
+															Delete failed image?
+														</AlertDialogTitle>
 														<AlertDialogDescription>
 															This will remove the failed generation from your
 															gallery. You can try again with a new photo.
@@ -168,7 +195,10 @@ export function ProfileImageGallery() {
 												Active
 											</Badge>
 										)}
-										<Badge variant="outline" className="text-[10px] bg-background/80">
+										<Badge
+											variant="outline"
+											className="text-[10px] bg-background/80"
+										>
 											{image.provider}
 										</Badge>
 									</div>
@@ -186,7 +216,7 @@ export function ProfileImageGallery() {
 											<Button
 												size="icon"
 												variant="secondary"
-												onClick={() => handleSetActive(image.id)}
+												onClick={() => handleSetActive(image)}
 												title="Set as Profile Picture"
 											>
 												<Star className="w-4 h-4" />
@@ -283,10 +313,12 @@ export function ProfileImageGallery() {
 											</AlertDialogTrigger>
 											<AlertDialogContent>
 												<AlertDialogHeader>
-													<AlertDialogTitle>Delete this Gnar Dawg?</AlertDialogTitle>
+													<AlertDialogTitle>
+														Delete this Gnar Dawg?
+													</AlertDialogTitle>
 													<AlertDialogDescription>
-														This will permanently delete this generated image. This
-														action cannot be undone.
+														This will permanently delete this generated image.
+														This action cannot be undone.
 													</AlertDialogDescription>
 												</AlertDialogHeader>
 												<AlertDialogFooter>

@@ -11,6 +11,7 @@ import {
 	CardTitle,
 } from "~/app/components/ui/card";
 import { Skeleton } from "~/app/components/ui/skeleton";
+import { authClient } from "~/app/lib/auth-client";
 import {
 	useGenerateProfileImage,
 	useProfileImage,
@@ -27,7 +28,8 @@ export function meta(_: Route.MetaArgs) {
 		{ title: "Create Your Gnar Dawg - Gnar Dawgs" },
 		{
 			name: "description",
-			content: "Upload a photo of your dog and create a custom Gnar Dawg profile",
+			content:
+				"Upload a photo of your dog and create a custom Gnar Dawg profile",
 		},
 	];
 }
@@ -113,20 +115,37 @@ export default function ProfileCreator() {
 				styleMode,
 			});
 		} catch (err) {
-			const message =
-				err instanceof Error ? err.message : "Generation failed";
+			const message = err instanceof Error ? err.message : "Generation failed";
 			setErrorMessage(message);
 			setFlowState("error");
 		}
 	};
 
 	const handleSetActive = async () => {
-		if (!profileImageId) return;
+		if (!profileImageId || !profileImage?.stylizedDogUrl) return;
 
 		try {
 			await setActiveMutation.mutateAsync(profileImageId);
-			toast.success("Profile picture updated!");
-			navigate("/profile");
+
+			const cacheBuster = `?t=${Date.now()}`;
+			const imageUrl = `/api/profile-image/${profileImage.stylizedDogUrl}${cacheBuster}`;
+
+			const updateRes = await authClient.updateUser({
+				image: imageUrl,
+			});
+
+			if (updateRes?.error) {
+				console.error("[ProfileCreator] updateUser error:", updateRes.error);
+				toast.error(
+					`Session update failed: ${updateRes.error.message || "Unknown error"}`,
+				);
+			} else {
+				console.log("[ProfileCreator] updateUser success:", updateRes.data);
+				toast.success("Profile picture updated!");
+			}
+
+			// Force a full page reload so Better-Auth's session fetcher runs fresh and fetches the updated user.image from the DB, just in case the client nano store is stuck
+			window.location.href = "/profile";
 		} catch {
 			toast.error("Failed to set as profile picture");
 		}
@@ -150,8 +169,7 @@ export default function ProfileCreator() {
 				styleMode,
 			});
 		} catch (err) {
-			const message =
-				err instanceof Error ? err.message : "Generation failed";
+			const message = err instanceof Error ? err.message : "Generation failed";
 			setErrorMessage(message);
 			setFlowState("error");
 		}
@@ -255,8 +273,19 @@ export default function ProfileCreator() {
 											</div>
 											{styleMode === "head" && (
 												<div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-													<svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-														<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+													<svg
+														className="w-3 h-3 text-primary-foreground"
+														fill="none"
+														viewBox="0 0 24 24"
+														stroke="currentColor"
+														strokeWidth={3}
+													>
+														<title>Checked</title>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															d="M5 13l4 4L19 7"
+														/>
 													</svg>
 												</div>
 											)}
@@ -281,8 +310,19 @@ export default function ProfileCreator() {
 											</div>
 											{styleMode === "full" && (
 												<div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-													<svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-														<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+													<svg
+														className="w-3 h-3 text-primary-foreground"
+														fill="none"
+														viewBox="0 0 24 24"
+														stroke="currentColor"
+														strokeWidth={3}
+													>
+														<title>Checked</title>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															d="M5 13l4 4L19 7"
+														/>
 													</svg>
 												</div>
 											)}
@@ -296,7 +336,9 @@ export default function ProfileCreator() {
 									</Button>
 									<Button
 										onClick={handleUploadAndGenerate}
-										disabled={uploadMutation.isPending || generateMutation.isPending}
+										disabled={
+											uploadMutation.isPending || generateMutation.isPending
+										}
 									>
 										{uploadMutation.isPending || generateMutation.isPending ? (
 											<>
@@ -365,9 +407,7 @@ export default function ProfileCreator() {
 						<Card>
 							<CardHeader>
 								<CardTitle>Dog Portrait</CardTitle>
-								<CardDescription>
-									Standalone stylized portrait
-								</CardDescription>
+								<CardDescription>Standalone stylized portrait</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{profileImage.stylizedDogUrl ? (
