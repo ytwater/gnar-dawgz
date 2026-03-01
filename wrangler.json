@@ -2,7 +2,9 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "gnar-dawgs",
 	"compatibility_date": "2025-08-03",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"main": "./workers/app.ts",
 	"routes": [
 		{
@@ -23,7 +25,8 @@
 		"TWILIO_SERVICE_SID": "ISc485decce355478e8ddb9b82dec4ccaa",
 		"TWILIO_EVENT_SYNC_ID_DEV": "DGbd9f47b1c0b9e4f7ce4222a2fdb9bfc2",
 		"TWILIO_EVENT_SYNC_ID_PROD": "DF2ebba80cc2694b7d743dcc6b346bebec",
-		"WAHA_SESSION_ID": "16195985494@c.us"
+		"WAHA_SESSION_ID": "16195985494@c.us",
+		"IMAGE_PROVIDER": "openai"
 	},
 	"observability": {
 		"enabled": true
@@ -39,7 +42,9 @@
 	"migrations": [
 		{
 			"tag": "v1",
-			"new_sqlite_classes": ["Chat"]
+			"new_sqlite_classes": [
+				"Chat"
+			]
 		}
 	],
 	"d1_databases": [
@@ -48,6 +53,12 @@
 			"database_name": "gnar-dawgs-db",
 			"database_id": "e29a4bfe-8158-4da1-a06a-8ed1cd4e4913",
 			"migrations_dir": "./drizzle"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "PROFILE_IMAGES_BUCKET",
+			"bucket_name": "gnar-dawgs-profiles"
 		}
 	],
 	"kv_namespaces": [
@@ -73,6 +84,8 @@
 		]
 	},
 	"triggers": {
-		"crons": ["0 */1 * * *"]
+		"crons": [
+			"0 */1 * * *"
+		]
 	}
 }

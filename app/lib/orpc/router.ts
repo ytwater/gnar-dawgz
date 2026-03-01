@@ -1,4 +1,5 @@
 import { demeritRouter } from "./routers/demerit-router";
+import { profileImageRouter } from "./routers/profile-image-router";
 import { pushRouter } from "./routers/push-router";
 import { surfForecastRouter } from "./routers/surf-forecast-router";
 import { twilioRouter } from "./routers/twilio-router";
@@ -10,6 +11,7 @@ export const appRouter = {
 	whatsapp: whatsappRouter,
 	surfForecast: surfForecastRouter,
 	demerit: demeritRouter,
+	profileImage: profileImageRouter,
 };
 
 export type AppRouter = typeof appRouter;
