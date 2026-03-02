@@ -1,36 +1,15 @@
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet } from "react-router";
 import { Layout } from "~/app/components/layout";
-import { ADMIN_USER_IDS } from "~/app/config/constants";
+import { requireAdmin } from "~/app/lib/auth";
 import { authClient } from "~/app/lib/auth-client";
+import type { Route } from "./+types/admin";
 
-type AdminUser = {
-	id: string;
-	email: string;
-	name: string;
-	role?: string;
-	image?: string;
-};
+export async function loader({ request, context }: Route.LoaderArgs) {
+	return await requireAdmin(request, context.cloudflare.env);
+}
 
 export default function AdminLayout() {
 	const { data: session, isPending: sessionLoading } = authClient.useSession();
-	const navigate = useNavigate();
-
-	// Check auth and admin status
-	useEffect(() => {
-		if (sessionLoading) return;
-
-		if (!session?.user) {
-			navigate("/login");
-			return;
-		}
-
-		const user = session.user as unknown as AdminUser;
-		if (user.role !== "admin" && !ADMIN_USER_IDS.includes(user.id)) {
-			navigate("/");
-			return;
-		}
-	}, [session, sessionLoading, navigate]);
 
 	if (sessionLoading) {
 		return (
@@ -42,10 +21,9 @@ export default function AdminLayout() {
 		);
 	}
 
-	const currentUser = session?.user as unknown as AdminUser;
-
-	// If not authorized yet (or failed), show loading or nothing (useEffect will redirect)
-	if (!currentUser) return null;
+	// If the loader passes, we know user is an admin.
+	// We check session client-side just to be safe during hydration.
+	if (!session?.user) return null;
 
 	return (
 		<Layout>

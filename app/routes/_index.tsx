@@ -1,6 +1,6 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useSearchParams } from "react-router";
-import { createAuth } from "~/app/lib/auth";
+import { getSession } from "~/app/lib/auth";
 import { authClient } from "~/app/lib/auth-client";
 import { Layout } from "../components/layout";
 import type { Route } from "./+types/_index";
@@ -15,9 +15,7 @@ export function meta(_: Route.MetaArgs) {
 }
 
 export const loader = async ({ context, request }: Route.LoaderArgs) => {
-	// biome-ignore lint/suspicious/noExplicitAny: Cloudflare request.cf type
-	const auth = createAuth(context.cloudflare.env, (request as any).cf);
-	const session = await auth.api.getSession({ headers: request.headers });
+	const session = await getSession(request, context.cloudflare.env);
 
 	if (session?.user) {
 		return surfDashboardLoader({ context, request } as Parameters<

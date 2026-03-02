@@ -94,8 +94,9 @@ export default function Login() {
 
 			if (!result.error) {
 				setSuccess("Signed in successfully!");
-				// Redirect to home on success
-				navigate("/");
+				// Redirect to where they came from, or home on success
+				const redirectTo = searchParams.get("redirectTo") || "/";
+				navigate(redirectTo);
 			} else {
 				setError(result.error.message || "Invalid OTP code. Please try again.");
 			}

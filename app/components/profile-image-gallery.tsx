@@ -50,7 +50,9 @@ import {
 	useSetActiveProfileImage,
 } from "~/app/lib/orpc/hooks/use-profile-image";
 
-export function ProfileImageGallery() {
+export function ProfileImageGallery({
+	hideCreateButton,
+}: { hideCreateButton?: boolean } = {}) {
 	const { data: images, isLoading } = useProfileImages();
 	const setActiveMutation = useSetActiveProfileImage();
 	const deleteMutation = useDeleteProfileImage();
@@ -113,9 +115,11 @@ export function ProfileImageGallery() {
 							Custom profile images generated from your dog photos
 						</CardDescription>
 					</div>
-					<Link to="/profile-creator">
-						<Button>Create Your Gnar Dawg</Button>
-					</Link>
+					{!hideCreateButton && (
+						<Link to="/profile-creator">
+							<Button>Create Your Gnar Dawg</Button>
+						</Link>
+					)}
 				</div>
 			</CardHeader>
 			<CardContent>
@@ -129,9 +133,11 @@ export function ProfileImageGallery() {
 						<p className="text-lg italic mb-4">
 							You haven't created a Gnar Dawg yet!
 						</p>
-						<Link to="/profile-creator">
-							<Button variant="outline">Get Started</Button>
-						</Link>
+						{!hideCreateButton && (
+							<Link to="/profile-creator">
+								<Button variant="outline">Get Started</Button>
+							</Link>
+						)}
 					</div>
 				) : (
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

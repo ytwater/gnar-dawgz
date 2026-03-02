@@ -1,6 +1,7 @@
 import {
 	Broadcast,
 	CaretRight,
+	Coins,
 	Key,
 	Scales,
 	Users,
@@ -73,6 +74,14 @@ const menuItems = [
 		href: "/admin/charter",
 		color: "text-red-600",
 		bgColor: "bg-red-50",
+	},
+	{
+		title: "AI Costs",
+		description: "Track and analyze AI token and image generation costs.",
+		icon: Coins,
+		href: "/admin/costs",
+		color: "text-amber-600",
+		bgColor: "bg-amber-50",
 	},
 ];
 

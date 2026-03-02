@@ -4,6 +4,7 @@ import { generateId } from "ai";
 import { desc, eq } from "drizzle-orm";
 import { WhatsAppAgent } from "../../../workers/whatsapp-agent";
 import { getAppUrl } from "../../config/constants";
+import { logAiUsage } from "../ai-cost-utils";
 import { getDb } from "../db";
 import { charter, users, verifications, whatsappMessages } from "../schema";
 import { sendWahaMessage } from "./client";
@@ -94,7 +95,15 @@ Recent Conversation Context:
 ${historyContext}
 
 Reply ONLY with 'YES' if the NEW MESSAGE is about surfing, forecasts, demerits, addressing the bot, or if it appears to be a violation of the Global Charter. Reply 'NO' otherwise.`,
-		prompt: `NEW MESSAGE: ${body}`,
+		messages: [{ role: "user", content: `NEW MESSAGE: ${body}` }],
+	});
+
+	await logAiUsage(db, {
+		userId: "system", // Use a system user or map to a specific admin
+		modelId: "deepseek/deepseek-chat",
+		feature: "waha_chat",
+		promptTokens: classification.length * 4, // Rough estimate if usage not returned by SDK
+		completionTokens: classification.length * 4,
 	});
 
 	return classification.trim().toUpperCase() === "YES";

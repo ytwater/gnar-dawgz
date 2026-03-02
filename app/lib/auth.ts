@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, phoneNumber } from "better-auth/plugins";
+import { redirect } from "react-router";
 import {
 	ADMIN_USER_IDS,
 	TWILIO_WHATSAPP_NUMBER,
@@ -131,3 +132,39 @@ export type Auth = ReturnType<typeof createAuth>;
 
 // Export for CLI schema generation
 export const auth = createAuth();
+
+/**
+ * Get the current session from the request
+ */
+export async function getSession(request: Request, env: CloudflareBindings) {
+	// biome-ignore lint/suspicious/noExplicitAny: Cloudflare request has .cf property
+	const auth = createAuth(env, (request as any).cf);
+	return await auth.api.getSession({
+		headers: request.headers,
+	});
+}
+
+/**
+ * Require a user to be logged in, or redirect to login
+ */
+export async function requireUser(request: Request, env: CloudflareBindings) {
+	const session = await getSession(request, env);
+	if (!session) {
+		const url = new URL(request.url);
+		throw redirect(`/login?redirectTo=${encodeURIComponent(url.pathname)}`);
+	}
+	return session;
+}
+
+/**
+ * Require a user with admin privileges, or redirect
+ */
+export async function requireAdmin(request: Request, env: CloudflareBindings) {
+	const session = await requireUser(request, env);
+	const user = session.user as { id: string; role?: string };
+
+	if (user.role !== "admin" && !ADMIN_USER_IDS.includes(user.id)) {
+		throw redirect("/");
+	}
+	return session;
+}

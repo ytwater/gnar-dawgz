@@ -4,3 +4,4 @@ export * from "./auth-schema";
 export * from "./push-subscriptions-schema";
 export * from "./surf-forecast-schema";
 export * from "./profile-image-schema";
+export * from "./ai-cost-schema";

@@ -2,9 +2,14 @@ import { routeAgentRequest } from "agents";
 import { createRequestHandler } from "react-router";
 import { REQUIRED_ENV_VARS } from "~/app/config/constants";
 import {
+	seedDefaultAiPrices,
+	syncAiModelPrices,
+} from "~/app/lib/ai-cost-utils";
+import {
 	type TwilioInboundMessageEvent,
 	handleIncomingMessage,
 } from "~/app/lib/chat/handleIncomingMessage";
+import { getDb } from "~/app/lib/db";
 import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 import { handleWahaMessage } from "~/app/lib/waha/handle-event";
 import type { WahaMessageEvent } from "~/app/lib/waha/types";
@@ -176,5 +181,9 @@ export default {
 		ctx: ExecutionContext,
 	): Promise<void> {
 		ctx.waitUntil(syncSurfForecasts(env));
+
+		const db = getDb(env.DB);
+		ctx.waitUntil(seedDefaultAiPrices(db));
+		ctx.waitUntil(syncAiModelPrices(db, env.OPENROUTER_API_KEY));
 	},
 } satisfies ExportedHandler<CloudflareBindings>;

@@ -1,8 +1,12 @@
 import { generateId } from "ai";
 import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
+import { logAiUsage } from "../../ai-cost-utils";
 import { getProvider } from "../../profile-image/get-provider";
-import type { ProviderName, SupportedMimeType } from "../../profile-image/types";
+import type {
+	ProviderName,
+	SupportedMimeType,
+} from "../../profile-image/types";
 import { profileImages, users } from "../../schema";
 import { authedProcedure } from "../server";
 
@@ -85,7 +89,8 @@ export const profileImageRouter = {
 		)
 		.handler(async ({ input, context }) => {
 			const userId = context.session.user.id;
-			const providerName = input.provider || context.env.IMAGE_PROVIDER || "gemini";
+			const providerName =
+				input.provider || context.env.IMAGE_PROVIDER || "gemini";
 			const { profileImageId, styleMode } = input;
 
 			console.log("[profile-image:generate] Starting generation", {
@@ -126,8 +131,9 @@ export const profileImageRouter = {
 				console.log("[profile-image:generate] Fetching original from R2", {
 					key: image.originalUrl,
 				});
-				const originalObj =
-					await context.env.PROFILE_IMAGES_BUCKET.get(image.originalUrl);
+				const originalObj = await context.env.PROFILE_IMAGES_BUCKET.get(
+					image.originalUrl,
+				);
 				if (!originalObj) {
 					throw new Error("Original image not found in storage");
 				}
@@ -136,8 +142,9 @@ export const profileImageRouter = {
 					"image/png") as SupportedMimeType;
 
 				// Get reference logo
-				const referenceObj =
-					await context.env.PROFILE_IMAGES_BUCKET.get("reference-logo.webp");
+				const referenceObj = await context.env.PROFILE_IMAGES_BUCKET.get(
+					"reference-logo.webp",
+				);
 				let referenceBuffer: ArrayBuffer;
 				let referenceMimeType: SupportedMimeType = "image/webp";
 
@@ -214,8 +221,6 @@ export const profileImageRouter = {
 					byteLength: fullLogoBuffer.byteLength,
 				});
 
-				// Update DB with completed status
-				console.log("[profile-image:generate] Updating DB status to completed");
 				await context.db
 					.update(profileImages)
 					.set({
@@ -225,6 +230,19 @@ export const profileImageRouter = {
 						updatedAt: new Date(),
 					})
 					.where(eq(profileImages.id, profileImageId));
+
+				// Log AI usage. We use 2 images for head/full modes (stylized + composite)
+				const modelId =
+					providerName === "gemini"
+						? "google/gemini-2.0-flash-exp"
+						: "openai/dall-e-3";
+
+				await logAiUsage(context.db, {
+					userId,
+					modelId,
+					feature: "profile_creator",
+					imagesGenerated: 2,
+				});
 
 				return { success: true };
 			} catch (error) {
@@ -264,10 +282,7 @@ export const profileImageRouter = {
 				.select()
 				.from(profileImages)
 				.where(
-					and(
-						eq(profileImages.id, input.id),
-						eq(profileImages.userId, userId),
-					),
+					and(eq(profileImages.id, input.id), eq(profileImages.userId, userId)),
 				)
 				.limit(1);
 
@@ -288,10 +303,7 @@ export const profileImageRouter = {
 				.select()
 				.from(profileImages)
 				.where(
-					and(
-						eq(profileImages.id, input.id),
-						eq(profileImages.userId, userId),
-					),
+					and(eq(profileImages.id, input.id), eq(profileImages.userId, userId)),
 				)
 				.limit(1);
 
@@ -339,10 +351,7 @@ export const profileImageRouter = {
 				.select()
 				.from(profileImages)
 				.where(
-					and(
-						eq(profileImages.id, input.id),
-						eq(profileImages.userId, userId),
-					),
+					and(eq(profileImages.id, input.id), eq(profileImages.userId, userId)),
 				)
 				.limit(1);
 

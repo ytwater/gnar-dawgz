@@ -2,6 +2,7 @@ import { ArrowLeft, Dog, SpinnerGap, Upload } from "@phosphor-icons/react";
 import { useCallback, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
+import { ProfileImageGallery } from "~/app/components/profile-image-gallery";
 import { Button } from "~/app/components/ui/button";
 import {
 	Card,
@@ -462,6 +463,10 @@ export default function ProfileCreator() {
 					</CardContent>
 				</Card>
 			)}
+
+			<div className="pt-8 border-t">
+				<ProfileImageGallery hideCreateButton />
+			</div>
 		</div>
 	);
 }
