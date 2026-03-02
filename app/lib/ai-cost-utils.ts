@@ -150,6 +150,6 @@ export async function seedDefaultAiPrices(db: ReturnType<typeof getDb>) {
 				...data,
 				updatedAt: new Date(),
 			})
-			.onConflictDoIgnore();
+			.onConflictDoNothing();
 	}
 }

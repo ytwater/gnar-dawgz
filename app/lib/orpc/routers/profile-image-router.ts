@@ -1,6 +1,7 @@
 import { generateId } from "ai";
 import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
+import { getAppUrl } from "../../../config/constants";
 import { logAiUsage } from "../../ai-cost-utils";
 import { getProvider } from "../../profile-image/get-provider";
 import type {
@@ -154,11 +155,17 @@ export const profileImageRouter = {
 						"image/webp") as SupportedMimeType;
 				} else {
 					// Fetch from app origin and cache in R2
-					const logoResponse = await fetch(
-						"https://www.gnardawgs.surf/gnar-dawgs-logo-transparent.webp",
-					);
+					const origin = getAppUrl(context.env);
+					const logoUrl = `${origin}/gnar-dawgs-logo-transparent.webp`;
+					console.log("[profile-image:generate] Fetching reference logo from", {
+						logoUrl,
+					});
+
+					const logoResponse = await fetch(logoUrl);
 					if (!logoResponse.ok) {
-						throw new Error("Failed to fetch reference logo");
+						throw new Error(
+							`Failed to fetch reference logo from ${logoUrl}. Status: ${logoResponse.status} ${logoResponse.statusText}`,
+						);
 					}
 					referenceBuffer = await logoResponse.arrayBuffer();
 					await context.env.PROFILE_IMAGES_BUCKET.put(

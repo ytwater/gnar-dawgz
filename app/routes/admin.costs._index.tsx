@@ -1,6 +1,11 @@
-import { Coins, Cpu, Image as ImageIcon } from "@phosphor-icons/react";
+import {
+	ArrowsClockwise,
+	Coins,
+	Cpu,
+	Image as ImageIcon,
+} from "@phosphor-icons/react";
 import { desc, eq, sql } from "drizzle-orm";
-import { Link } from "react-router";
+import { Form, Link } from "react-router";
 import {
 	Bar,
 	BarChart,
@@ -13,6 +18,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { Button } from "~/app/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -28,8 +34,12 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/app/components/ui/table";
+import {
+	seedDefaultAiPrices,
+	syncAiModelPrices,
+} from "~/app/lib/ai-cost-utils";
 import { getDb } from "~/app/lib/db";
-import { aiUsageLogs, users } from "~/app/lib/schema";
+import { aiModels, aiUsageLogs, users } from "~/app/lib/schema";
 import type { Route } from "./+types/admin.costs._index";
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -69,6 +79,12 @@ export async function loader({ context }: Route.LoaderArgs) {
 		.orderBy(desc(sql`sum(${aiUsageLogs.totalCost})`))
 		.limit(20);
 
+	// 4. Current AI Models Pricing
+	const models = await db
+		.select()
+		.from(aiModels)
+		.orderBy(aiModels.provider, aiModels.id);
+
 	return {
 		totals: {
 			cost: totals?.totalCost || 0,
@@ -77,7 +93,22 @@ export async function loader({ context }: Route.LoaderArgs) {
 		},
 		featureBreakdown,
 		userCosts,
+		models,
 	};
+}
+
+export async function action({ request, context }: Route.ActionArgs) {
+	const db = getDb(context.cloudflare.env.DB);
+	const formData = await request.formData();
+	const intent = formData.get("intent");
+
+	if (intent === "sync") {
+		await seedDefaultAiPrices(db);
+		await syncAiModelPrices(db, context.cloudflare.env.OPENROUTER_API_KEY);
+		return { success: true };
+	}
+
+	return { success: false };
 }
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
@@ -89,13 +120,21 @@ export default function AdminCostsDashboard({
 
 	return (
 		<div className="space-y-8 pb-10">
-			<div>
-				<h1 className="text-4xl font-extrabold tracking-tight">
-					AI Costs Overview
-				</h1>
-				<p className="mt-2 text-muted-foreground">
-					Monitor AI resource consumption across all features.
-				</p>
+			<div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+				<div>
+					<h1 className="text-4xl font-extrabold tracking-tight">
+						AI Costs Overview
+					</h1>
+					<p className="mt-2 text-muted-foreground">
+						Monitor AI resource consumption across all features.
+					</p>
+				</div>
+				<Form method="post">
+					<Button type="submit" name="intent" value="sync" className="gap-2">
+						<ArrowsClockwise className="w-4 h-4" />
+						Sync Prices
+					</Button>
+				</Form>
 			</div>
 
 			{/* KPI Cards */}
@@ -301,6 +340,56 @@ export default function AdminCostsDashboard({
 							))}
 						</TableBody>
 					</Table>
+				</CardContent>
+			</Card>
+			{/* Pricing Table */}
+			<Card>
+				<CardHeader>
+					<CardTitle>AI Model Pricing</CardTitle>
+					<CardDescription>
+						Current rates used for cost calculation. Prices per 1M tokens or per
+						image.
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<div className="overflow-x-auto">
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>Model ID</TableHead>
+									<TableHead>Provider</TableHead>
+									<TableHead className="text-right">Prompt (1M)</TableHead>
+									<TableHead className="text-right">Completion (1M)</TableHead>
+									<TableHead className="text-right">Image</TableHead>
+									<TableHead className="text-right">Last Updated</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{loaderData.models.map((model) => (
+									<TableRow key={model.id}>
+										<TableCell className="font-mono text-xs">
+											{model.id}
+										</TableCell>
+										<TableCell className="capitalize">
+											{model.provider}
+										</TableCell>
+										<TableCell className="text-right">
+											${model.promptPrice.toFixed(2)}
+										</TableCell>
+										<TableCell className="text-right">
+											${model.completionPrice.toFixed(2)}
+										</TableCell>
+										<TableCell className="text-right">
+											${model.imagePrice.toFixed(2)}
+										</TableCell>
+										<TableCell className="text-right text-xs text-muted-foreground">
+											{new Date(model.updatedAt).toLocaleDateString()}
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</div>
 				</CardContent>
 			</Card>
 		</div>
