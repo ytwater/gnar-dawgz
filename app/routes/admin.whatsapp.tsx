@@ -49,11 +49,22 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 		const sessionRes = await Promise.allSettled([
 			sessionsControllerGet({}, WAHA_SESSION_NAME, fetchOptions),
 		]);
-		const session =
-			sessionRes[0].status === "fulfilled"
-				? (sessionRes[0].value.data as SessionInfo)
-				: null;
-		return { session, sessionName: WAHA_SESSION_NAME };
+
+		let isUnreachable = false;
+		let session: SessionInfo | null = null;
+
+		if (sessionRes[0].status === "rejected") {
+			isUnreachable = true;
+		} else {
+			const res = sessionRes[0].value;
+			if (res.status >= 500) {
+				isUnreachable = true;
+			} else if (res.status === 200) {
+				session = res.data as SessionInfo;
+			}
+		}
+
+		return { session, sessionName: WAHA_SESSION_NAME, isUnreachable };
 	} catch (error) {
 		console.error("WhatsApp Loader Error:", error);
 		return { error: "Failed to fetch WhatsApp data" };
@@ -80,7 +91,11 @@ export default function AdminWhatsAppLayout() {
 		);
 	}
 
-	const { session, sessionName } = data;
+	const { session, sessionName, isUnreachable } = data;
+
+	const statusText = isUnreachable
+		? "UNREACHABLE"
+		: session?.status || "UNKNOWN";
 
 	return (
 		<div className="space-y-8 p-6 max-w-7xl mx-auto w-full min-w-0 overflow-x-hidden">
@@ -98,11 +113,13 @@ export default function AdminWhatsAppLayout() {
 				<div className="flex items-center gap-2">
 					<Badge
 						variant={
-							session?.status === "SCAN_QR_CODE" ? "destructive" : "outline"
+							statusText === "SCAN_QR_CODE" || statusText === "UNREACHABLE"
+								? "destructive"
+								: "outline"
 						}
 						className="px-3 py-1"
 					>
-						Status: {session?.status || "UNKNOWN"}
+						Status: {statusText}
 					</Badge>
 				</div>
 			</div>
