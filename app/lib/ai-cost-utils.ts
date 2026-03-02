@@ -41,7 +41,21 @@ export async function logAiUsage(
 		const imageCost = imagesGenerated * model.imagePrice;
 		totalCost = promptCost + completionCost + imageCost;
 	} else {
-		console.warn(`[logAiUsage] No pricing found for model: ${modelId}`);
+		console.warn(
+			`[logAiUsage] No pricing found for model: ${modelId}. Seeding with 0 defaults.`,
+		);
+		// Ensure the model exists in aiModels to satisfy FK constraint
+		await db
+			.insert(aiModels)
+			.values({
+				id: modelId,
+				provider: modelId.split("/")[0] || "unknown",
+				promptPrice: 0,
+				completionPrice: 0,
+				imagePrice: 0,
+				updatedAt: new Date(),
+			})
+			.onConflictDoNothing();
 	}
 
 	await db.insert(aiUsageLogs).values({
@@ -121,11 +135,18 @@ export async function syncAiModelPrices(
 export async function seedDefaultAiPrices(db: ReturnType<typeof getDb>) {
 	const defaults = [
 		{
-			id: "google/gemini-2.0-flash-exp",
+			id: "google/gemini-2.5-flash-image",
 			provider: "google",
+			promptPrice: 0.1,
+			completionPrice: 0.4,
+			imagePrice: 0.03, // Estimate
+		},
+		{
+			id: "openai/dall-e-3",
+			provider: "openai",
 			promptPrice: 0,
 			completionPrice: 0,
-			imagePrice: 0.03, // Estimate for Gemini Imagen
+			imagePrice: 0.04, // standard dall-e-3 cost
 		},
 		{
 			id: "openai/gpt-4o",

@@ -241,7 +241,7 @@ export const profileImageRouter = {
 				// Log AI usage. We use 2 images for head/full modes (stylized + composite)
 				const modelId =
 					providerName === "gemini"
-						? "google/gemini-2.0-flash-exp"
+						? "google/gemini-2.5-flash-image"
 						: "openai/dall-e-3";
 
 				await logAiUsage(context.db, {
