@@ -1,7 +1,10 @@
 import { generateId } from "ai";
 import { eq } from "drizzle-orm";
 import { aiModels, aiUsageLogs } from "./ai-cost-schema";
+import { users } from "./auth-schema";
 import type { getDb } from "./db";
+
+const SYSTEM_USER_ID = "system";
 
 export type CostFeature = "profile_creator" | "waha_chat" | "charter_monitor";
 
@@ -53,6 +56,20 @@ export async function logAiUsage(
 				promptPrice: 0,
 				completionPrice: 0,
 				imagePrice: 0,
+				updatedAt: new Date(),
+			})
+			.onConflictDoNothing();
+	}
+
+	// Ensure system user exists when logging with userId "system" (e.g. group classification)
+	if (userId === SYSTEM_USER_ID) {
+		await db
+			.insert(users)
+			.values({
+				id: SYSTEM_USER_ID,
+				name: "System",
+				email: "system@gnardawgs.surf",
+				createdAt: new Date(),
 				updatedAt: new Date(),
 			})
 			.onConflictDoNothing();
