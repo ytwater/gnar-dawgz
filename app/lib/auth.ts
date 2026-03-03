@@ -54,7 +54,7 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 							if (!env) return;
 							await sendWahaMessage(
 								env,
-								`${phoneNumber}@c.us`,
+								`${phoneNumber.replace(/^\+/, "")}@c.us`,
 								`Your Gnar Dawgs login code: ${code}`,
 								{ simulateTyping: false, sendSeen: false },
 							);
