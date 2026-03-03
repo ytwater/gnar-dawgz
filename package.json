@@ -36,7 +36,7 @@
 		"@ai-sdk/react": "^2.0.106",
 		"@ai-sdk/ui-utils": "^1.2.11",
 		"@hookform/resolvers": "^5.2.2",
-		"@orpc/client": "^1.13.4",
+		"@orpc/client": "^1.13.6",
 		"@orpc/openapi": "1.13.4",
 		"@orpc/server": "^1.13.4",
 		"@orpc/zod": "1.13.4",
