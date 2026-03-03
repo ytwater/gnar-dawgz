@@ -20,6 +20,7 @@
 		"GOOGLE_CLIENT_ID": "843872966928-4q8r4o4p52h90f52jpjotmmncgr5mrra.apps.googleusercontent.com",
 		"VAPID_PUBLIC_KEY": "BLesCxd24BjJTGhGCLKN_b9mOCwlyL-paNFAyCMybZb5UbQ854bSVNV9zgCZJPNFBYwusXwFQTEKhq8pWAR_LYM",
 		"VAPID_SUBJECT": "https://gnardawgs.surf",
+		"MAILGUN_DOMAIN": "thestorybookcharactercompany.com",
 		"ENABLE_SWELL_CLOUD": "false",
 		"ENABLE_SURFLINE": "true",
 		"WAHA_SESSION_ID": "16195985494@c.us",

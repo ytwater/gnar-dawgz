@@ -8,6 +8,7 @@ import {
 import { getDb } from "~/app/lib/db";
 import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 import { handleWahaMessage } from "~/app/lib/waha/handle-event";
+import { runWahaHealthCheck } from "~/app/lib/waha/health-check";
 import type { WahaMessageEvent } from "~/app/lib/waha/types";
 import { Chat } from "./chat-agent";
 import { WhatsAppAgent } from "./whatsapp-agent";
@@ -168,6 +169,7 @@ export default {
 		env: CloudflareBindings,
 		ctx: ExecutionContext,
 	): Promise<void> {
+		ctx.waitUntil(runWahaHealthCheck(env));
 		ctx.waitUntil(syncSurfForecasts(env));
 
 		const db = getDb(env.DB);
