@@ -5,10 +5,6 @@ import {
 	seedDefaultAiPrices,
 	syncAiModelPrices,
 } from "~/app/lib/ai-cost-utils";
-import {
-	type TwilioInboundMessageEvent,
-	handleIncomingMessage,
-} from "~/app/lib/chat/handleIncomingMessage";
 import { getDb } from "~/app/lib/db";
 import { syncSurfForecasts } from "~/app/lib/surf-forecast/sync-forecasts";
 import { handleWahaMessage } from "~/app/lib/waha/handle-event";
@@ -156,14 +152,6 @@ export default {
 					(body.event === "message" || body.event === "message.any")
 				) {
 					await handleWahaMessage(body as unknown as WahaMessageEvent, env);
-				} else if (
-					"type" in body &&
-					body.type === "com.twilio.messaging.inbound-message.received"
-				) {
-					await handleIncomingMessage(
-						body as unknown as TwilioInboundMessageEvent,
-						env,
-					);
 				} else {
 					console.warn("Unknown message type in queue", body);
 				}

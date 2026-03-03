@@ -177,7 +177,7 @@ export async function handleWahaMessage(
 				.limit(1);
 			user = userResult[0];
 		} else {
-			// Direct message from unknown user: same as Twilio — only create and process for onboarding passphrase
+			// Direct message from unknown user: only create and process for onboarding passphrase
 			const onboardingPassphrase =
 				messageText === "woof woof" || messageText === "ruff ruff";
 			if (!onboardingPassphrase) {

@@ -3,16 +3,9 @@ import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, phoneNumber } from "better-auth/plugins";
 import { redirect } from "react-router";
-import {
-	ADMIN_USER_IDS,
-	TWILIO_WHATSAPP_NUMBER,
-	TWILIO_WHATSAPP_OTP_TEMPLATE_SID,
-} from "../config/constants";
+import { ADMIN_USER_IDS } from "../config/constants";
 import { getDb } from "./db";
-import {
-	type CreateMessageBody,
-	createMessage,
-} from "./twilio/classic-messages-api";
+import { sendWahaMessage } from "./waha/client";
 
 // biome-ignore lint/suspicious/noExplicitAny: types for Cloudflare and Drizzle can be inconsistent across environments
 export const createAuth = (env?: CloudflareBindings, cf?: any) => {
@@ -59,23 +52,12 @@ export const createAuth = (env?: CloudflareBindings, cf?: any) => {
 								phoneNumber,
 							);
 							if (!env) return;
-							// const db = getDb(env.DB);
-							// const authenticatingUser = await db.select().from(users).where(eq(users., phoneNumber));
-
-							const createMessagePayload: CreateMessageBody = {
-								From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
-								To: `whatsapp:${phoneNumber}`,
-								ContentSid: TWILIO_WHATSAPP_OTP_TEMPLATE_SID,
-								ContentVariables: JSON.stringify({
-									"1": code, // correct
-								}),
-							};
-							console.log(
-								"🚀 ~ auth.ts:74 ~ createAuth ~ createMessagePayload:",
-								createMessagePayload,
+							await sendWahaMessage(
+								env,
+								`${phoneNumber}@c.us`,
+								`Your Gnar Dawgs login code: ${code}`,
+								{ simulateTyping: false, sendSeen: false },
 							);
-							const results = await createMessage(env, createMessagePayload);
-							console.log("🚀 ~ auth.ts:75 ~ createAuth ~ results:", results);
 						},
 						// We do not support sign-up with phone number.
 						// The users will onboard via whatsapp chat.

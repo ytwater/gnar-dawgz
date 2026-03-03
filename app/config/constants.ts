@@ -2,11 +2,6 @@ export const ADMIN_USER_IDS: string[] = [
 	"ZvUmzplbR8KA82sSPom7UmkrgTM9XtXp", // ytwater Dev
 	"vtpk6yV3s0xpTafnEJEC2IA8DKJHBzjd", // ytwater Prod
 ] as const;
-export const MAIN_CONVERSATION_UNIQUE_NAME = "main" as const;
-export const TWILIO_WHATSAPP_NUMBER = "+18589520996" as const;
-export const TWILIO_WHATSAPP_OTP_TEMPLATE_SID =
-	"HX9b5f7b983db5c8777ee84ea09fbd7de1" as const;
-
 export const APP_URL_PROD = "https://www.gnardawgs.surf" as const;
 export const APP_URL_DEV = "http://localhost:5173" as const;
 export const getAppUrl = (env: CloudflareBindings) => {
@@ -19,10 +14,6 @@ export const SURFLINE_TORREY_PINES_SPOT_ID =
 /** WAHA Core supports only this session; WAHA Plus supports multiple. Use for all WAHA API calls. */
 export const WAHA_SESSION_NAME = "default" as const;
 
-export const VALID_WHATSAPP_INCOMING_NUMBERS = [
-	"whatsapp:+16198064334",
-] as const;
-
 export const REQUIRED_ENV_VARS = [
 	"OPENAI_API_KEY",
 	"DEEPSEEK_API_KEY",
@@ -33,13 +24,6 @@ export const REQUIRED_ENV_VARS = [
 	"VAPID_PUBLIC_KEY",
 	"VAPID_PRIVATE_KEY",
 	"SWELL_CLOUD_API_KEY",
-	"TWILIO_ACCOUNT_SID",
-	"TWILIO_API_KEY",
-	"TWILIO_API_SECRET",
-	"TWILIO_AUTH_TOKEN",
-	"TWILIO_SERVICE_SID",
-	"TWILIO_EVENT_SYNC_ID_DEV",
-	"TWILIO_EVENT_SYNC_ID_PROD",
 ] as const;
 
 export const TORREY_PILES_LAT_LNG = {

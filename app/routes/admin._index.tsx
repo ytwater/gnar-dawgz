@@ -44,14 +44,6 @@ const menuItems = [
 		bgColor: "bg-primary/10",
 	},
 	{
-		title: "Twilio Event Sync",
-		description: "Manage Twilio event subscriptions and sync configuration.",
-		icon: Broadcast,
-		href: "/admin/twilio-event-sync",
-		color: "text-primary",
-		bgColor: "bg-primary/10",
-	},
-	{
 		title: "Surf Spots",
 		description: "Configure and manage surf spots for forecast comparison.",
 		icon: Broadcast,

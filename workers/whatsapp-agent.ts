@@ -23,7 +23,7 @@ import { createUserNameTool } from "./tools/createUserNameTool";
 import { createApproveCharterUpdateTool } from "./tools/createApproveCharterUpdateTool";
 import { createGetPendingProposalsTool } from "./tools/createGetPendingProposalsTool";
 /**
- * WhatsApp Agent implementation that handles WhatsApp messages via Twilio
+ * WhatsApp Agent implementation that handles WhatsApp messages via WAHA
  * Uses AI SDK directly without Durable Objects for simpler webhook handling
  */
 import { createProposeCharterUpdateTool } from "./tools/createProposeCharterUpdateTool";
