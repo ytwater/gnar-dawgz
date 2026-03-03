@@ -35,6 +35,7 @@ import {
 	TableRow,
 } from "~/app/components/ui/table";
 import { authClient } from "~/app/lib/auth-client";
+import { orpcClient } from "~/app/lib/orpc/client";
 
 type AdminUser = {
 	id: string;
@@ -139,7 +140,7 @@ export default function AdminUsers() {
 		}
 
 		try {
-			await authClient.admin.removeUser({ userId });
+			await orpcClient.admin.deleteUser({ userId });
 			// Refresh users
 			const { data } = await authClient.admin.listUsers({
 				query: { limit: 100 },
