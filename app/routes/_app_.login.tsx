@@ -1,5 +1,5 @@
 import { Phone } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { PhoneNumberInput } from "~/app/components/phone-number-input";
 import { Alert, AlertDescription } from "~/app/components/ui/alert";
@@ -17,6 +17,8 @@ export default function Login() {
 	const [otpSent, setOtpSent] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState<string | null>(null);
+	const otpInputRef = useRef<HTMLInputElement>(null);
+	const hasAutoSubmitted = useRef(false);
 
 	// Pre-populate from URL query parameters
 	useEffect(() => {
@@ -34,6 +36,26 @@ export default function Login() {
 			setOtpSent(true);
 		}
 	}, [searchParams]);
+
+	useEffect(() => {
+		if (otpSent) {
+			otpInputRef.current?.focus();
+		}
+	}, [otpSent]);
+
+	// Auto-submit when both phone and code are provided via URL
+	useEffect(() => {
+		if (
+			!hasAutoSubmitted.current &&
+			phoneNumber &&
+			otpCode &&
+			searchParams.get("phone") &&
+			searchParams.get("code")
+		) {
+			hasAutoSubmitted.current = true;
+			handleVerifyOtp();
+		}
+	}, [phoneNumber, otpCode, searchParams]);
 
 	const handleSendOtp = async () => {
 		if (!phoneNumber.trim()) {
@@ -149,6 +171,11 @@ export default function Login() {
 								id="phone"
 								value={phoneNumber}
 								onChange={(value) => setPhoneNumber(value)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" && phoneNumber.trim() && !isSendingOtp && !otpSent) {
+										handleSendOtp();
+									}
+								}}
 								disabled={isSendingOtp || isVerifying || otpSent}
 								className="w-full"
 							/>
@@ -184,10 +211,16 @@ export default function Login() {
 									</label>
 									<Input
 										id="otp"
+										ref={otpInputRef}
 										type="text"
 										placeholder="Enter 6-digit code"
 										value={otpCode}
 										onChange={(e) => setOtpCode(e.target.value)}
+										onKeyDown={(e) => {
+											if (e.key === "Enter" && otpCode.trim() && !isVerifying) {
+												handleVerifyOtp();
+											}
+										}}
 										disabled={isVerifying}
 										maxLength={6}
 										className="w-full"

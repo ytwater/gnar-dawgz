@@ -57,7 +57,7 @@ function parsePhoneInput(value: string | undefined): string {
 export const PhoneNumberInput = forwardRef<
 	HTMLInputElement,
 	PhoneNumberInputProps
->(({ value, onChange, className, disabled, ...props }, ref) => {
+>(({ value, onChange, onKeyDown, className, disabled, ...props }, ref) => {
 	const [displayValue, setDisplayValue] = useState(() =>
 		parsePhoneInput(value),
 	);
@@ -97,6 +97,7 @@ export const PhoneNumberInput = forwardRef<
 		) {
 			// Allow normal deletion, but we'll handle it in onChange
 		}
+		onKeyDown?.(e);
 	};
 
 	return (
