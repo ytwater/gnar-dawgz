@@ -59,12 +59,18 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
-		const session = sessionRes.data as SessionInfo;
 		console.log("[Webhooks Loader] GET session result", {
 			status: sessionRes.status,
-			data: session,
-			webhooks: session?.config?.webhooks,
+			data: sessionRes.data,
+			webhooks: (sessionRes.data as SessionInfo)?.config?.webhooks,
 		});
+		if (sessionRes.status === 401) {
+			return { error: "WAHA_API_KEY is incorrect" };
+		}
+		if (sessionRes.status !== 200) {
+			return { error: "Failed to fetch session" };
+		}
+		const session = sessionRes.data as SessionInfo;
 		const appUrl = getAppUrl(env);
 		return {
 			session,
@@ -111,6 +117,9 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
+		if (sessionRes.status === 401) {
+			return data({ error: "WAHA_API_KEY is incorrect" }, { status: 401 });
+		}
 		const existing = (sessionRes.data as SessionInfo)?.config;
 		console.log("[Webhooks Action] GET session result", {
 			status: sessionRes.status,
@@ -135,6 +144,9 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 			status: updateRes.status,
 			data: updateRes.data,
 		});
+		if (updateRes.status === 401) {
+			return data({ error: "WAHA_API_KEY is incorrect" }, { status: 401 });
+		}
 		return { success: "Webhooks updated successfully" };
 	} catch (error) {
 		console.error("Webhooks Action Error:", error);
