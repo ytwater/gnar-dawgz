@@ -31,25 +31,39 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 	const pictureFile = formData.get("picture") as File | null;
 
 	try {
+		const errors: string[] = [];
+
 		if (name) {
-			await profileControllerSetProfileName(
+			const res = await profileControllerSetProfileName(
 				{ name },
 				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
+			if (res.status !== 200 || (res.data as { success?: boolean })?.success === false) {
+				const msg = (res.data as { message?: string })?.message ?? "Failed to update name";
+				console.error("Failed to update profile name", { status: res.status, data: res.data });
+				errors.push(msg);
+			}
 		}
+
 		if (about) {
-			await profileControllerSetProfileStatus(
+			const res = await profileControllerSetProfileStatus(
 				{ status: about },
 				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
+			if (res.status !== 200 || (res.data as { success?: boolean })?.success === false) {
+				const msg = (res.data as { message?: string })?.message ?? "Failed to update status";
+				console.error("Failed to update profile status", { status: res.status, data: res.data });
+				errors.push(msg);
+			}
 		}
+
 		if (pictureFile && pictureFile.size > 0) {
 			const buffer = await pictureFile.arrayBuffer();
 			// @ts-ignore - Buffer from nodejs_compat
 			const base64 = Buffer.from(buffer).toString("base64");
-			await profileControllerSetProfilePicture(
+			const res = await profileControllerSetProfilePicture(
 				{
 					file: {
 						mimetype: pictureFile.type,
@@ -60,8 +74,20 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
+
+			if (res.status !== 200 || (res.data as { success?: boolean })?.success === false) {
+				const msg = (res.data as { message?: string })?.message ?? "Failed to update profile picture";
+				console.error("Failed to update profile picture", { status: res.status, data: res.data });
+				errors.push(msg);
+			}
 		}
-		return { success: "Profile updated successfully" };
+
+		if (errors.length > 0) {
+			// Return 200 so the body is always passed to the fetcher (5xx can be swallowed)
+			return data({ error: errors.join(" ") });
+		}
+
+		return data({ success: "Profile updated successfully" });
 	} catch (error) {
 		console.error("Profile Action Error:", error);
 		return data({ error: "Failed to update profile" }, { status: 500 });

@@ -39,6 +39,15 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
+		if (groupsRes.status === 401) {
+			return { error: "WAHA_API_KEY is incorrect" };
+		}
+		if (groupsRes.status !== 200) {
+			const msg =
+				(groupsRes.data as { message?: string })?.message ??
+				"Failed to fetch groups";
+			return { error: msg };
+		}
 		const raw = groupsRes.data as unknown;
 		const groups: GroupInfo[] = Array.isArray(raw)
 			? raw
@@ -50,7 +59,9 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 		return { groups };
 	} catch (error) {
 		console.error("Groups Loader Error:", error);
-		return { error: "Failed to fetch groups" };
+		const msg =
+			error instanceof Error ? error.message : "Failed to fetch groups";
+		return { error: msg };
 	}
 };
 

@@ -56,14 +56,23 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 		if (sessionRes[0].status === "rejected") {
 			isUnreachable = true;
 		} else {
-			const res = sessionRes[0].value as { status: number; data: SessionInfo };
+			const res = sessionRes[0].value as {
+				status: number;
+				data: SessionInfo | { message?: string };
+			};
 			if (res.status === 401) {
 				return { error: "WAHA_API_KEY is incorrect" };
+			}
+			if (res.status >= 400 && res.status < 500) {
+				return {
+					error:
+						(res.data as { message?: string })?.message ?? "WAHA request failed",
+				};
 			}
 			if (res.status >= 500) {
 				isUnreachable = true;
 			} else if (res.status === 200) {
-				session = res.data;
+				session = res.data as SessionInfo;
 			}
 		}
 

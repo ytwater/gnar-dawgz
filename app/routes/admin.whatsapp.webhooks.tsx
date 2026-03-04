@@ -10,6 +10,7 @@ import {
 	useSubmit,
 } from "react-router";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "~/app/components/ui/alert";
 import { Button } from "~/app/components/ui/button";
 import {
 	Card,
@@ -68,7 +69,10 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 			return { error: "WAHA_API_KEY is incorrect" };
 		}
 		if (sessionRes.status !== 200) {
-			return { error: "Failed to fetch session" };
+			const msg =
+				(sessionRes.data as { message?: string })?.message ??
+				"Failed to fetch session";
+			return { error: msg };
 		}
 		const session = sessionRes.data as SessionInfo;
 		const appUrl = getAppUrl(env);
@@ -145,12 +149,20 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 			data: updateRes.data,
 		});
 		if (updateRes.status === 401) {
-			return data({ error: "WAHA_API_KEY is incorrect" }, { status: 401 });
+			return data({ error: "WAHA_API_KEY is incorrect" });
 		}
-		return { success: "Webhooks updated successfully" };
+		if (updateRes.status !== 200) {
+			const msg =
+				(updateRes.data as { message?: string })?.message ??
+				"Failed to update webhooks";
+			return data({ error: msg });
+		}
+		return data({ success: "Webhooks updated successfully" });
 	} catch (error) {
 		console.error("Webhooks Action Error:", error);
-		return data({ error: "Failed to update webhooks" }, { status: 500 });
+		const msg =
+			error instanceof Error ? error.message : "Failed to update webhooks";
+		return data({ error: msg });
 	}
 };
 
@@ -188,6 +200,11 @@ export default function AdminWhatsAppWebhooks() {
 
 	return (
 		<div className="space-y-6">
+			{actionData && "error" in actionData && actionData.error && (
+				<Alert variant="destructive">
+					<AlertDescription>{actionData.error}</AlertDescription>
+				</Alert>
+			)}
 			<Card>
 				<CardHeader>
 					<CardTitle>Webhook Configuration</CardTitle>

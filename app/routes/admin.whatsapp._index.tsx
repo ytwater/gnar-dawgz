@@ -1,8 +1,9 @@
 import { IdentificationCard } from "@phosphor-icons/react";
 import { useEffect } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { useFetcher, useLoaderData } from "react-router";
+import { useFetcher, useLoaderData, useRevalidator } from "react-router";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "~/app/components/ui/alert";
 import { Button } from "~/app/components/ui/button";
 import {
 	Card,
@@ -40,16 +41,28 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
+		if (profileRes.status === 401) {
+			return { error: "WAHA_API_KEY is incorrect" };
+		}
+		if (profileRes.status !== 200) {
+			const msg =
+				(profileRes.data as { message?: string })?.message ??
+				"Failed to fetch profile";
+			return { error: msg };
+		}
 		return { profile: profileRes.data as LocalMyProfile };
 	} catch (error) {
 		console.error("Profile Loader Error:", error);
-		return { error: "Failed to fetch profile" };
+		const msg =
+			error instanceof Error ? error.message : "Failed to fetch profile";
+		return { error: msg };
 	}
 };
 
 export default function AdminWhatsAppProfile() {
 	const dataRaw = useLoaderData<typeof loader>();
 	const fetcher = useFetcher<{ success?: string; error?: string }>();
+	const revalidator = useRevalidator();
 	const isSubmitting = fetcher.state !== "idle";
 
 	if ("error" in dataRaw) {
@@ -67,10 +80,11 @@ export default function AdminWhatsAppProfile() {
 	useEffect(() => {
 		if (fetcher.data?.success) {
 			toast.success(fetcher.data.success);
+			revalidator.revalidate();
 		} else if (fetcher.data?.error) {
 			toast.error(fetcher.data.error);
 		}
-	}, [fetcher.data]);
+	}, [fetcher.data, revalidator]);
 
 	return (
 		<Card>
@@ -81,6 +95,11 @@ export default function AdminWhatsAppProfile() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
+				{fetcher.data?.error && (
+					<Alert variant="destructive" className="mb-4">
+						<AlertDescription>{fetcher.data.error}</AlertDescription>
+					</Alert>
+				)}
 				<fetcher.Form
 					action="/admin/whatsapp/profile-action"
 					method="post"

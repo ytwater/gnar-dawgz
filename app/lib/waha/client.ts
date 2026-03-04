@@ -58,8 +58,11 @@ export async function sendWahaMessage(
 	);
 
 	if (response.status !== 201 && response.status !== 200) {
+		const msg =
+			(response.data as { message?: string })?.message ??
+			`WAHA send text failed with status ${response.status}`;
 		console.error("WAHA send text failed", response);
-		throw new Error(`WAHA send text failed with status ${response.status}`);
+		throw new Error(msg);
 	}
 
 	return response.data;

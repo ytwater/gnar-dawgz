@@ -52,6 +52,15 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
+		if (chatsRes.status === 401) {
+			return { error: "WAHA_API_KEY is incorrect" };
+		}
+		if (chatsRes.status !== 200) {
+			const msg =
+				(chatsRes.data as { message?: string })?.message ??
+				"Failed to fetch chats";
+			return { error: msg };
+		}
 		const raw = chatsRes.data as unknown;
 		const chats: ExtendedChatSummary[] = Array.isArray(raw)
 			? raw
@@ -63,7 +72,9 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 		return { chats };
 	} catch (error) {
 		console.error("Chats Loader Error:", error);
-		return { error: "Failed to fetch chats" };
+		const msg =
+			error instanceof Error ? error.message : "Failed to fetch chats";
+		return { error: msg };
 	}
 };
 

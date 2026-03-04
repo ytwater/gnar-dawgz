@@ -10,6 +10,7 @@ import {
 	useLoaderData,
 	useNavigation,
 } from "react-router";
+import { Alert, AlertDescription } from "~/app/components/ui/alert";
 import { Button } from "~/app/components/ui/button";
 import {
 	Card,
@@ -50,14 +51,24 @@ export const loader = async ({ params, context }: LoaderFunctionArgs) => {
 			WAHA_SESSION_NAME,
 			fetchOptions,
 		);
-
+		if (messagesRes.status === 401) {
+			return { error: "WAHA_API_KEY is incorrect" };
+		}
+		if (messagesRes.status !== 200) {
+			const msg =
+				(messagesRes.data as { message?: string })?.message ??
+				"Failed to fetch messages";
+			return { error: msg };
+		}
 		return {
 			chatId,
 			messages: Array.isArray(messagesRes.data) ? messagesRes.data : [],
 		};
 	} catch (error) {
 		console.error("Chat Detail Loader Error:", error);
-		return { error: "Failed to fetch messages" };
+		const msg =
+			error instanceof Error ? error.message : "Failed to fetch messages";
+		return { error: msg };
 	}
 };
 
@@ -92,10 +103,12 @@ export const action = async ({
 
 	try {
 		await sendWahaMessage(env, chatId, text);
-		return { success: true };
+		return data({ success: true });
 	} catch (error) {
 		console.error("Send Message Action Error:", error);
-		return data({ error: "Failed to send message" }, { status: 500 });
+		const msg =
+			error instanceof Error ? error.message : "Failed to send message";
+		return data({ error: msg });
 	}
 };
 
@@ -139,6 +152,13 @@ export default function AdminWhatsAppChatDetail() {
 
 	return (
 		<Card className="flex flex-col h-[calc(100vh-12rem)] min-h-[500px]">
+			{actionData && "error" in actionData && actionData.error && (
+				<div className="px-6 pt-4">
+					<Alert variant="destructive">
+						<AlertDescription>{actionData.error}</AlertDescription>
+					</Alert>
+				</div>
+			)}
 			<CardHeader className="border-b">
 				<CardTitle className="text-lg">Chat with {chatId}</CardTitle>
 				<CardDescription>WhatsApp Conversation</CardDescription>
