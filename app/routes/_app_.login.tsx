@@ -1,11 +1,23 @@
 import { Phone } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { redirect, useNavigate, useSearchParams } from "react-router";
 import { PhoneNumberInput } from "~/app/components/phone-number-input";
 import { Alert, AlertDescription } from "~/app/components/ui/alert";
 import { Button } from "~/app/components/ui/button";
 import { Input } from "~/app/components/ui/input";
 import { authClient } from "~/app/lib/auth-client";
+import { getSession } from "~/app/lib/auth";
+import type { Route } from "./+types/_app_.login";
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+	const session = await getSession(request, context.cloudflare.env);
+	if (session) {
+		const url = new URL(request.url);
+		const redirectTo = url.searchParams.get("redirectTo") || "/";
+		throw redirect(redirectTo);
+	}
+	return null;
+}
 
 export default function Login() {
 	const navigate = useNavigate();
@@ -17,6 +29,7 @@ export default function Login() {
 	const [otpSent, setOtpSent] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState<string | null>(null);
+	const [linkExpired, setLinkExpired] = useState(false);
 	const otpInputRef = useRef<HTMLInputElement>(null);
 	const hasAutoSubmitted = useRef(false);
 
@@ -94,6 +107,8 @@ export default function Login() {
 		}
 	};
 
+	const isFromLink = !!(searchParams.get("phone") && searchParams.get("code"));
+
 	const handleVerifyOtp = async () => {
 		if (!phoneNumber.trim() || !otpCode.trim()) {
 			setError("Please enter both phone number and OTP code");
@@ -103,6 +118,7 @@ export default function Login() {
 		setIsVerifying(true);
 		setError(null);
 		setSuccess(null);
+		setLinkExpired(false);
 
 		try {
 			const fullPhone = phoneNumber.startsWith("+1")
@@ -120,17 +136,56 @@ export default function Login() {
 				const redirectTo = searchParams.get("redirectTo") || "/";
 				navigate(redirectTo);
 			} else {
-				setError(result.error.message || "Invalid OTP code. Please try again.");
+				// If this was an auto-submit from a link, show the expired state
+				if (isFromLink && hasAutoSubmitted.current) {
+					setLinkExpired(true);
+					setOtpCode("");
+					setError(null);
+				} else {
+					setError(result.error.message || "Invalid OTP code. Please try again.");
+				}
 			}
 		} catch (err) {
 			console.error("Error verifying OTP:", err);
+			if (isFromLink && hasAutoSubmitted.current) {
+				setLinkExpired(true);
+				setOtpCode("");
+				setError(null);
+			} else {
+				setError(
+					err instanceof Error
+						? err.message
+						: "Failed to verify OTP. Please try again.",
+				);
+			}
+		} finally {
+			setIsVerifying(false);
+		}
+	};
+
+	const handleResendCode = async () => {
+		setIsSendingOtp(true);
+		setError(null);
+		setLinkExpired(false);
+
+		try {
+			const fullPhone = phoneNumber.startsWith("+1")
+				? phoneNumber
+				: `+1${phoneNumber}`;
+			await authClient.phoneNumber.sendOtp({
+				phoneNumber: fullPhone,
+			});
+			setOtpSent(true);
+			setSuccess("A new code has been sent to your WhatsApp!");
+		} catch (err) {
+			console.error("Error resending OTP:", err);
 			setError(
 				err instanceof Error
 					? err.message
-					: "Failed to verify OTP. Please try again.",
+					: "Failed to send code. Please try again.",
 			);
 		} finally {
-			setIsVerifying(false);
+			setIsSendingOtp(false);
 		}
 	};
 
@@ -159,6 +214,53 @@ export default function Login() {
 						</Alert>
 					)}
 
+					{linkExpired ? (
+						<div className="space-y-4">
+							<Alert variant="destructive">
+								<AlertDescription>
+									This link has expired. Tap below to get a new code via WhatsApp.
+								</AlertDescription>
+							</Alert>
+							<div>
+								<label
+									htmlFor="phone"
+									className="block text-sm font-medium text-foreground mb-2"
+								>
+									Phone Number
+								</label>
+								<PhoneNumberInput
+									id="phone"
+									value={phoneNumber}
+									onChange={(value) => setPhoneNumber(value)}
+									disabled
+									className="w-full"
+								/>
+							</div>
+							<Button
+								type="button"
+								onClick={handleResendCode}
+								disabled={isSendingOtp}
+								className="w-full"
+							>
+								{isSendingOtp ? (
+									<>
+										<div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-2" />
+										Sending...
+									</>
+								) : (
+									<>
+										<Phone className="w-5 h-5 mr-2" />
+										Send New Code
+									</>
+								)}
+							</Button>
+						</div>
+					) : isVerifying && isFromLink ? (
+						<div className="flex flex-col items-center gap-3 py-4">
+							<div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+							<p className="text-sm text-muted-foreground">Signing you in...</p>
+						</div>
+					) : (
 					<div className="space-y-4">
 						<div>
 							<label
@@ -260,6 +362,7 @@ export default function Login() {
 							</>
 						)}
 					</div>
+					)}
 				</div>
 			</div>
 		</div>

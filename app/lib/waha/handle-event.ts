@@ -6,8 +6,9 @@ import { WhatsAppAgent } from "../../../workers/whatsapp-agent";
 import { getAppUrl } from "../../config/constants";
 import { logAiUsage } from "../ai-cost-utils";
 import { getDb } from "../db";
-import { charter, users, verifications, whatsappMessages } from "../schema";
+import { charter, users, whatsappMessages } from "../schema";
 import { sendWahaMessage } from "./client";
+import { rewriteUrlsWithOtp } from "./rewrite-urls";
 import type { WahaMessageEvent } from "./types";
 
 /** Whether the message text is a direct mention of the bot (e.g. @bot, gnar dawgs, or me id). */
@@ -259,31 +260,25 @@ export async function handleWahaMessage(
 
 	// Decide if we should respond
 	if (isGroup) {
-		// Login/website request in group: reply in group that we'll help in DMs, then DM the participant with login link.
+		// Login/website request in group: reply in group that we’ll help in DMs, then DM the participant with login link.
 		// Check this before shouldReplyToGroup so "login" (and similar) always get the DM flow even without @ mention.
 		if (participantId && isLoginOrWebsiteRequest(messageText)) {
 			const participantPhone = participantId.replace(
 				/@c\.us|@s\.whatsapp\.net/,
 				"",
 			);
-			const code = Math.floor(100000 + Math.random() * 900000);
-			await db.insert(verifications).values({
-				id: generateId(),
-				identifier: participantPhone,
-				value: `${code}:0`,
-				expiresAt: new Date(Date.now() + 1000 * 60 * 5),
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			});
 			const host = getAppUrl(env);
-			const loginLink = `${host}/login?phone=${encodeURIComponent(participantPhone)}&code=${code}`;
-			const dmText = `Here’s your login link: ${loginLink}\n\nYou can also go to ${host}/login and enter the code: ${code}.`;
+			const dmText = await rewriteUrlsWithOtp(
+				`Here’s your login link: ${host}/\n\nYou can also go to ${host}/login and enter your phone number to get a code.`,
+				participantPhone,
+				env,
+			);
 			await sendWahaMessage(env, participantId, dmText, {
 				simulateTyping: false,
 				sendSeen: true,
 			});
 			const groupReply =
-				"I'll help you login in a direct chat — check your DMs.";
+				"I’ll help you login in a direct chat — check your DMs.";
 			await sendWahaMessage(env, senderId, groupReply, {
 				replyTo: payload.id,
 				simulateTyping: true,
@@ -312,7 +307,14 @@ export async function handleWahaMessage(
 		true,
 	);
 
+	// Rewrite any gnardawgs.surf URLs with OTP login links
+	const rewrittenResponse = await rewriteUrlsWithOtp(
+		responseText,
+		phoneNumber,
+		env,
+	);
+
 	// Send the response back via WAHA
-	const finalResponse = isDev ? `dev: ${responseText}` : responseText;
+	const finalResponse = isDev ? `dev: ${rewrittenResponse}` : rewrittenResponse;
 	await sendWahaMessage(env, senderId, finalResponse, { replyTo: payload.id });
 }
