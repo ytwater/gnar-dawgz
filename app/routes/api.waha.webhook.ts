@@ -10,7 +10,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		const events = Array.isArray(payload) ? payload : [payload];
 
 		for (const event of events) {
-			if (event.event === "message" || event.event === "message.any") {
+			if (event.event === "message") {
 				// Offload processing to Cloudflare Queue
 				await env.WHATSAPP_QUEUE.send(event);
 			} else {
