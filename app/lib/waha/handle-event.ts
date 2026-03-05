@@ -147,7 +147,7 @@ export async function handleWahaMessage(
 
 	// Ensure user/group exists in our database
 	const db = getDb(env.DB);
-	const phoneNumber = senderId.replace(/@c\.us|@g\.us/, "");
+	const phoneNumber = senderId.replace(/@c\.us|@g\.us|@lid/, "");
 
 	let userResult = await db
 		.select()
@@ -179,7 +179,7 @@ export async function handleWahaMessage(
 		} else {
 			// Direct message from unknown user: only create and process for onboarding passphrase
 			const onboardingPassphrase =
-				messageText === "woof woof" || messageText === "ruff ruff";
+				lowerText === "woof woof" || lowerText === "ruff ruff" || lowerText === "bark bark";
 			if (!onboardingPassphrase) {
 				console.log(`Ignoring message from unknown user ${phoneNumber}`);
 				return;
@@ -208,7 +208,7 @@ export async function handleWahaMessage(
 	// When they first DM the bot they'll be looked up by phone and go through onboarding (Guest → "what's your name").
 	if (isGroup && participantId) {
 		const participantPhone = participantId.replace(
-			/@c\.us|@s\.whatsapp\.net/g,
+			/@c\.us|@s\.whatsapp\.net|@lid/g,
 			"",
 		);
 		const participantUserResult = await db
