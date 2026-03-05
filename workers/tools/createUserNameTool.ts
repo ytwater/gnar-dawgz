@@ -43,6 +43,6 @@ export const createUserNameTool = (env: CloudflareBindings, userId: string) =>
 				.set({ name, email: newEmail, updatedAt: new Date() })
 				.where(eq(users.id, userId));
 
-			return `${name}, your name has been updated! Welcome to Gnar Dawgs.  I'm the Gnar Dawgs assistant. I can help you with surf forecasts and other surf related tasks.`;
+			return `${name}, your name has been updated! Welcome to Gnar Dawgs. I'm the Gnar Dawgs assistant. I can help you with surf forecasts and other surf related tasks.\n\n🐾 Create your custom Gnar Dawg profile at https://www.gnardawgs.surf/profile-creator`;
 		},
 	});

@@ -8,7 +8,7 @@ import {
 	stepCountIs,
 } from "ai";
 import { getDb } from "app/lib/db";
-import { charter, whatsappMessages } from "app/lib/schema";
+import { charter, profileImages, whatsappMessages } from "app/lib/schema";
 import type { User } from "better-auth";
 import { and, eq, gte } from "drizzle-orm";
 import { executions } from "./tools";
@@ -157,6 +157,18 @@ export class WhatsAppAgent {
 		const isOnboarding = this.user.name === "Guest";
 
 		const db = getDb(this.env.DB);
+
+		const hasProfile = await db
+			.select({ id: profileImages.id })
+			.from(profileImages)
+			.where(
+				and(
+					eq(profileImages.userId, this.user.id),
+					eq(profileImages.isActive, true),
+				),
+			)
+			.limit(1);
+		const hasActiveProfile = hasProfile.length > 0;
 		const charterResults = await db.select().from(charter).limit(1);
 		const charterContent =
 			charterResults[0]?.content || "No rules established yet.";
@@ -211,7 +223,7 @@ ${charterContent}
 ### Surf Checks
 - You can also provide surf forecasts using 'getSurfForecast' (default is Torrey Pines) and 'getSurfSpots'.
 
-Be concise. Search for users by name when assigning or clearing demerits.${loginRule} Always reply using WhatsApp formatted text.`;
+Be concise. Search for users by name when assigning or clearing demerits.${loginRule} Always reply using WhatsApp formatted text.${hasActiveProfile ? "" : "\n\nThe user has not created their Gnar Dawg profile yet. When it feels natural (e.g., greetings, introductions, or when the user seems to be exploring), mention that they can create their custom Gnar Dawg profile at https://www.gnardawgs.surf/profile-creator — but don't force it into every response."}`;
 		console.log(
 			"🚀 ~ whatsapp-agent.ts:116 ~ WhatsAppAgent ~ onMessage ~ systemPrompt:",
 			systemPrompt,
