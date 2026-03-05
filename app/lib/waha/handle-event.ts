@@ -264,7 +264,7 @@ export async function handleWahaMessage(
 		// Check this before shouldReplyToGroup so "login" (and similar) always get the DM flow even without @ mention.
 		if (participantId && isLoginOrWebsiteRequest(messageText)) {
 			const participantPhone = participantId.replace(
-				/@c\.us|@s\.whatsapp\.net/,
+				/@c\.us|@s\.whatsapp\.net|@lid/g,
 				"",
 			);
 			const host = getAppUrl(env);
@@ -307,12 +307,16 @@ export async function handleWahaMessage(
 		true,
 	);
 
-	// Rewrite any gnardawgs.surf URLs with OTP login links
-	const rewrittenResponse = await rewriteUrlsWithOtp(
-		responseText,
-		phoneNumber,
-		env,
-	);
+	// Rewrite any gnardawgs.surf URLs with OTP login links (DMs only)
+	// Group messages go to multiple people so OTP links wouldn't work
+	let rewrittenResponse = responseText;
+	if (!isGroup && user.phoneNumber) {
+		rewrittenResponse = await rewriteUrlsWithOtp(
+			responseText,
+			user.phoneNumber,
+			env,
+		);
+	}
 
 	// Send the response back via WAHA
 	const finalResponse = isDev ? `dev: ${rewrittenResponse}` : rewrittenResponse;
