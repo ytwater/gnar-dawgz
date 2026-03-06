@@ -231,12 +231,29 @@ export const profileImageRouter = {
 						byteLength: fullLogoBuffer.byteLength,
 					});
 				} else {
-					// Full body mode: dog-on-board portrait IS the final output
-					console.log(
-						"[profile-image:generate] Step 2: Skipping composite for full body mode",
-					);
+					// Full body mode: generated image is the full logo; also generate headshot for the portrait
+					fullLogoKey = `profiles/${userId}/${profileImageId}/full-logo.png`;
 					fullLogoBuffer = stylizedDogBuffer;
-					fullLogoKey = stylizedDogKey;
+					await context.env.PROFILE_IMAGES_BUCKET.put(
+						fullLogoKey,
+						fullLogoBuffer,
+						{ httpMetadata: { contentType: "image/png" } },
+					);
+					console.log(
+						"[profile-image:generate] Step 2 (full mode): Generating headshot portrait",
+					);
+					const headshotBuffer = await aiProvider.generateStylizedDog(
+						originalBuffer,
+						originalMimeType,
+						referenceBuffer,
+						referenceMimeType,
+						"head",
+					);
+					await context.env.PROFILE_IMAGES_BUCKET.put(
+						stylizedDogKey,
+						headshotBuffer,
+						{ httpMetadata: { contentType: "image/png" } },
+					);
 				}
 
 				await context.db
@@ -259,7 +276,7 @@ export const profileImageRouter = {
 					userId,
 					modelId,
 					feature: "profile_creator",
-					imagesGenerated: styleMode === "head" ? 2 : 1,
+					imagesGenerated: 2,
 				});
 
 				return { success: true };
