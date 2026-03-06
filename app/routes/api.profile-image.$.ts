@@ -18,9 +18,8 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
 		return new Response("Not Found", { status: 404 });
 	}
 
-	// Verify the key belongs to the requesting user
-	const expectedPrefix = `profiles/${session.user.id}/`;
-	if (!key.startsWith(expectedPrefix)) {
+	// Allow any authenticated user to view profile images
+	if (!key.startsWith("profiles/")) {
 		return new Response("Forbidden", { status: 403 });
 	}
 
@@ -31,10 +30,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
 	}
 
 	const headers = new Headers();
-	headers.set(
-		"Content-Type",
-		object.httpMetadata?.contentType || "image/png",
-	);
+	headers.set("Content-Type", object.httpMetadata?.contentType || "image/png");
 	headers.set("Cache-Control", "private, max-age=3600");
 
 	return new Response(object.body, { headers });
