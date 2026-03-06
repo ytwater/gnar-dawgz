@@ -1,4 +1,4 @@
-import { UserCircle } from "@phosphor-icons/react";
+import { Dog } from "@phosphor-icons/react";
 import { useEffect, useMemo, useState } from "react";
 import { Skeleton } from "~/app/components/ui/skeleton";
 import { orpcClient } from "~/app/lib/orpc/client";
@@ -136,9 +136,9 @@ export default function Pack() {
 									/>
 								) : (
 									<div className="w-full h-full bg-primary/10 flex items-center justify-center">
-										<UserCircle
+										<Dog
 											weight="fill"
-											className="w-20 h-20 text-primary/40"
+											className="w-16 h-16 text-primary/40"
 										/>
 									</div>
 								)}
