@@ -123,7 +123,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 			{/* Mobile Menu Sheet */}
 			<Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-				<SheetContent side="right" className="w-[300px] sm:w-[400px]">
+				<SheetContent side="right" className="w-[300px] sm:w-[400px] px-6">
 					<SheetHeader>
 						<SheetTitle>Menu</SheetTitle>
 					</SheetHeader>
