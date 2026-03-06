@@ -385,30 +385,40 @@ export default function ProfileCreator() {
 
 			{flowState === "review" && profileImage && (
 				<div className="space-y-6">
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<div
+						className={`grid grid-cols-1 gap-6 ${styleMode === "head" ? "md:grid-cols-2" : "max-w-md mx-auto"}`}
+					>
+						{styleMode === "head" && (
+							<Card>
+								<CardHeader>
+									<CardTitle>Full Logo</CardTitle>
+									<CardDescription>
+										Your dog in the Gnar Dawgs logo
+									</CardDescription>
+								</CardHeader>
+								<CardContent>
+									{profileImage.fullLogoUrl ? (
+										<img
+											src={`/api/profile-image/${profileImage.fullLogoUrl}`}
+											alt="Full logo with your dog"
+											className="w-full rounded-lg"
+										/>
+									) : (
+										<Skeleton className="w-full aspect-square rounded-lg" />
+									)}
+								</CardContent>
+							</Card>
+						)}
 						<Card>
 							<CardHeader>
-								<CardTitle>Full Logo</CardTitle>
+								<CardTitle>
+									{styleMode === "head" ? "Dog Portrait" : "Dog on Board"}
+								</CardTitle>
 								<CardDescription>
-									Your dog in the Gnar Dawgs logo
+									{styleMode === "head"
+										? "Standalone stylized portrait"
+										: "Your dog riding the paddleboard"}
 								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								{profileImage.fullLogoUrl ? (
-									<img
-										src={`/api/profile-image/${profileImage.fullLogoUrl}`}
-										alt="Full logo with your dog"
-										className="w-full rounded-lg"
-									/>
-								) : (
-									<Skeleton className="w-full aspect-square rounded-lg" />
-								)}
-							</CardContent>
-						</Card>
-						<Card>
-							<CardHeader>
-								<CardTitle>Dog Portrait</CardTitle>
-								<CardDescription>Standalone stylized portrait</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{profileImage.stylizedDogUrl ? (

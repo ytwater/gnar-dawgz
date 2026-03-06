@@ -21,14 +21,15 @@ const STYLIZED_DOG_FULL_PROMPT = `You are given two images:
 1. A photo of a dog (the subject)
 2. A reference logo showing the art style to match
 
-Transform the dog photo into an illustrated full-body portrait matching the reference logo's art style:
+Transform the dog photo into an illustrated full-body portrait of the dog riding a stand-up paddleboard (SUP), matching the reference logo's art style:
 - Bold, clean outlines with a hand-drawn illustration feel
 - Rich, vibrant colors with detailed fur rendering
 - Match the exact breed, coloring, markings, and proportions of the dog in the photo
-- The dog should be facing forward or slightly angled, looking confident and stoked
-- Transparent background (PNG with alpha)
-- Square output, dog centered and filling most of the frame
-- Do NOT include any text, waves, surfboards, or other elements — just the dog portrait`;
+- The dog should be standing on a SUP board riding a wave, looking confident and stoked, facing forward or slightly angled
+- Include the SUP board and a wave beneath the dog — these are part of the portrait
+- Do NOT include any text, logos, or "GNAR DAWGS" branding
+- Transparent outer background (PNG with alpha)
+- Square output, dog and board centered and filling most of the frame`;
 
 const LOGO_COMPOSITE_HEAD_PROMPT = `You are given two images:
 1. A stylized illustrated dog HEAD portrait (head/face only)

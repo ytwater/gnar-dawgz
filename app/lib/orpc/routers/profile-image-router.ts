@@ -206,27 +206,38 @@ export const profileImageRouter = {
 					{ httpMetadata: { contentType: "image/png" } },
 				);
 
-				// Step 2: Composite into logo
-				console.log("[profile-image:generate] Step 2: Compositing into logo");
-				const fullLogoBuffer = await aiProvider.compositeIntoLogo(
-					stylizedDogBuffer,
-					referenceBuffer,
-					referenceMimeType,
-					styleMode,
-				);
+				// Step 2: Composite into logo (head mode only; full body mode uses the stylized dog directly)
+				let fullLogoBuffer: ArrayBuffer;
+				let fullLogoKey: string;
 
-				// Store full logo in R2
-				const fullLogoKey = `profiles/${userId}/${profileImageId}/full-logo.png`;
-				await context.env.PROFILE_IMAGES_BUCKET.put(
-					fullLogoKey,
-					fullLogoBuffer,
-					{ httpMetadata: { contentType: "image/png" } },
-				);
-
-				console.log("[profile-image:generate] Stored full logo in R2", {
-					key: fullLogoKey,
-					byteLength: fullLogoBuffer.byteLength,
-				});
+				if (styleMode === "head") {
+					console.log(
+						"[profile-image:generate] Step 2: Compositing into logo",
+					);
+					fullLogoBuffer = await aiProvider.compositeIntoLogo(
+						stylizedDogBuffer,
+						referenceBuffer,
+						referenceMimeType,
+						styleMode,
+					);
+					fullLogoKey = `profiles/${userId}/${profileImageId}/full-logo.png`;
+					await context.env.PROFILE_IMAGES_BUCKET.put(
+						fullLogoKey,
+						fullLogoBuffer,
+						{ httpMetadata: { contentType: "image/png" } },
+					);
+					console.log("[profile-image:generate] Stored full logo in R2", {
+						key: fullLogoKey,
+						byteLength: fullLogoBuffer.byteLength,
+					});
+				} else {
+					// Full body mode: dog-on-board portrait IS the final output
+					console.log(
+						"[profile-image:generate] Step 2: Skipping composite for full body mode",
+					);
+					fullLogoBuffer = stylizedDogBuffer;
+					fullLogoKey = stylizedDogKey;
+				}
 
 				await context.db
 					.update(profileImages)
@@ -238,7 +249,7 @@ export const profileImageRouter = {
 					})
 					.where(eq(profileImages.id, profileImageId));
 
-				// Log AI usage. We use 2 images for head/full modes (stylized + composite)
+				// Log AI usage. Head mode uses 2 calls (stylized + composite); full body uses 1.
 				const modelId =
 					providerName === "gemini"
 						? "google/gemini-2.5-flash-image"
@@ -248,7 +259,7 @@ export const profileImageRouter = {
 					userId,
 					modelId,
 					feature: "profile_creator",
-					imagesGenerated: 2,
+					imagesGenerated: styleMode === "head" ? 2 : 1,
 				});
 
 				return { success: true };
