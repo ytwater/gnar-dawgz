@@ -8,6 +8,7 @@ import { logAiUsage } from "../ai-cost-utils";
 import { getDb } from "../db";
 import { charter, users, whatsappMessages } from "../schema";
 import { sendWahaMessage } from "./client";
+import { resolvePhoneNumber } from "./resolve-phone";
 import { rewriteUrlsWithOtp } from "./rewrite-urls";
 import type { WahaMessageEvent } from "./types";
 
@@ -148,7 +149,7 @@ export async function handleWahaMessage(
 
 	// Ensure user/group exists in our database
 	const db = getDb(env.DB);
-	const phoneNumber = senderId.replace(/@c\.us|@g\.us|@lid/, "");
+	const phoneNumber = await resolvePhoneNumber(senderId, env);
 
 	let userResult = await db
 		.select()
@@ -162,10 +163,11 @@ export async function handleWahaMessage(
 		if (isGroup) {
 			console.log(`Creating record for group: ${senderId}`);
 			const newUserId = generateId();
+			const groupDigits = phoneNumber.replace(/^\+/, "");
 			await db.insert(users).values({
 				id: newUserId,
-				name: `Group ${phoneNumber}`,
-				email: `${phoneNumber}@gnardawgs.surf`,
+				name: `Group ${groupDigits}`,
+				email: `group.${groupDigits}@gnardawgs.surf`,
 				phoneNumber: phoneNumber,
 				phoneNumberVerified: true,
 				createdAt: new Date(),
@@ -187,10 +189,11 @@ export async function handleWahaMessage(
 			}
 			console.log(`Unlocking onboarding for ${phoneNumber}`);
 			const newUserId = generateId();
+			const digits = phoneNumber.replace(/^\+/, "");
 			await db.insert(users).values({
 				id: newUserId,
 				name: "Guest",
-				email: `${phoneNumber}@gnardawgs.surf`,
+				email: `guest.${digits}@gnardawgs.surf`,
 				phoneNumber: phoneNumber,
 				phoneNumberVerified: true,
 				createdAt: new Date(),
@@ -208,10 +211,7 @@ export async function handleWahaMessage(
 	// In group chats, ensure the participant has a user record so they're provisioned.
 	// When they first DM the bot they'll be looked up by phone and go through onboarding (Guest → "what's your name").
 	if (isGroup && participantId) {
-		const participantPhone = participantId.replace(
-			/@c\.us|@s\.whatsapp\.net|@lid/g,
-			"",
-		);
+		const participantPhone = await resolvePhoneNumber(participantId, env);
 		const participantUserResult = await db
 			.select()
 			.from(users)
@@ -222,7 +222,7 @@ export async function handleWahaMessage(
 			await db.insert(users).values({
 				id: newUserId,
 				name: "Guest",
-				email: `${participantPhone}@gnardawgs.surf`,
+				email: `guest.${participantPhone.replace(/^\+/, "")}@gnardawgs.surf`,
 				phoneNumber: participantPhone,
 				phoneNumberVerified: true,
 				createdAt: new Date(),
@@ -263,10 +263,7 @@ export async function handleWahaMessage(
 		// Login/website request in group: reply in group that we’ll help in DMs, then DM the participant with login link.
 		// Check this before shouldReplyToGroup so "login" (and similar) always get the DM flow even without @ mention.
 		if (participantId && isLoginOrWebsiteRequest(messageText)) {
-			const participantPhone = participantId.replace(
-				/@c\.us|@s\.whatsapp\.net|@lid/g,
-				"",
-			);
+			const participantPhone = await resolvePhoneNumber(participantId, env);
 			const host = getAppUrl(env);
 			const dmText = await rewriteUrlsWithOtp(
 				`Here’s your login link: ${host}/\n\nYou can also go to ${host}/login and enter your phone number to get a code.`,
