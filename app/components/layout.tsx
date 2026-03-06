@@ -62,6 +62,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 										{currentUser.email}
 									</div>
 									<Link
+										to="/pack"
+										className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+									>
+										The Pack
+									</Link>
+									<Link
 										to="/charter"
 										className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
 									>
@@ -130,6 +136,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 										{currentUser.email}
 									</div>
 								</div>
+								<Link
+									to="/pack"
+									className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+									onClick={() => setMobileMenuOpen(false)}
+								>
+									The Pack
+								</Link>
 								<Link
 									to="/charter"
 									className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
