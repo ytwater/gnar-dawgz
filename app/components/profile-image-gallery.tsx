@@ -215,9 +215,9 @@ export function ProfileImageGallery({
 									{format(new Date(image.createdAt), "MMM d, yyyy")}
 								</p>
 
-								{/* Actions - visible on hover */}
+								{/* Actions - visible on hover (desktop) or always (mobile) */}
 								{image.status === "completed" && (
-									<div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+									<div className="absolute inset-0 bg-black/50 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
 										{!image.isActive && (
 											<Button
 												size="icon"
