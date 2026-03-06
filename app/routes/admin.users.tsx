@@ -45,7 +45,7 @@ type AdminUser = {
 	banned?: boolean;
 	image?: string;
 	createdAt: string | Date;
-	whatsappNumber?: string;
+	phoneNumber?: string;
 };
 
 export default function AdminUsers() {
@@ -150,50 +150,6 @@ export default function AdminUsers() {
 			}
 		} catch (error) {
 			console.error("Failed to delete user:", error);
-		}
-	};
-
-	const handleWhatsAppUpdate = async (
-		userId: string,
-		whatsappNumber: string,
-	) => {
-		// Validate format: + followed by digits
-		if (whatsappNumber && !/^\+[1-9]\d{1,14}$/.test(whatsappNumber)) {
-			alert(
-				"Invalid WhatsApp number format. Must be in format +1234567890 (e.g., +16198064334)",
-			);
-			return;
-		}
-
-		try {
-			const formData = new FormData();
-			formData.append("userId", userId);
-			formData.append("whatsappNumber", whatsappNumber || "");
-
-			const { data: updatedUserResults, error: updateUserError } =
-				await authClient.admin.updateUser({
-					userId,
-					data: { whatsappNumber },
-				});
-
-			if (updateUserError) {
-				throw new Error(updateUserError.message);
-			}
-
-			// Refresh users
-			const { data } = await authClient.admin.listUsers({
-				query: { limit: 100 },
-			});
-			if (data?.users) {
-				setUsers(data.users as AdminUser[]);
-			}
-		} catch (error) {
-			console.error("Failed to update WhatsApp number:", error);
-			alert(
-				error instanceof Error
-					? error.message
-					: "Failed to update WhatsApp number",
-			);
 		}
 	};
 
@@ -371,30 +327,8 @@ export default function AdminUsers() {
 											</SelectContent>
 										</Select>
 									</TableCell>
-									<TableCell>
-										<Input
-											type="text"
-											value={user.whatsappNumber || ""}
-											onChange={(e) => {
-												setUsers((prev) =>
-													prev.map((u) =>
-														u.id === user.id
-															? { ...u, whatsappNumber: e.target.value }
-															: u,
-													),
-												);
-											}}
-											onBlur={(e) => {
-												handleWhatsAppUpdate(user.id, e.target.value);
-											}}
-											onKeyDown={(e) => {
-												if (e.key === "Enter") {
-													e.currentTarget.blur();
-												}
-											}}
-											placeholder="+16198064334"
-											className="w-40"
-										/>
+									<TableCell className="text-muted-foreground">
+										{user.phoneNumber || "—"}
 									</TableCell>
 									<TableCell>
 										{user.banned ? (
