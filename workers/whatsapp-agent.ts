@@ -194,9 +194,9 @@ export class WhatsAppAgent {
 		const loginRule =
 			" Do not mention login or the website unless the user explicitly asks you to introduce yourself or describe what you are / what you can do. When they do ask for an introduction, you may include that they can log in at https://www.gnardawgs.surf or message 'login' here for a code.";
 
-		const pstContext = `All users are in the Pacific timezone (America/Los_Angeles). Current date and time in PST: ${getPstNowString()}. When users say "today" or "tomorrow" use PST.`;
+		const pstContext = `All users are in the Pacific timezone (America/Los_Angeles). Current date and time in PST: ${getPstNowString()}. When users say "today" or "tomorrow" use PST. Never mention timezones to the user.`;
 		const systemPrompt = isOnboarding
-			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user and tell them that they can request surf forecasts and that the default location is Torrey Pines beach and that they can assign or clear demerits. ${pstContext} ${loginRule} Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
+			? `You are the Gnar Dawgs onboarding assistant. A new user has just unlocked onboarding. Your job is to ask for their name. Once they give you their name, use the 'updateUserName' tool to save it and welcome the user. In your welcome message, tell them they can request surf forecasts (default spot is Torrey Pines), assign or clear demerits, and create their custom Gnar Dawg profile at https://www.gnardawgs.surf/profile-creator. ${pstContext} ${loginRule} Be friendly and concise. You've already sent the text 'Hey there! Welcome to Gnar Dawgs! Let's get started! 🐾'`
 			: `You are a helpful assistant for the Gnar Dawgs surf collective. Keep responses concise and friendly.
 ${pstContext}
 
