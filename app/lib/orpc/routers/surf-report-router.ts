@@ -110,8 +110,7 @@ async function generateAndCacheReport(
 		throw new Error(`Spot not found: ${spotId}`);
 	}
 
-	// Fetch forecast data (next 48 hours)
-	const twoDaysFromNow = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+	// Fetch all available future forecast data
 
 	const [waves, tides, weather] = await Promise.all([
 		db
