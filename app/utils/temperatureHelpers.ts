@@ -1,7 +1,7 @@
 /**
  * Temperature utility functions for converting and formatting temperatures.
  * All public display should use Fahrenheit (°F).
- * 
+ *
  * IMPORTANT: This handles AIR temperature from weather APIs.
  * Do NOT confuse with WATER temperature from Surfline API.
  */
@@ -12,10 +12,10 @@
  * @returns Temperature in Fahrenheit, rounded to nearest integer
  */
 export const celsiusToFahrenheit = (celsius: number): number => {
-  if (typeof celsius !== 'number' || Number.isNaN(celsius)) {
-    return 0;
-  }
-  return Math.round((celsius * 9) / 5 + 32);
+	if (typeof celsius !== "number" || Number.isNaN(celsius)) {
+		return 0;
+	}
+	return Math.round((celsius * 9) / 5 + 32);
 };
 
 /**
@@ -24,16 +24,16 @@ export const celsiusToFahrenheit = (celsius: number): number => {
  * @returns Temperature in Celsius, rounded to nearest integer
  */
 export const fahrenheitToCelsius = (fahrenheit: number): number => {
-  if (typeof fahrenheit !== 'number' || Number.isNaN(fahrenheit)) {
-    return 0;
-  }
-  return Math.round(((fahrenheit - 32) * 5) / 9);
+	if (typeof fahrenheit !== "number" || Number.isNaN(fahrenheit)) {
+		return 0;
+	}
+	return Math.round(((fahrenheit - 32) * 5) / 9);
 };
 
 /**
  * Temperature unit type
  */
-export type TemperatureUnit = 'C' | 'F';
+export type TemperatureUnit = "C" | "F";
 
 /**
  * Formats temperature for display in Fahrenheit
@@ -42,15 +42,21 @@ export type TemperatureUnit = 'C' | 'F';
  * @returns Formatted temperature string in Fahrenheit with °F symbol
  */
 export const formatTemperature = (
-  temp: number | null | undefined,
-  unit: TemperatureUnit = 'F'
+	temp: number | null | undefined,
+	unit: TemperatureUnit = "F",
 ): string => {
-  if (temp === null || temp === undefined || typeof temp !== 'number' || Number.isNaN(temp)) {
-    return '--°F';
-  }
-  
-  const fahrenheit = unit === 'C' ? celsiusToFahrenheit(temp) : Math.round(temp);
-  return `${fahrenheit}°F`;
+	if (
+		temp === null ||
+		temp === undefined ||
+		typeof temp !== "number" ||
+		Number.isNaN(temp)
+	) {
+		return "--°F";
+	}
+
+	const fahrenheit =
+		unit === "C" ? celsiusToFahrenheit(temp) : Math.round(temp);
+	return `${fahrenheit}°F`;
 };
 
 /**
@@ -61,25 +67,30 @@ export const formatTemperature = (
  * @returns Formatted temperature string with appropriate symbol
  */
 export const formatTemperatureWithUnit = (
-  temp: number | null | undefined,
-  inputUnit: TemperatureUnit = 'F',
-  outputUnit: TemperatureUnit = 'F'
+	temp: number | null | undefined,
+	inputUnit: TemperatureUnit = "F",
+	outputUnit: TemperatureUnit = "F",
 ): string => {
-  if (temp === null || temp === undefined || typeof temp !== 'number' || Number.isNaN(temp)) {
-    return `--°${outputUnit}`;
-  }
+	if (
+		temp === null ||
+		temp === undefined ||
+		typeof temp !== "number" ||
+		Number.isNaN(temp)
+	) {
+		return `--°${outputUnit}`;
+	}
 
-  let convertedTemp: number;
-  
-  if (inputUnit === outputUnit) {
-    convertedTemp = Math.round(temp);
-  } else if (inputUnit === 'C' && outputUnit === 'F') {
-    convertedTemp = celsiusToFahrenheit(temp);
-  } else {
-    convertedTemp = fahrenheitToCelsius(temp);
-  }
+	let convertedTemp: number;
 
-  return `${convertedTemp}°${outputUnit}`;
+	if (inputUnit === outputUnit) {
+		convertedTemp = Math.round(temp);
+	} else if (inputUnit === "C" && outputUnit === "F") {
+		convertedTemp = celsiusToFahrenheit(temp);
+	} else {
+		convertedTemp = fahrenheitToCelsius(temp);
+	}
+
+	return `${convertedTemp}°${outputUnit}`;
 };
 
 /**
@@ -89,14 +100,19 @@ export const formatTemperatureWithUnit = (
  * @returns Temperature in Fahrenheit as a number, or null if invalid
  */
 export const getTemperatureInFahrenheit = (
-  temp: number | null | undefined,
-  unit: TemperatureUnit = 'F'
+	temp: number | null | undefined,
+	unit: TemperatureUnit = "F",
 ): number | null => {
-  if (temp === null || temp === undefined || typeof temp !== 'number' || Number.isNaN(temp)) {
-    return null;
-  }
-  
-  return unit === 'C' ? celsiusToFahrenheit(temp) : Math.round(temp);
+	if (
+		temp === null ||
+		temp === undefined ||
+		typeof temp !== "number" ||
+		Number.isNaN(temp)
+	) {
+		return null;
+	}
+
+	return unit === "C" ? celsiusToFahrenheit(temp) : Math.round(temp);
 };
 
 /**
@@ -105,7 +121,7 @@ export const getTemperatureInFahrenheit = (
  * @returns true if temperature is within reasonable range (-100°F to 150°F)
  */
 export const isReasonableAirTemperature = (tempFahrenheit: number): boolean => {
-  return tempFahrenheit >= -100 && tempFahrenheit <= 150;
+	return tempFahrenheit >= -100 && tempFahrenheit <= 150;
 };
 
 /**
@@ -117,39 +133,41 @@ export const isReasonableAirTemperature = (tempFahrenheit: number): boolean => {
  * @returns Object with analysis results
  */
 export const analyzeTemperatureValue = (
-  displayedValue: number,
-  expectedRangeLow: number = 30,
-  expectedRangeHigh: number = 100
+	displayedValue: number,
+	expectedRangeLow: number = 30,
+	expectedRangeHigh: number = 100,
 ): {
-  likelyCorrect: boolean;
-  possiblyWrongUnit: boolean;
-  suggestion: string | null;
+	likelyCorrect: boolean;
+	possiblyWrongUnit: boolean;
+	suggestion: string | null;
 } => {
-  const isInExpectedRange = displayedValue >= expectedRangeLow && displayedValue <= expectedRangeHigh;
-  
-  // If displaying a Celsius value as Fahrenheit, converting back would give reasonable result
-  const asIfCelsius = celsiusToFahrenheit(displayedValue);
-  const convertedWouldBeReasonable = asIfCelsius >= expectedRangeLow && asIfCelsius <= expectedRangeHigh;
-  
-  if (isInExpectedRange) {
-    return {
-      likelyCorrect: true,
-      possiblyWrongUnit: false,
-      suggestion: null,
-    };
-  }
-  
-  if (!isInExpectedRange && convertedWouldBeReasonable) {
-    return {
-      likelyCorrect: false,
-      possiblyWrongUnit: true,
-      suggestion: `Value ${displayedValue}°F seems low. If it's actually ${displayedValue}°C, that would be ${asIfCelsius}°F`,
-    };
-  }
-  
-  return {
-    likelyCorrect: false,
-    possiblyWrongUnit: false,
-    suggestion: `Temperature ${displayedValue}°F is outside expected range`,
-  };
+	const isInExpectedRange =
+		displayedValue >= expectedRangeLow && displayedValue <= expectedRangeHigh;
+
+	// If displaying a Celsius value as Fahrenheit, converting back would give reasonable result
+	const asIfCelsius = celsiusToFahrenheit(displayedValue);
+	const convertedWouldBeReasonable =
+		asIfCelsius >= expectedRangeLow && asIfCelsius <= expectedRangeHigh;
+
+	if (isInExpectedRange) {
+		return {
+			likelyCorrect: true,
+			possiblyWrongUnit: false,
+			suggestion: null,
+		};
+	}
+
+	if (!isInExpectedRange && convertedWouldBeReasonable) {
+		return {
+			likelyCorrect: false,
+			possiblyWrongUnit: true,
+			suggestion: `Value ${displayedValue}°F seems low. If it's actually ${displayedValue}°C, that would be ${asIfCelsius}°F`,
+		};
+	}
+
+	return {
+		likelyCorrect: false,
+		possiblyWrongUnit: false,
+		suggestion: `Temperature ${displayedValue}°F is outside expected range`,
+	};
 };

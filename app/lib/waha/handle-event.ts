@@ -182,7 +182,9 @@ export async function handleWahaMessage(
 		} else {
 			// Direct message from unknown user: only create and process for onboarding passphrase
 			const onboardingPassphrase =
-				lowerText === "woof woof" || lowerText === "ruff ruff" || lowerText === "bark bark";
+				lowerText === "woof woof" ||
+				lowerText === "ruff ruff" ||
+				lowerText === "bark bark";
 			if (!onboardingPassphrase) {
 				console.log(`Ignoring message from unknown user ${phoneNumber}`);
 				return;

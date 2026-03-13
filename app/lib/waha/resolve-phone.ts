@@ -20,13 +20,9 @@ export async function resolvePhoneNumber(
 	if (waId.endsWith("@lid")) {
 		const lid = waId.replace(/@lid$/, "");
 		try {
-			const result = await lidsControllerFindPNByLid(
-				lid,
-				WAHA_SESSION_NAME,
-				{
-					headers: { "X-Api-Key": env.WAHA_API_KEY ?? "" },
-				},
-			);
+			const result = await lidsControllerFindPNByLid(lid, WAHA_SESSION_NAME, {
+				headers: { "X-Api-Key": env.WAHA_API_KEY ?? "" },
+			});
 			const pn = result.data?.pn;
 			if (pn) {
 				// pn is like "16195985494@c.us" or just "16195985494"

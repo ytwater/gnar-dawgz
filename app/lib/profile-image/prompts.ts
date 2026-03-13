@@ -61,5 +61,7 @@ export function getStylizedDogPrompt(mode: StyleMode): string {
 }
 
 export function getLogoCompositePrompt(mode: StyleMode): string {
-	return mode === "head" ? LOGO_COMPOSITE_HEAD_PROMPT : LOGO_COMPOSITE_FULL_PROMPT;
+	return mode === "head"
+		? LOGO_COMPOSITE_HEAD_PROMPT
+		: LOGO_COMPOSITE_FULL_PROMPT;
 }

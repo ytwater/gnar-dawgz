@@ -7,17 +7,20 @@ import type { Route } from "./+types/_app.pack";
 const HEADERS: { title: string; tagline: string; sub: string }[] = [
 	{
 		title: "The Pack",
-		tagline: "A ragtag crew of sun-soaked wave chasers, paddle warriors, and self-proclaimed ocean experts. We wipe out with style.",
+		tagline:
+			"A ragtag crew of sun-soaked wave chasers, paddle warriors, and self-proclaimed ocean experts. We wipe out with style.",
 		sub: "Gnar Dawgs SUP Club — where the vibes are immaculate and the falls are even better.",
 	},
 	{
 		title: "The Crew",
-		tagline: "San Diego's finest stand up paddle boarders. Emphasis on \"finest\" — nobody said anything about \"best.\"",
+		tagline:
+			'San Diego\'s finest stand up paddle boarders. Emphasis on "finest" — nobody said anything about "best."',
 		sub: "Catch us at the Pound after every session, arguing about who almost caught the biggest wave.",
 	},
 	{
 		title: "The Dawgs",
-		tagline: "We paddle hard, fall harder, and eat more pizza than any surf crew has a right to.",
+		tagline:
+			"We paddle hard, fall harder, and eat more pizza than any surf crew has a right to.",
 		sub: "Post-session debrief: mandatory. Location: the Dog Pound. Order: one large per person, no exceptions.",
 	},
 	{
@@ -27,7 +30,8 @@ const HEADERS: { title: string; tagline: string; sub: string }[] = [
 	},
 	{
 		title: "The Gnar Dawgs",
-		tagline: "Born in the Pacific, raised on Pacific Beach vibes, fueled entirely by Pound pizza and questionable life choices.",
+		tagline:
+			"Born in the Pacific, raised on Pacific Beach vibes, fueled entirely by Pound pizza and questionable life choices.",
 		sub: "SUP responsibly. Drink irresponsibly. Always tip your paddle.",
 	},
 	{
@@ -37,22 +41,26 @@ const HEADERS: { title: string; tagline: string; sub: string }[] = [
 	},
 	{
 		title: "The Stoke Squad",
-		tagline: "Not all who wander are lost. But some of us are definitely lost in the surf.",
+		tagline:
+			"Not all who wander are lost. But some of us are definitely lost in the surf.",
 		sub: "Post-session consensus: the waves were great, the wipeouts were spectacular, and the Pound never misses.",
 	},
 	{
 		title: "The Paddlers",
-		tagline: "A collection of humans who look at the Pacific Ocean and think \"yeah, I can stand on that.\"",
+		tagline:
+			'A collection of humans who look at the Pacific Ocean and think "yeah, I can stand on that."',
 		sub: "Spoiler: sometimes we can. Meet us at the Pound either way.",
 	},
 	{
 		title: "The San Diego Dawgs",
-		tagline: "San Diego dawgs doing San Diego things — paddling at dawn, crushing slices by noon.",
+		tagline:
+			"San Diego dawgs doing San Diego things — paddling at dawn, crushing slices by noon.",
 		sub: "The Dog Pound holds a special place in our hearts. And our stomachs.",
 	},
 	{
 		title: "The Regulars",
-		tagline: "We don't always ride the perfect wave, but we always find the perfect booth at the Pound.",
+		tagline:
+			"We don't always ride the perfect wave, but we always find the perfect booth at the Pound.",
 		sub: "Priorities are priorities.",
 	},
 	{
@@ -62,7 +70,8 @@ const HEADERS: { title: string; tagline: string; sub: string }[] = [
 	},
 	{
 		title: "The Wet Dogs",
-		tagline: "The Pacific doesn't care how confident you looked on shore. Neither does the pizza — it'll eat with anyone.",
+		tagline:
+			"The Pacific doesn't care how confident you looked on shore. Neither does the pizza — it'll eat with anyone.",
 		sub: "See you at the Dog Pound. Wet hair welcome.",
 	},
 ];
@@ -101,11 +110,10 @@ export default function Pack() {
 	);
 
 	useEffect(() => {
-		orpcClient.users.listPackMembers()
+		orpcClient.users
+			.listPackMembers()
 			.then((data) => {
-				setMembers(
-					data.filter((u) => u.name && !shouldIgnore(u.name)),
-				);
+				setMembers(data.filter((u) => u.name && !shouldIgnore(u.name)));
 			})
 			.catch(console.error)
 			.finally(() => setLoading(false));
@@ -114,7 +122,9 @@ export default function Pack() {
 	return (
 		<div className="space-y-10">
 			<div className="text-center space-y-3 max-w-2xl mx-auto">
-				<h1 className="text-5xl font-extrabold tracking-tight">{header.title}</h1>
+				<h1 className="text-5xl font-extrabold tracking-tight">
+					{header.title}
+				</h1>
 				<p className="text-xl text-muted-foreground">{header.tagline}</p>
 				<p className="text-sm text-muted-foreground italic">{header.sub}</p>
 			</div>
@@ -148,10 +158,7 @@ export default function Pack() {
 									/>
 								) : (
 									<div className="w-full h-full bg-primary/10 flex items-center justify-center">
-										<Dog
-											weight="fill"
-											className="w-16 h-16 text-primary/40"
-										/>
+										<Dog weight="fill" className="w-16 h-16 text-primary/40" />
 									</div>
 								)}
 							</div>

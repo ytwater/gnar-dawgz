@@ -142,7 +142,9 @@ export default function Login() {
 					setOtpCode("");
 					setError(null);
 				} else {
-					setError(result.error.message || "Invalid OTP code. Please try again.");
+					setError(
+						result.error.message || "Invalid OTP code. Please try again.",
+					);
 				}
 			}
 		} catch (err) {
@@ -218,7 +220,8 @@ export default function Login() {
 						<div className="space-y-4">
 							<Alert variant="destructive">
 								<AlertDescription>
-									This link has expired. Tap below to get a new code via WhatsApp.
+									This link has expired. Tap below to get a new code via
+									WhatsApp.
 								</AlertDescription>
 							</Alert>
 							<div>
@@ -261,107 +264,116 @@ export default function Login() {
 							<p className="text-sm text-muted-foreground">Signing you in...</p>
 						</div>
 					) : (
-					<div className="space-y-4">
-						<div>
-							<label
-								htmlFor="phone"
-								className="block text-sm font-medium text-foreground mb-2"
-							>
-								Phone Number
-							</label>
-							<PhoneNumberInput
-								id="phone"
-								value={phoneNumber}
-								onChange={(value) => setPhoneNumber(value)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" && phoneNumber.trim() && !isSendingOtp && !otpSent) {
-										handleSendOtp();
-									}
-								}}
-								disabled={isSendingOtp || isVerifying || otpSent}
-								className="w-full"
-							/>
-						</div>
+						<div className="space-y-4">
+							<div>
+								<label
+									htmlFor="phone"
+									className="block text-sm font-medium text-foreground mb-2"
+								>
+									Phone Number
+								</label>
+								<PhoneNumberInput
+									id="phone"
+									value={phoneNumber}
+									onChange={(value) => setPhoneNumber(value)}
+									onKeyDown={(e) => {
+										if (
+											e.key === "Enter" &&
+											phoneNumber.trim() &&
+											!isSendingOtp &&
+											!otpSent
+										) {
+											handleSendOtp();
+										}
+									}}
+									disabled={isSendingOtp || isVerifying || otpSent}
+									className="w-full"
+								/>
+							</div>
 
-						{!otpSent ? (
-							<Button
-								type="button"
-								onClick={handleSendOtp}
-								disabled={isSendingOtp || !phoneNumber.trim()}
-								className="w-full"
-							>
-								{isSendingOtp ? (
-									<>
-										<div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-2" />
-										Sending OTP...
-									</>
-								) : (
-									<>
-										<Phone className="w-5 h-5 mr-2" />
-										Send Verification Code
-									</>
-								)}
-							</Button>
-						) : (
-							<>
-								<div>
-									<label
-										htmlFor="otp"
-										className="block text-sm font-medium text-foreground mb-2"
-									>
-										Verification Code
-									</label>
-									<Input
-										id="otp"
-										ref={otpInputRef}
-										type="text"
-										placeholder="Enter 6-digit code"
-										value={otpCode}
-										onChange={(e) => setOtpCode(e.target.value)}
-										onKeyDown={(e) => {
-											if (e.key === "Enter" && otpCode.trim() && !isVerifying) {
-												handleVerifyOtp();
-											}
-										}}
-										disabled={isVerifying}
-										maxLength={6}
-										className="w-full"
-									/>
-								</div>
-								<div className="flex gap-2">
-									<Button
-										type="button"
-										variant="outline"
-										onClick={() => {
-											setOtpSent(false);
-											setOtpCode("");
-											setError(null);
-											setSuccess(null);
-										}}
-										disabled={isVerifying}
-										className="flex-1"
-									>
-										Cancel
-									</Button>
-									<Button
-										type="button"
-										onClick={handleVerifyOtp}
-										disabled={isVerifying || !otpCode.trim()}
-										className="flex-1"
-									>
-										{isVerifying ? (
-											<>
-												<div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-2" />
-												Verifying...
-											</>
-										) : (
-											"Sign In"
-										)}
-									</Button>
-								</div>
-							</>
-						)}
-					</div>
+							{!otpSent ? (
+								<Button
+									type="button"
+									onClick={handleSendOtp}
+									disabled={isSendingOtp || !phoneNumber.trim()}
+									className="w-full"
+								>
+									{isSendingOtp ? (
+										<>
+											<div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-2" />
+											Sending OTP...
+										</>
+									) : (
+										<>
+											<Phone className="w-5 h-5 mr-2" />
+											Send Verification Code
+										</>
+									)}
+								</Button>
+							) : (
+								<>
+									<div>
+										<label
+											htmlFor="otp"
+											className="block text-sm font-medium text-foreground mb-2"
+										>
+											Verification Code
+										</label>
+										<Input
+											id="otp"
+											ref={otpInputRef}
+											type="text"
+											placeholder="Enter 6-digit code"
+											value={otpCode}
+											onChange={(e) => setOtpCode(e.target.value)}
+											onKeyDown={(e) => {
+												if (
+													e.key === "Enter" &&
+													otpCode.trim() &&
+													!isVerifying
+												) {
+													handleVerifyOtp();
+												}
+											}}
+											disabled={isVerifying}
+											maxLength={6}
+											className="w-full"
+										/>
+									</div>
+									<div className="flex gap-2">
+										<Button
+											type="button"
+											variant="outline"
+											onClick={() => {
+												setOtpSent(false);
+												setOtpCode("");
+												setError(null);
+												setSuccess(null);
+											}}
+											disabled={isVerifying}
+											className="flex-1"
+										>
+											Cancel
+										</Button>
+										<Button
+											type="button"
+											onClick={handleVerifyOtp}
+											disabled={isVerifying || !otpCode.trim()}
+											className="flex-1"
+										>
+											{isVerifying ? (
+												<>
+													<div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-2" />
+													Verifying...
+												</>
+											) : (
+												"Sign In"
+											)}
+										</Button>
+									</div>
+								</>
+							)}
+						</div>
 					)}
 				</div>
 			</div>
