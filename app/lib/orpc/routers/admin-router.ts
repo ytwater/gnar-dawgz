@@ -20,10 +20,11 @@ export const adminRouter = {
 				.from(profileImages)
 				.where(eq(profileImages.userId, userId));
 
-			const keysToDelete = images.flatMap((img) =>
-				[img.originalUrl, img.stylizedDogUrl, img.fullLogoUrl].filter(
-					Boolean,
-				) as string[],
+			const keysToDelete = images.flatMap(
+				(img) =>
+					[img.originalUrl, img.stylizedDogUrl, img.fullLogoUrl].filter(
+						Boolean,
+					) as string[],
 			);
 
 			// Single batch R2 delete call regardless of image count

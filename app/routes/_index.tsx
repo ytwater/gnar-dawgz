@@ -130,9 +130,7 @@ export default function Home() {
 				<div
 					className={[
 						"fixed inset-0 z-50 flex flex-col items-center",
-						isDashboard
-							? "bg-background pt-[104px]"
-							: "bg-slate-500 pt-[35vh]",
+						isDashboard ? "bg-background pt-[104px]" : "bg-slate-500 pt-[35vh]",
 					].join(" ")}
 					style={{
 						transition: [

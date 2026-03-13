@@ -6,6 +6,7 @@
 		"nodejs_compat"
 	],
 	"main": "./workers/app.ts",
+	"preview_urls": true,
 	"routes": [
 		{
 			"pattern": "www.gnardawgs.surf",

@@ -211,9 +211,7 @@ export const profileImageRouter = {
 				let fullLogoKey: string;
 
 				if (styleMode === "head") {
-					console.log(
-						"[profile-image:generate] Step 2: Compositing into logo",
-					);
+					console.log("[profile-image:generate] Step 2: Compositing into logo");
 					fullLogoBuffer = await aiProvider.compositeIntoLogo(
 						stylizedDogBuffer,
 						referenceBuffer,

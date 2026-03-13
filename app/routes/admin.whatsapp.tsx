@@ -66,7 +66,8 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 			if (res.status >= 400 && res.status < 500) {
 				return {
 					error:
-						(res.data as { message?: string })?.message ?? "WAHA request failed",
+						(res.data as { message?: string })?.message ??
+						"WAHA request failed",
 				};
 			}
 			if (res.status >= 500) {

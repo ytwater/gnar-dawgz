@@ -111,7 +111,9 @@ function uniqueTimestamp(): string {
  * Runs the full WAHA health check cycle with KV-backed state and email backoff.
  * Call this once per hour from the scheduled handler.
  */
-export async function runWahaHealthCheck(env: CloudflareBindings): Promise<void> {
+export async function runWahaHealthCheck(
+	env: CloudflareBindings,
+): Promise<void> {
 	const now = new Date();
 	const result = await checkWahaHealth(env);
 

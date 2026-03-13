@@ -39,9 +39,17 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
-			if (res.status !== 200 || (res.data as { success?: boolean })?.success === false) {
-				const msg = (res.data as { message?: string })?.message ?? "Failed to update name";
-				console.error("Failed to update profile name", { status: res.status, data: res.data });
+			if (
+				res.status !== 200 ||
+				(res.data as { success?: boolean })?.success === false
+			) {
+				const msg =
+					(res.data as { message?: string })?.message ??
+					"Failed to update name";
+				console.error("Failed to update profile name", {
+					status: res.status,
+					data: res.data,
+				});
 				errors.push(msg);
 			}
 		}
@@ -52,9 +60,17 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 				WAHA_SESSION_NAME,
 				fetchOptions,
 			);
-			if (res.status !== 200 || (res.data as { success?: boolean })?.success === false) {
-				const msg = (res.data as { message?: string })?.message ?? "Failed to update status";
-				console.error("Failed to update profile status", { status: res.status, data: res.data });
+			if (
+				res.status !== 200 ||
+				(res.data as { success?: boolean })?.success === false
+			) {
+				const msg =
+					(res.data as { message?: string })?.message ??
+					"Failed to update status";
+				console.error("Failed to update profile status", {
+					status: res.status,
+					data: res.data,
+				});
 				errors.push(msg);
 			}
 		}
@@ -75,9 +91,17 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 				fetchOptions,
 			);
 
-			if (res.status !== 200 || (res.data as { success?: boolean })?.success === false) {
-				const msg = (res.data as { message?: string })?.message ?? "Failed to update profile picture";
-				console.error("Failed to update profile picture", { status: res.status, data: res.data });
+			if (
+				res.status !== 200 ||
+				(res.data as { success?: boolean })?.success === false
+			) {
+				const msg =
+					(res.data as { message?: string })?.message ??
+					"Failed to update profile picture";
+				console.error("Failed to update profile picture", {
+					status: res.status,
+					data: res.data,
+				});
 				errors.push(msg);
 			}
 		}
