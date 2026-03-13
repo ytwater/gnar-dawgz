@@ -1,11 +1,16 @@
 import { createRouterClient } from "@orpc/server";
 import { surfForecastRouter } from "./routers/surf-forecast-router";
+import { surfReportRouter } from "./routers/surf-report-router";
 import type { ORPCContext } from "./server";
 
-// Create a router client for server-side calls
-// This ensures proper validation, middleware execution, and type safety
 function createSurfForecastClient(context: ORPCContext) {
 	return createRouterClient(surfForecastRouter, {
+		context,
+	});
+}
+
+function createSurfReportClient(context: ORPCContext) {
+	return createRouterClient(surfReportRouter, {
 		context,
 	});
 }
@@ -41,4 +46,9 @@ export async function getTaxonomyBreadcrumbs(
 ) {
 	const client = createSurfForecastClient(context);
 	return client.getTaxonomyBreadcrumbs({ parentId });
+}
+
+export async function getSurfReport(context: ORPCContext, spotId: string) {
+	const client = createSurfReportClient(context);
+	return client.getSurfReport({ spotId });
 }
