@@ -29,19 +29,21 @@ export const surfReportRouter = {
 			const { spotId } = input;
 
 			// Check cache first
-			try {
-				const cached = await getCachedReport(db, spotId);
-				if (cached) {
-					return {
-						report: cached.report,
-						generatedAt: cached.generatedAt,
-						expiresAt: cached.expiresAt,
-						fromCache: true,
-					};
-				}
-			} catch (e) {
-				console.error("Error checking surf report cache:", e);
-			}
+            try {
+                const cached = await getCachedReport(db, spotId);
+                if (cached) {
+                    return {
+                        report: cached.report,
+                        generatedAt: cached.generatedAt,
+                        expiresAt: cached.expiresAt,
+                        fromCache: true,
+                    };
+                }
+            } catch (e) {
+                console.error("Error checking surf report cache:", e);
+                const message = e instanceof Error ? e.message : "Unknown cache error";
+				throw new Error(`Failed to access surf report cache: ${message}`);
+            }
 
 			// Generate on-demand
 			try {
@@ -108,8 +110,7 @@ async function generateAndCacheReport(
 		throw new Error(`Spot not found: ${spotId}`);
 	}
 
-	// Fetch forecast data (next 48 hours)
-	const twoDaysFromNow = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+	// Fetch all available future forecast data
 
 	const [waves, tides, weather] = await Promise.all([
 		db
