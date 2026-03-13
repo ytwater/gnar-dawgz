@@ -8,6 +8,7 @@ import { generateText, tool } from "ai";
 import { and, asc, eq, gte, lte } from "drizzle-orm";
 import { z } from "zod";
 import { SURFLINE_TORREY_PINES_SPOT_ID } from "~/app/config/constants";
+import { celsiusToFahrenheit } from "~/app/utils/temperatureHelpers";
 import { getDb } from "~/app/lib/db";
 import {
 	surfForecasts,
@@ -109,14 +110,22 @@ export const createSurfForecastTool = (
 				waveDirection: f.waveDirection,
 				windSpeed: f.windSpeed,
 				windDirection: f.windDirection,
-				temperature: f.temperature,
+				// Normalize air temperature to Fahrenheit for the model
+				temperatureF:
+					f.temperature === null || f.temperature === undefined
+						? null
+						: celsiusToFahrenheit(f.temperature),
 				rating: f.rating,
 				swells: f.swells ? JSON.parse(f.swells) : null,
 			}));
 
 			const weatherData = weather.map((w) => ({
 				timestamp: new Date(w.timestamp).toISOString(),
-				temperature: w.temperature,
+				// Normalize air temperature to Fahrenheit for the model
+				temperatureF:
+					w.temperature === null || w.temperature === undefined
+						? null
+						: celsiusToFahrenheit(w.temperature),
 				precipitation: w.precipitation,
 				cloudCover: w.cloudCover,
 				windSpeed: w.windSpeed,
@@ -140,7 +149,7 @@ Variables:
 - waveDirection - Wave direction in degrees (0-360, where 0 is North)
 - windSpeed - Wind speed (units vary by source)
 - windDirection - Wind direction in degrees (0-360, where 0 is North)
-- temperature - Air temperature (units vary by source)
+- temperatureF - Air temperature in degrees Fahrenheit (normalized from source data)
 - rating - Surf quality rating (surfline only: "POOR", "FAIR", "GOOD", "EPIC", etc.)
   - swells - JSON object containing multiple swell components (may be null)
 

@@ -60,6 +60,7 @@ import {
 } from "../config/constants";
 import { authClient } from "../lib/auth-client";
 import { createORPCContext } from "../lib/orpc/server-helpers";
+import { celsiusToFahrenheit } from "../utils/temperatureHelpers";
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 	console.log("context.cloudflare.env", context.cloudflare.env);
@@ -592,7 +593,10 @@ export function SurfDashboardContent({
 														{forecast.weather.temperature !== null ? (
 															<div className="space-y-1">
 																<div className="text-base font-semibold">
-																	{forecast.weather.temperature.toFixed(0)}°F
+																	{celsiusToFahrenheit(
+																		forecast.weather.temperature,
+																	).toFixed(0)}
+																	°F
 																</div>
 																{forecast.weather.precipitation !== null &&
 																	forecast.weather.precipitation > 0 && (
