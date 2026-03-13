@@ -43,6 +43,7 @@ import { Spinner } from "~/app/components/ui/spinner";
 import {
 	getActiveSpots,
 	getDashboardData,
+	getSurfReport,
 } from "~/app/lib/orpc/call-procedure";
 import {
 	surfForecastKeys,
@@ -50,6 +51,12 @@ import {
 	useDashboardData,
 	useSyncSpot,
 } from "~/app/lib/orpc/hooks/use-surf-forecast";
+import {
+	type SurfReportData,
+	surfReportKeys,
+	useGenerateSurfReport,
+	useSurfReport,
+} from "~/app/lib/orpc/hooks/use-surf-report";
 import {
 	createQueryClient,
 	dehydrateQueryClient,
@@ -107,8 +114,14 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 		selectedSpot = allSpots[0];
 	}
 
-	// Get dashboard data via ORPC routes
-	const dashboardData = await getDashboardData(orpcContext, selectedSpotId);
+	// Get dashboard data and surf report in parallel
+	const [dashboardData, surfReport] = await Promise.all([
+		getDashboardData(orpcContext, selectedSpotId),
+		getSurfReport(orpcContext, selectedSpotId).catch((e) => {
+			console.error("Error prefetching surf report:", e);
+			return null;
+		}),
+	]);
 	console.log(
 		"🚀 ~ _app.surf-dashboard.tsx:108 ~ loader ~ dashboardData:",
 		JSON.stringify(dashboardData),
@@ -121,6 +134,9 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 		surfForecastKeys.dashboardData(selectedSpotId),
 		dashboardData,
 	);
+	if (surfReport) {
+		queryClient.setQueryData(surfReportKeys.report(selectedSpotId), surfReport);
+	}
 
 	return {
 		dehydratedState: dehydrateQueryClient(queryClient),
@@ -128,6 +144,7 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 		selectedSpot: selectedSpot || null,
 		allSpots,
 		dashboardData,
+		surfReport,
 		enableSurfline: context.cloudflare.env.ENABLE_SURFLINE !== "false",
 		enableSwellCloud: context.cloudflare.env.ENABLE_SWELL_CLOUD !== "false",
 	};
@@ -290,12 +307,205 @@ function CustomTooltipContent({
 	);
 }
 
+function WaveLoadingAnimation() {
+	return (
+		<div className="flex flex-col items-center justify-center py-12 gap-6">
+			<div className="relative w-48 h-24">
+				{[0, 1, 2, 3, 4, 5, 6].map((i) => (
+					<div
+						key={i}
+						className="absolute bottom-0 rounded-full bg-primary/20"
+						style={{
+							width: "100%",
+							height: "40%",
+							animation: `wave-rise 1.8s ease-in-out ${i * 0.15}s infinite`,
+							opacity: 0.3 + i * 0.1,
+						}}
+					/>
+				))}
+				<style>{`
+					@keyframes wave-rise {
+						0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.2; }
+						50% { transform: translateY(-12px) scaleY(1.3); opacity: 0.6; }
+					}
+				`}</style>
+				<svg
+					viewBox="0 0 200 60"
+					className="absolute inset-0 w-full h-full"
+					preserveAspectRatio="none"
+					role="img"
+					aria-label="Wave animation"
+				>
+					<path
+						d="M0,30 Q25,10 50,30 T100,30 T150,30 T200,30 V60 H0 Z"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						className="text-primary"
+					>
+						<animate
+							attributeName="d"
+							dur="2s"
+							repeatCount="indefinite"
+							values="
+								M0,30 Q25,10 50,30 T100,30 T150,30 T200,30 V60 H0 Z;
+								M0,30 Q25,50 50,30 T100,30 T150,30 T200,30 V60 H0 Z;
+								M0,30 Q25,10 50,30 T100,30 T150,30 T200,30 V60 H0 Z
+							"
+						/>
+					</path>
+					<path
+						d="M0,35 Q25,15 50,35 T100,35 T150,35 T200,35 V60 H0 Z"
+						className="text-primary/30 fill-current"
+					>
+						<animate
+							attributeName="d"
+							dur="2.5s"
+							repeatCount="indefinite"
+							values="
+								M0,35 Q25,15 50,35 T100,35 T150,35 T200,35 V60 H0 Z;
+								M0,35 Q25,55 50,35 T100,35 T150,35 T200,35 V60 H0 Z;
+								M0,35 Q25,15 50,35 T100,35 T150,35 T200,35 V60 H0 Z
+							"
+						/>
+					</path>
+				</svg>
+			</div>
+			<div className="flex flex-col items-center gap-1">
+				<p className="text-sm font-medium text-muted-foreground animate-pulse">
+					Generating surf report...
+				</p>
+				<p className="text-xs text-muted-foreground/60">
+					Analyzing current conditions
+				</p>
+			</div>
+		</div>
+	);
+}
+
+function SurfReportCard({
+	spotId,
+	initialData,
+	isAdmin,
+}: {
+	spotId: string;
+	initialData?: SurfReportData | null;
+	isAdmin: boolean;
+}) {
+	const {
+		data: report,
+		isLoading,
+		isFetching,
+	} = useSurfReport(spotId, initialData ?? undefined);
+	const generateMutation = useGenerateSurfReport();
+
+	const isGenerating = generateMutation.isPending;
+
+	const handleRegenerate = async () => {
+		try {
+			await generateMutation.mutateAsync(spotId);
+		} catch (error) {
+			console.error("Failed to generate surf report:", error);
+		}
+	};
+
+	const oneHourMs = 60 * 60 * 1000;
+	const reportAgeMs = report
+		? Date.now() - new Date(report.generatedAt).getTime()
+		: 0;
+	const isStale = reportAgeMs >= oneHourMs;
+	const canRefresh = isAdmin || (report && isStale);
+
+	return (
+		<Card>
+			<CardHeader>
+				<div className="flex items-center justify-between">
+					<CardTitle>Surf Report</CardTitle>
+					{(canRefresh || !report) && (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={handleRegenerate}
+							disabled={isGenerating}
+						>
+							{isGenerating ? (
+								<Spinner className="size-3" />
+							) : report ? (
+								<RotateCw className="size-3" />
+							) : (
+								<RotateCw className="size-3" />
+							)}
+						</Button>
+					)}
+				</div>
+			</CardHeader>
+			<CardContent>
+				{isLoading || isGenerating ? (
+					<WaveLoadingAnimation />
+				) : report ? (
+					<div className="prose prose-sm dark:prose-invert max-w-none">
+						{report.report.split("\n\n").map((paragraph) => {
+							const paragraphKey = paragraph.slice(0, 40);
+							if (paragraph.startsWith("**") && paragraph.includes("**")) {
+								const match = paragraph.match(/^\*\*(.+?)\*\*(.*)$/s);
+								if (match) {
+									return (
+										<div key={paragraphKey} className="mt-4 first:mt-0">
+											<h3 className="text-base font-semibold mb-1">
+												{match[1]}
+											</h3>
+											{match[2] && (
+												<p className="text-sm text-muted-foreground leading-relaxed">
+													{match[2].replace(/^\s*[—–-]\s*/, "")}
+												</p>
+											)}
+										</div>
+									);
+								}
+							}
+							return (
+								<p
+									key={paragraphKey}
+									className="text-sm text-muted-foreground leading-relaxed mt-3"
+								>
+									{paragraph}
+								</p>
+							);
+						})}
+					</div>
+				) : (
+					<div className="text-center py-8 text-muted-foreground">
+						<p className="text-sm">No surf report available yet.</p>
+						<Button
+							variant="outline"
+							size="sm"
+							className="mt-3"
+							onClick={handleRegenerate}
+							disabled={isGenerating}
+						>
+							{isGenerating ? (
+								<>
+									<Spinner className="size-3 mr-1.5" />
+									Generating
+								</>
+							) : (
+								"Generate Report"
+							)}
+						</Button>
+					</div>
+				)}
+			</CardContent>
+		</Card>
+	);
+}
+
 export function SurfDashboardContent({
 	selectedSpotId,
 	selectedSpot,
 	onSpotChange,
 	initialAllSpots,
 	initialDashboardData,
+	initialSurfReport,
 	enableSurfline,
 	enableSwellCloud,
 }: {
@@ -304,6 +514,7 @@ export function SurfDashboardContent({
 	onSpotChange?: (value: string) => void;
 	initialAllSpots?: Awaited<ReturnType<typeof getActiveSpots>>;
 	initialDashboardData?: Awaited<ReturnType<typeof getDashboardData>>;
+	initialSurfReport?: SurfReportData | null;
 	enableSurfline: boolean;
 	enableSwellCloud: boolean;
 }) {
@@ -465,6 +676,13 @@ export function SurfDashboardContent({
 					)}
 				</div>
 			</div>
+
+			{/* Surf Report */}
+			<SurfReportCard
+				spotId={selectedSpotId}
+				initialData={initialSurfReport}
+				isAdmin={!!isAdmin}
+			/>
 
 			{combinedData.length === 0 && currentSelectedSpot ? (
 				<Card>
@@ -629,183 +847,242 @@ export function SurfDashboardContent({
 						</CardContent>
 					</Card>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						{/* Combined Wave Height, Period, and Wind Chart */}
-						<Card className="col-span-1 md:col-span-2">
-							<CardHeader>
-								<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-									<div>
-										<CardTitle>Wave Height, Period & Wind</CardTitle>
-										<CardDescription>
-											Wave height (ft), period (s), and wind speed (mph)
-										</CardDescription>
-									</div>
-									<div className="flex items-center gap-6">
-										{hasMultipleSources && enableSurfline && (
-											<div className="flex items-center gap-2">
-												<Checkbox
-													id="show-surfline"
-													checked={showSurfline}
-													onCheckedChange={(checked) =>
-														setShowSurfline(checked === true)
-													}
-												/>
-												<Label
-													htmlFor="show-surfline"
-													className="text-sm font-medium cursor-pointer"
-												>
-													Surfline
-												</Label>
-											</div>
-										)}
-										{hasMultipleSources && enableSwellCloud && (
-											<div className="flex items-center gap-2">
-												<Checkbox
-													id="show-swellcloud"
-													checked={showSwellcloud}
-													onCheckedChange={(checked) =>
-														setShowSwellcloud(checked === true)
-													}
-												/>
-												<Label
-													htmlFor="show-swellcloud"
-													className="text-sm font-medium cursor-pointer"
-												>
-													Swellcloud
-												</Label>
-											</div>
-										)}
-									</div>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					{/* Source toggles */}
+					{hasMultipleSources && (
+						<div className="col-span-1 md:col-span-2 flex items-center gap-6">
+							{enableSurfline && (
+								<div className="flex items-center gap-2">
+									<Checkbox
+										id="show-surfline"
+										checked={showSurfline}
+										onCheckedChange={(checked) =>
+											setShowSurfline(checked === true)
+										}
+									/>
+									<Label
+										htmlFor="show-surfline"
+										className="text-sm font-medium cursor-pointer"
+									>
+										Surfline
+									</Label>
 								</div>
-							</CardHeader>
-							<CardContent>
-								<ChartContainer
-									config={chartConfig}
-									className="min-h-[400px] w-full"
-								>
-									<ComposedChart accessibilityLayer data={filteredData}>
-										<CartesianGrid vertical={false} strokeDasharray="3 3" />
-										<XAxis
-											dataKey="dateStr"
-											tickLine={false}
-											axisLine={false}
-											tickMargin={8}
-										/>
-										<YAxis
+							)}
+							{enableSwellCloud && (
+								<div className="flex items-center gap-2">
+									<Checkbox
+										id="show-swellcloud"
+										checked={showSwellcloud}
+										onCheckedChange={(checked) =>
+											setShowSwellcloud(checked === true)
+										}
+									/>
+									<Label
+										htmlFor="show-swellcloud"
+										className="text-sm font-medium cursor-pointer"
+									>
+										Swellcloud
+									</Label>
+								</div>
+							)}
+						</div>
+					)}
+
+					{/* Wave Height Chart */}
+					<Card className="col-span-1 md:col-span-2">
+						<CardHeader>
+							<CardTitle>Wave Height</CardTitle>
+							<CardDescription>Wave height (ft) over time</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<ChartContainer
+								config={chartConfig}
+								className="min-h-[250px] w-full"
+							>
+								<ComposedChart accessibilityLayer data={filteredData}>
+									<CartesianGrid vertical={false} strokeDasharray="3 3" />
+									<XAxis
+										dataKey="dateStr"
+										tickLine={false}
+										axisLine={false}
+										tickMargin={8}
+									/>
+									<YAxis
+										yAxisId="left"
+										tickLine={false}
+										axisLine={false}
+										unit="ft"
+									/>
+									<ChartTooltip
+										content={
+											<CustomTooltipContent
+												showSurfline={showSurfline}
+												showSwellcloud={showSwellcloud}
+												enableSwellCloud={enableSwellCloud}
+												chartConfig={chartConfig}
+											/>
+										}
+									/>
+									<ChartLegend content={<ChartLegendContent />} />
+									{showSurflineInChart && (
+										<Line
 											yAxisId="left"
-											tickLine={false}
-											axisLine={false}
-											label={{
-												value: "Height (ft) / Period (s)",
-												angle: -90,
-												position: "insideLeft",
-											}}
+											type="monotone"
+											dataKey="surflineHeight"
+											stroke="var(--color-surflineHeight)"
+											strokeWidth={2}
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
 										/>
-										<YAxis
+									)}
+									{showSwellcloudInChart && (
+										<Line
+											yAxisId="left"
+											type="monotone"
+											dataKey="swellcloudHeight"
+											stroke="var(--color-swellcloudHeight)"
+											strokeWidth={2}
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
+										/>
+									)}
+								</ComposedChart>
+							</ChartContainer>
+						</CardContent>
+					</Card>
+
+					{/* Wave Period Chart */}
+					<Card>
+						<CardHeader>
+							<CardTitle>Wave Period</CardTitle>
+							<CardDescription>Wave period (s) over time</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<ChartContainer
+								config={chartConfig}
+								className="min-h-[250px] w-full"
+							>
+								<ComposedChart accessibilityLayer data={filteredData}>
+									<CartesianGrid vertical={false} strokeDasharray="3 3" />
+									<XAxis
+										dataKey="dateStr"
+										tickLine={false}
+										axisLine={false}
+										tickMargin={8}
+									/>
+									<YAxis
+										yAxisId="left"
+										tickLine={false}
+										axisLine={false}
+										unit="s"
+									/>
+									<ChartTooltip
+										content={
+											<CustomTooltipContent
+												showSurfline={showSurfline}
+												showSwellcloud={showSwellcloud}
+												enableSwellCloud={enableSwellCloud}
+												chartConfig={chartConfig}
+											/>
+										}
+									/>
+									<ChartLegend content={<ChartLegendContent />} />
+									{showSurflineInChart && (
+										<Line
+											yAxisId="left"
+											type="monotone"
+											dataKey="surflinePeriod"
+											stroke="var(--color-surflinePeriod)"
+											strokeWidth={2}
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
+										/>
+									)}
+									{showSwellcloudInChart && (
+										<Line
+											yAxisId="left"
+											type="monotone"
+											dataKey="swellcloudPeriod"
+											stroke="var(--color-swellcloudPeriod)"
+											strokeWidth={2}
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
+										/>
+									)}
+								</ComposedChart>
+							</ChartContainer>
+						</CardContent>
+					</Card>
+
+					{/* Wind Speed Chart */}
+					<Card>
+						<CardHeader>
+							<CardTitle>Wind Speed</CardTitle>
+							<CardDescription>Wind speed (mph) over time</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<ChartContainer
+								config={chartConfig}
+								className="min-h-[250px] w-full"
+							>
+								<ComposedChart accessibilityLayer data={filteredData}>
+									<CartesianGrid vertical={false} strokeDasharray="3 3" />
+									<XAxis
+										dataKey="dateStr"
+										tickLine={false}
+										axisLine={false}
+										tickMargin={8}
+									/>
+									<YAxis
+										yAxisId="right"
+										orientation="right"
+										tickLine={false}
+										axisLine={false}
+										unit="mph"
+									/>
+									<ChartTooltip
+										content={
+											<CustomTooltipContent
+												showSurfline={showSurfline}
+												showSwellcloud={showSwellcloud}
+												enableSwellCloud={enableSwellCloud}
+												chartConfig={chartConfig}
+											/>
+										}
+									/>
+									<ChartLegend content={<ChartLegendContent />} />
+									{showSurflineInChart && (
+										<Line
 											yAxisId="right"
-											orientation="right"
-											tickLine={false}
-											axisLine={false}
-											label={{
-												value: "Wind Speed (mph)",
-												angle: 90,
-												position: "insideRight",
-											}}
+											type="monotone"
+											dataKey="surflineWindSpeed"
+											stroke="var(--color-surflineWindSpeed)"
+											strokeWidth={2}
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
 										/>
-										<ChartTooltip
-											content={
-												<CustomTooltipContent
-													showSurfline={showSurfline}
-													showSwellcloud={showSwellcloud}
-													enableSwellCloud={enableSwellCloud}
-													chartConfig={chartConfig}
-												/>
-											}
+									)}
+									{showSwellcloudInChart && (
+										<Line
+											yAxisId="right"
+											type="monotone"
+											dataKey="swellcloudWindSpeed"
+											stroke="var(--color-swellcloudWindSpeed)"
+											strokeWidth={2}
+											dot={false}
+											connectNulls={true}
+											activeDot={{ r: 4 }}
 										/>
-										<ChartLegend content={<ChartLegendContent />} />
-										{/* Wave Heights */}
-										{showSurflineInChart && (
-											<Line
-												yAxisId="left"
-												type="monotone"
-												dataKey="surflineHeight"
-												stroke="var(--color-surflineHeight)"
-												strokeWidth={2}
-												dot={false}
-												connectNulls={true}
-												activeDot={{ r: 4 }}
-											/>
-										)}
-										{showSwellcloudInChart && (
-											<Line
-												yAxisId="left"
-												type="monotone"
-												dataKey="swellcloudHeight"
-												stroke="var(--color-swellcloudHeight)"
-												strokeWidth={2}
-												dot={false}
-												connectNulls={true}
-												activeDot={{ r: 4 }}
-											/>
-										)}
-										{/* Wave Periods */}
-										{showSurflineInChart && (
-											<Line
-												yAxisId="left"
-												type="monotone"
-												dataKey="surflinePeriod"
-												stroke="var(--color-surflinePeriod)"
-												strokeWidth={2}
-												strokeDasharray="5 5"
-												dot={false}
-												connectNulls={true}
-												activeDot={{ r: 4 }}
-											/>
-										)}
-										{showSwellcloudInChart && (
-											<Line
-												yAxisId="left"
-												type="monotone"
-												dataKey="swellcloudPeriod"
-												stroke="var(--color-swellcloudPeriod)"
-												strokeWidth={2}
-												strokeDasharray="5 5"
-												dot={false}
-												connectNulls={true}
-												activeDot={{ r: 4 }}
-											/>
-										)}
-										{/* Wind Speeds */}
-										{showSurflineInChart && (
-											<Line
-												yAxisId="right"
-												type="monotone"
-												dataKey="surflineWindSpeed"
-												stroke="var(--color-surflineWindSpeed)"
-												strokeWidth={2}
-												strokeDasharray="3 3"
-												dot={false}
-												connectNulls={true}
-												activeDot={{ r: 4 }}
-											/>
-										)}
-										{showSwellcloudInChart && (
-											<Line
-												yAxisId="right"
-												type="monotone"
-												dataKey="swellcloudWindSpeed"
-												stroke="var(--color-swellcloudWindSpeed)"
-												strokeWidth={2}
-												strokeDasharray="3 3"
-												dot={false}
-												connectNulls={true}
-												activeDot={{ r: 4 }}
-											/>
-										)}
-									</ComposedChart>
-								</ChartContainer>
-							</CardContent>
-						</Card>
+									)}
+								</ComposedChart>
+							</ChartContainer>
+						</CardContent>
+					</Card>
 
 						{/* Tide Chart */}
 						<Card>
@@ -971,6 +1248,7 @@ export default function SurfDashboard() {
 				onSpotChange={handleSpotChange}
 				initialAllSpots={loaderData.allSpots}
 				initialDashboardData={loaderData.dashboardData}
+				initialSurfReport={loaderData.surfReport}
 				enableSurfline={loaderData.enableSurfline}
 				enableSwellCloud={loaderData.enableSwellCloud}
 			/>
